@@ -7,4 +7,31 @@ settings:
   respect_robots: true
   signals_only: true
 
-clients: []
+clients:
+  - name: 5Paisa
+    competitors:
+      # Large-cap stock / F&O page = Reliance Industries on every site, so pages are comparable.
+      - name: Groww
+        cadence: biweekly
+        pages:
+          gift-nifty: https://groww.in/indices/global-indices/sgx-nifty
+          gold-mcx: https://groww.in/commodities/mcx_gold
+          silver-mcx: https://groww.in/commodities/mcx_silverm
+          # stock: https://groww.in/stocks/reliance-industries-ltd   # unverified guess
+          # fno: ???
+          ipo: https://groww.in/ipo   # unverified guess
+      - name: Dhan
+        cadence: biweekly
+        pages:
+          gift-nifty: https://dhan.co/indices/gift-nifty-historical-price/
+          gold-mcx: https://dhan.co/commodity/gold-futures-15mins-built-up/
+          silver-mcx: https://dhan.co/commodity/silver-options-open-interest/
+          # stock: https://dhan.co/stocks/reliance-industries-ltd-share-price/   # unverified guess
+          fno: https://dhan.co/futures/reliance-industries-ltd-futures-overview/
+          ipo: https://dhan.co/ipo/
+      - name: Upstox
+        cadence: biweekly
+        pages:
+          gift-nifty: https://upstox.com/gift-nifty
+          stock: https://upstox.com/stocks/reliance-industries-ltd-share-price/INE002A01018/
+          # gold-mcx, silver-mcx, fno, ipo: not found yet
