@@ -17,7 +17,7 @@ clients:
           gift-nifty: https://groww.in/indices/global-indices/sgx-nifty
           gold-mcx: https://groww.in/commodities/mcx_gold
           silver-mcx: https://groww.in/commodities/mcx_silverm
-          # stock: https://groww.in/stocks/reliance-industries-ltd   # unverified guess
+          stock: https://groww.in/stocks/reliance-industries-ltd
           # fno: ???
           ipo: https://groww.in/ipo   # unverified guess
       - name: Dhan
@@ -26,7 +26,7 @@ clients:
           gift-nifty: https://dhan.co/indices/gift-nifty-historical-price/
           gold-mcx: https://dhan.co/commodity/gold-futures-15mins-built-up/
           silver-mcx: https://dhan.co/commodity/silver-options-open-interest/
-          # stock: https://dhan.co/stocks/reliance-industries-ltd-share-price/   # unverified guess
+          stock: https://dhan.co/stocks/reliance-industries-ltd-share-price/
           fno: https://dhan.co/futures/reliance-industries-ltd-futures-overview/
           ipo: https://dhan.co/ipo/
       - name: Upstox
