@@ -7,6 +7,7 @@ settings:
   screenshots: true
   delay_seconds: 5          # pause between pages (be polite)
   respect_robots: true
+  signals_only: true        # report only pages with a signal; unchanged pages are just listed. Use --full to override
 
 clients:
   - name: Acme Shoes

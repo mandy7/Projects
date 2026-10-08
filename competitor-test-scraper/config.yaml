@@ -1,0 +1,10 @@
+# Client / competitor / page list. Edited by asking Claude in chat ("add client ...", "remove ...").
+# Format reference: config.example.yaml
+settings:
+  visits_per_page: 3
+  screenshots: true
+  delay_seconds: 5
+  respect_robots: true
+  signals_only: true
+
+clients: []

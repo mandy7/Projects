@@ -42,18 +42,22 @@ def main():
     ap.add_argument("command", choices=["run"])
     ap.add_argument("--config", default=str(ROOT / "config.yaml"))
     ap.add_argument("--client")
+    ap.add_argument("--full", action="store_true", help="include unchanged pages in the report (default: signals only)")
     ap.add_argument("--force", action="store_true", help="ignore cadence and scrape everything now")
     a = ap.parse_args()
 
-    cfg = yaml.safe_load(open(a.config))
+    cfg = yaml.safe_load(open(a.config)) or {}
     st = cfg.get("settings", {})
     n_visits, delay = st.get("visits_per_page", 3), st.get("delay_seconds", 5)
     today = dt.date.today()
     results = []
+    if not cfg.get("clients"):
+        print("No clients in the config yet - add some (ask Claude: /competitor-watch-setup).")
+        return
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch(executable_path=os.environ.get("CHROMIUM_PATH") or None)
-        for client in cfg["clients"]:
+        for client in cfg.get("clients") or []:
             if a.client and client["name"] != a.client:
                 continue
             for comp in client["competitors"]:
@@ -87,11 +91,11 @@ def main():
         browser.close()
 
     if not results:
-        print("Nothing due today.")
+        print("Nothing due today (or no clients in the config yet).")
         return
     REPORTS.mkdir(exist_ok=True)
     out = REPORTS / f"{today}.md"
-    out.write_text(render(results, str(today)))
+    out.write_text(render(results, str(today), signals_only=st.get("signals_only", True) and not a.full))
     print(f"Wrote {out} ({len(results)} pages)")
 
 
