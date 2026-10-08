@@ -1,0 +1,24 @@
+# One block per client. Each competitor lists the pages worth watching
+# (the pages your client actually tests: home, PDP, pricing, checkout, lead form).
+#
+# cadence: biweekly (default) | monthly   -> the weekly scheduler skips anything not yet due.
+settings:
+  visits_per_page: 3        # fresh browser sessions per page; differences between them reveal live A/B tests
+  screenshots: true
+  delay_seconds: 5          # pause between pages (be polite)
+  respect_robots: true
+  signals_only: true        # report only pages with a signal; unchanged pages are just listed. Use --full to override
+
+clients:
+  - name: Acme Shoes
+    competitors:
+      - name: Rival One
+        cadence: biweekly
+        pages:
+          home: https://www.example.com/
+          pdp: https://www.example.com/products/some-product
+          pricing: https://www.example.com/pricing
+      - name: Rival Two
+        cadence: monthly
+        pages:
+          home: https://www.example.org/
