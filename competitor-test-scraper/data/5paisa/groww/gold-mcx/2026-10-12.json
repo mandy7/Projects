@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-12",
+  "url": "https://groww.in/commodities/mcx_gold",
+  "n_visits": 3,
+  "primary": {
+    "title": "Gold Price - Live MCX Gold Spot Price | Groww",
+    "meta_description": "Gold - Latest updates on live Gold spot price on MCX, performance, futures and underlyings on Groww.in",
+    "h1": [
+      "Gold"
+    ],
+    "h2": [
+      "Open Interest (OI)",
+      "Performance",
+      "More Gold Underlyings"
+    ],
+    "ctas": [
+      "Login/Sign up",
+      "Option Chain",
+      "Show More"
+    ],
+    "banners": [
+      "Stocks F&O Mutual Funds More Search Groww.... Ctrl+K Login/Sign up"
+    ],
+    "prices": [
+      "₹1,49,531.00",
+      "₹1,19,512.00",
+      "₹1,48,281.00",
+      "₹14,937.00",
+      "₹1,48,680.00",
+      "₹1,51,600.00",
+      "₹1,55,865.00"
+    ],
+    "promos": [],
+    "forms": [],
+    "nav": [],
+    "hero": "Stocks F&O Mutual Funds More Search Groww.... Ctrl+K Login/Sign up Gold Option Chain ₹1,49,531.00 -1,968.00 (-1.30%) 1D MCX 1D 1W 1M 3M Terminal Overview News Open Interest (OI) Total Put OI Put:Call ratio Total Call OI 3,976 0.81 4,906 Performance Today’s Low 1,49,159.00 Today’s High 1,51,596.00 52",
+    "experiments": {},
+    "tools": [],
+    "final_url": "https://groww.in/commodities/mcx_gold",
+    "tool_cookies": []
+  },
+  "tools": [],
+  "experiments": {},
+  "variants": {
+    "prices": [
+      [
+        "₹1,49,531.00",
+        "₹1,19,512.00",
+        "₹1,48,281.00",
+        "₹14,937.00",
+        "₹1,48,680.00",
+        "₹1,51,600.00",
+        "₹1,55,865.00"
+      ],
+      [
+        "₹1,49,531.00",
+        "₹1,19,512.00",
+        "₹1,48,238.00",
+        "₹14,938.00",
+        "₹1,48,680.00",
+        "₹1,51,600.00",
+        "₹1,55,865.00"
+      ],
+      [
+        "₹1,49,531.00",
+        "₹1,19,512.00",
+        "₹1,48,238.00",
+        "₹14,938.00",
+        "₹1,48,685.00",
+        "₹1,51,600.00",
+        "₹1,55,865.00"
+      ]
+    ]
+  },
+  "screenshot": "data/5paisa/groww/gold-mcx/2026-10-12.png"
+}
