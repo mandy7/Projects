@@ -7,6 +7,7 @@ settings:
   screenshots: true
   delay_seconds: 5          # pause between pages (be polite)
   respect_robots: true
+  ignore_number_changes: true   # live-price/quote pages tick every second; ignore digit-only changes in prices/hero. Set false per competitor (below) for shops where price tests matter
   signals_only: true        # report only pages with a signal; unchanged pages are just listed. Use --full to override
 
 clients:
@@ -14,6 +15,7 @@ clients:
     competitors:
       - name: Rival One
         cadence: biweekly
+        # ignore_number_changes: false   # e-commerce: a price change IS the signal
         pages:
           home: https://www.example.com/
           pdp: https://www.example.com/products/some-product

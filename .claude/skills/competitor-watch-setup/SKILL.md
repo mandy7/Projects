@@ -5,6 +5,8 @@ description: Add, change or remove clients, competitors and watched pages in com
 
 # Competitor watch setup
 
+For a brand-new client where competitor pages must be found automatically, use `competitor-watch-onboard` instead.
+
 Config file: `competitor-test-scraper/config.yaml` (format reference: `config.example.yaml`).
 
 1. Parse the request into client -> competitor -> pages (`name: url`), plus `cadence` (`biweekly` default, or `monthly`). Page names are short labels (home, pricing, pdp, checkout, lead-form).

@@ -5,6 +5,7 @@ settings:
   screenshots: true
   delay_seconds: 5
   respect_robots: true
+  ignore_number_changes: true
   signals_only: true
 
 clients:

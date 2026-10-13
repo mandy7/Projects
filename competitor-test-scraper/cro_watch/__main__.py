@@ -71,6 +71,7 @@ def main():
                         continue
                     d.mkdir(parents=True, exist_ok=True)
                     shot = d / f"{today}.png" if st.get("screenshots", True) else None
+                    mask = comp.get("ignore_number_changes", st.get("ignore_number_changes", True))
                     try:
                         visits = [visit(browser, url, shot if i == 0 else None) for i in range(n_visits)]
                     except Exception as e:
@@ -79,12 +80,12 @@ def main():
                     snap = {
                         "date": str(today), "url": url, "n_visits": n_visits,
                         "primary": visits[0], "tools": sorted({t for v in visits for t in v["tools"]}),
-                        "experiments": active_experiments(visits), "variants": variant_signals(visits),
+                        "experiments": active_experiments(visits), "variants": variant_signals(visits, mask),
                         "screenshot": str(shot.relative_to(ROOT)) if shot else None,
                     }
                     hist = history(d)
                     load = lambda p: json.load(open(p))
-                    diff = compare(load(hist[-1]), snap, load(hist[-2]) if len(hist) > 1 else None) if hist else None
+                    diff = compare(load(hist[-1]), snap, load(hist[-2]) if len(hist) > 1 else None, mask) if hist else None
                     json.dump(snap, open(d / f"{today}.json", "w"), indent=2, ensure_ascii=False)
                     results.append({**meta, "snapshot": snap, "diff": diff})
                     time.sleep(delay)

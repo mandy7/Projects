@@ -30,7 +30,10 @@ Output: `data/<client>/<competitor>/<page>/<date>.json|png` and `reports/<date>.
 By default the report lists only pages with a signal (failure, testing tool/experiment seen, variants across sessions, or a change since last run); the rest are listed by name only. Use `--full` or set `signals_only: false` for everything.
 
 ## Turning the report into recommendations
-Add/remove clients and pages by asking Claude (`/competitor-watch-setup`). Use the `competitor-test-review` skill (`.claude/skills/`) on the latest report: it classifies signals, infers hypotheses and drafts test recommendations per client.
+Onboard a new client with `/competitor-watch-onboard` (give client URLs; it finds competitors and their equivalent pages), or add/remove known URLs with `/competitor-watch-setup`. Use the `competitor-test-review` skill (`.claude/skills/`) on the latest report: it classifies signals, infers hypotheses and drafts test recommendations per client.
+
+## Live-price pages
+Market-data pages (gold, indices, stock quotes) change every second, which would otherwise look like an A/B test. By default digit-only changes in `prices`/`hero` are ignored (`ignore_number_changes: true`). For shops where a price test is the signal, set `ignore_number_changes: false` on that competitor.
 
 ## Responsible use
 Only public pages, low frequency, `robots.txt` respected by default. Check each site's terms. Pages behind bot protection or login (checkout) may fail or show a block page; watch the `failed` lines in the report.
