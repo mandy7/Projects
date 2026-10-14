@@ -97,9 +97,17 @@ def _tools(data, cookies):
     return sorted(found)
 
 
-def visit(browser, url, screenshot_path=None, timeout_ms=30000):
+MOBILE_UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 "
+             "(KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1")
+
+
+def visit(browser, url, screenshot_path=None, timeout_ms=30000, mobile=False):
     """One fresh, cookie-less session = one fresh bucketing roll for any A/B tool."""
-    ctx = browser.new_context(viewport={"width": 1440, "height": 900}, locale="en-US")
+    if mobile:  # most Indian AMC traffic is mobile web: phone viewport + UA
+        ctx = browser.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=2, is_mobile=True,
+                                  has_touch=True, user_agent=MOBILE_UA, locale="en-IN")
+    else:
+        ctx = browser.new_context(viewport={"width": 1440, "height": 900}, locale="en-US")
     page = ctx.new_page()
     try:
         page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)

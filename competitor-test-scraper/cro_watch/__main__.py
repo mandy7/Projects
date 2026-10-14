@@ -72,7 +72,8 @@ def main():
                     d.mkdir(parents=True, exist_ok=True)
                     shot = d / f"{today}.png" if st.get("screenshots", True) else None
                     try:
-                        visits = [visit(browser, url, shot if i == 0 else None) for i in range(n_visits)]
+                        mobile = comp.get("viewport") == "mobile"
+                        visits = [visit(browser, url, shot if i == 0 else None, mobile=mobile) for i in range(n_visits)]
                     except Exception as e:
                         results.append({**meta, "error": f"{type(e).__name__}: {str(e)[:160]}"})
                         continue
