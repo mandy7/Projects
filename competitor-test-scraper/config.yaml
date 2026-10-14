@@ -46,11 +46,11 @@ clients:
           home: https://www.motilaloswalmf.com/
           sip-calculator: https://www.motilaloswalmf.com/calculators/sip-calculator
           defence-fund: https://www.motilaloswalmf.com/mutual-funds/motilal-oswal-nifty-india-defence-index-fund
-      - name: HDFC Mutual Fund
+      - name: HDFC Mutual Fund   # robots.txt disallows automated access, so the scraper skips these pages
         cadence: biweekly
         pages:
           home: https://www.hdfcfund.com/
-          sip-calculator: https://www.hdfcfund.com/calculators   # unverified: calculators hub, dedicated SIP calculator URL not confirmed
+          sip-calculator: https://www.hdfcfund.com/calculators/sip-calculator
           defence-fund: https://www.hdfcfund.com/explore/mutual-funds/hdfc-defence-fund/direct   # active defence fund
       - name: Axis Mutual Fund
         cadence: biweekly
