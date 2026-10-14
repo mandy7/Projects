@@ -35,3 +35,39 @@ clients:
           gift-nifty: https://upstox.com/gift-nifty
           stock: https://upstox.com/stocks/reliance-industries-ltd-share-price/INE002A01018/
           # gold-mcx, silver-mcx, fno, ipo: not found yet
+
+  - name: Motilal Oswal AMC
+    competitors:
+      # Own pages included as a baseline so snapshots can be compared side by side.
+      # Page keys are the same on every site: home, sip-calculator, defence-fund.
+      - name: MOAMC (own baseline)
+        cadence: biweekly
+        pages:
+          home: https://www.motilaloswalmf.com/
+          sip-calculator: https://www.motilaloswalmf.com/calculators/sip-calculator
+          defence-fund: https://www.motilaloswalmf.com/mutual-funds/motilal-oswal-nifty-india-defence-index-fund
+      - name: HDFC Mutual Fund
+        cadence: biweekly
+        pages:
+          home: https://www.hdfcfund.com/
+          sip-calculator: https://www.hdfcfund.com/calculators   # unverified: calculators hub, dedicated SIP calculator URL not confirmed
+          defence-fund: https://www.hdfcfund.com/explore/mutual-funds/hdfc-defence-fund/direct   # active defence fund
+      - name: Axis Mutual Fund
+        cadence: biweekly
+        pages:
+          home: https://www.axismf.com/
+          sip-calculator: https://www.axismf.com/mutual-funds-sip-calculator
+          defence-fund: https://www.axismf.com/mutual-funds/index-funds/axis-nifty-india-defence-index-fund/nd-dg/direct
+      - name: Aditya Birla Sun Life MF
+        cadence: biweekly
+        pages:
+          home: https://mutualfund.adityabirlacapital.com/
+          sip-calculator: https://mutualfund.adityabirlacapital.com/investor-education/tools-and-calculator/sip-calculator
+          defence-fund: https://mutualfund.adityabirlacapital.com/products/wealth-creation-solutions/aditya-birla-sun-life-nifty-india-defence-index-fund
+      - name: ICICI Prudential MF
+        cadence: biweekly
+        pages:
+          home: https://www.icicipruamc.com/
+          sip-calculator: https://www.icicipruamc.com/calculators/sip-calculator
+          # No ICICI Pru defence fund found; flagship thematic fund used instead, so not like-for-like.
+          thematic-fund: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-india-opportunities-fund/1680
