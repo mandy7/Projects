@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How it works | Decision Memo</title>
+<meta name="description" content="Five steps behind every workflow, what stays fixed and what is set with you, how to check the work, and what has and has not been tested.">
+<meta name="theme-color" content="#f6f3ec">
+<meta property="og:title" content="How it works | Decision Memo">
+<meta property="og:description" content="Five steps behind every workflow, what stays fixed and what is set with you, how to check the work, and what has and has not been tested.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the content</a>
+<div class="mast"><div class="wrap">
+  <a class="word" href="index.html">Decision Memo</a>
+  <nav class="nav" aria-label="Main"><a href="workflows.html">Workflows</a><a href="method.html" aria-current="page">Method</a><a href="working-together.html">Working together</a><a href="contact.html">Contact</a></nav>
+</div></div>
+<main id="main" class="wrap">
+
+<section class="page-head">
+  <h1>How it works</h1>
+  <p class="lead">The same five steps sit behind every workflow. Where a language model helps and where plain code does the work is stated for each step.</p>
+</section>
+
+<section class="sec row">
+  <div class="label">The steps</div>
+  <div>
+    <ol>
+      <li><strong>Collect:</strong> The workflow reads a fixed list of sources, or the entries and numbers you give it. A language model helps here, because sources are written in prose.</li>
+      <li><strong>Record:</strong> Each item is stored with its date, its source and a status: disclosed, stated by the company, opinion, inference, not disclosed or scheduled. Something that was left out is logged as a gap and is never filled in.</li>
+      <li><strong>Apply written rules:</strong> Scoring, rating and ranking come from rules that are shown before any result appears. This is plain code, so the same input gives the same output.</li>
+      <li><strong>Review:</strong> A named person approves, holds or overrules each result. The run waits for them. Every override is listed in the memo with its reason.</li>
+      <li><strong>Write the memo:</strong> One page, built from what was approved, with a source on every line.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec row">
+  <div class="label">Fixed and set per client</div>
+  <div>
+    <div class="wrapx"><table class="plain">
+      <tbody>
+      <tr><th scope="row">Fixed</th><td>The five steps, the status labels, a source and a date on every item, gaps logged and not filled, and nothing released without approval.</td></tr>
+      <tr><th scope="row">Set with you</th><td>The topic, the source list, the standing decisions and the assumption behind each, the rating rules, the memo format, the schedule, who reviews, and where the memo is delivered.</td></tr>
+      <tr><th scope="row">Changes each run</th><td>The pages fetched, the events, the gaps, the flags, the ratings and the memo.</td></tr>
+      <tr><th scope="row">Kept between runs</th><td>The event ledger, the decision history and the review log. A live engagement keeps these. The examples on this site do not.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="sec row">
+  <div class="label">How you can check the work</div>
+  <div>
+    <p>A memo is only useful if you can see where each line came from, so every workflow is built around that.</p>
+    <ul>
+      <li>Every item carries a date and a source link or reference, and a gap is shown as a gap.</li>
+      <li>In a live build, each quote a model extracts is checked against the fetched text, and a failure goes to the reviewer. The examples here do not fetch anything, so this check is a design requirement and not something you can try on this site.</li>
+      <li>The scoring and rating rules are written out on the page, and a reviewer can overrule the result.</li>
+      <li>You can ask for a back-test. Give me a past period where you know what happened, and we count what the workflow missed and what it got wrong.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec row">
+  <div class="label">What has been tested</div>
+  <div>
+    <div class="wrapx"><table class="plain">
+      <thead><tr><th>Workflow</th><th>Checked</th><th>Not checked</th></tr></thead>
+      <tbody>
+      <tr><td>Shiftwatch</td><td>The replay runs end to end in a browser, in both review modes, and the memo downloads.</td><td>The workflow version has not run on live sites or a live model service. Accuracy has not been measured.</td></tr>
+      <tr><td>Tipping Point</td><td>A rerun gives identical results. Input checks reject impossible ranges. The CSV template round-trips exactly.</td><td>The model has not been compared with real outcomes.</td></tr>
+      <tr><td>Condition Watch</td><td>The rating rules were run against edge cases. Changing the condition rewrites the decisions and the source plan.</td><td>The search links open the sites but their results have not been reviewed. Nothing is read from any source.</td></tr>
+      <tr><td>Said and Done</td><td>The scoring rules were run against boundary values, and a ledger round-trips through CSV.</td><td>Entries have not been compared with real company documents.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="sec row">
+  <div class="label">Limits</div>
+  <div>
+    <ul>
+      <li>A record is only as good as what goes into it. The workflows do not check an entry against the world.</li>
+      <li>The models are simple on purpose, and each page lists what it leaves out.</li>
+      <li>I do not claim a time saving or an accuracy figure for any workflow. A pilot would measure both.</li>
+      <li>None of this is investment, legal or medical advice.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+<footer class="foot"><div class="wrap">
+  <p>Decision Memo, by Mandhir Dua. The four examples use hypothetical companies or invented figures. Nothing here is investment, legal or medical advice.</p>
+  <p><a href="contact.html#privacy">Privacy</a></p>
+</div></footer>
+
+</body>
+</html>

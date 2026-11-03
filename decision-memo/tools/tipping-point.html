@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tipping Point | Decision Memo</title>
+<style>
+:root{
+  --bg:#faf8f3; --paper:#fffdf8; --ink:#1d1c1a; --mut:#6a665e; --rule:#dcd6c9; --soft:#f1ede2;
+  --gt:#2b6cb0; --qc:#c2571a; --d2c:#1a8a6e;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 60px}
+header{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:20px}
+h1{font-family:var(--serif);font-weight:600;font-size:34px;margin:0 0 2px;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:0;max-width:760px}
+.flag{margin-top:10px;color:var(--mut);font-size:13px}
+.flag b{color:var(--ink);font-weight:600}
+.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:18px 0 6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:9px 20px;border-radius:3px;font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.small{padding:5px 12px;font-size:13px}
+label.opt{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:14px}
+select{font:inherit;padding:4px 6px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:3px}
+.grid{display:grid;grid-template-columns:270px 1fr;gap:34px;margin-top:22px}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr);gap:20px}}
+.grid>*{min-width:0}
+#sec-assume{overflow-x:auto}
+#sec-assume table{min-width:560px}
+.stages{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule)}
+.stages li{padding:6px 0 6px 16px;position:relative;color:var(--mut)}
+.stages li:before{content:"";position:absolute;left:-5px;top:13px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:1px solid var(--mut)}
+.stages li.active{color:var(--ink);font-weight:600}
+.stages li.active:before{background:var(--ink);border-color:var(--ink)}
+.stages li.done{color:var(--ink)}
+.stages li.done:before{background:var(--mut);border-color:var(--mut)}
+.stages small{display:block;font-weight:400;color:var(--mut);font-size:12.5px}
+.feedtitle{font-size:13px;color:var(--mut);margin:22px 0 6px}
+.feed{font-size:12.5px;color:var(--mut);max-height:230px;overflow:auto;border-top:1px solid var(--rule)}
+.feed div{padding:4px 0;border-bottom:1px solid var(--soft)}
+.feed span{color:var(--ink);font-variant-numeric:tabular-nums;margin-right:8px}
+section.blk{display:none;margin-bottom:34px}
+section.blk.show{display:block}
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:0 0 4px}
+.lede{margin:0 0 12px;color:var(--mut);max-width:760px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-weight:600;color:var(--mut);font-size:13px;border-bottom:1px solid var(--ink);padding:6px 10px 6px 0}
+td{padding:6px 10px 6px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hide{display:none}
+.tag{color:var(--mut);font-size:12.5px}
+canvas{width:100%;max-width:560px;height:auto;aspect-ratio:1/0.82;background:var(--paper);border:1px solid var(--rule);display:block}
+.two{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.two>div{flex:1 1 300px}
+.win{margin:6px 0}
+.win .row{display:grid;grid-template-columns:120px 1fr 48px;gap:10px;align-items:center;margin:7px 0;font-size:14px}
+.win .bar{height:8px;background:var(--soft);position:relative}
+.win .bar i{position:absolute;left:0;top:0;bottom:0;display:block}
+.count{font-variant-numeric:tabular-nums;color:var(--mut);font-size:13px;margin-top:8px}
+.multi{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:860px){.multi{grid-template-columns:1fr}}
+.multi svg{width:100%;height:auto;display:block}
+svg text{font-family:var(--sans);fill:var(--ink)}
+svg .mut{fill:var(--mut)}
+.rank .row{display:grid;grid-template-columns:minmax(150px,300px) 1fr 120px;gap:10px;align-items:center;margin:6px 0;font-size:13.5px}
+.rank .bar{height:8px;background:var(--soft);position:relative}
+.rank .bar i{position:absolute;left:0;top:0;bottom:0;display:block}
+.rank .row.top .l{font-weight:600}
+.rev{border-top:1px solid var(--ink)}
+.rev .r{display:grid;grid-template-columns:1fr 150px;gap:16px;padding:10px 0;border-bottom:1px solid var(--rule)}
+@media(max-width:700px){.rev .r{grid-template-columns:1fr}}
+.rev .r b{font-weight:600}
+.rev .why{color:var(--mut);font-size:13px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;height:32px}
+.seg button{border:0;background:var(--paper);padding:0 12px;color:var(--mut)}
+.seg button.on{background:var(--ink);color:var(--paper)}
+.seg.fixed button{cursor:default}
+.note{color:var(--mut);font-size:13px;margin-top:8px}
+#doc{background:var(--paper);border:1px solid var(--rule);padding:34px 40px;max-width:780px}
+@media(max-width:600px){#doc{padding:20px 16px}}
+#doc h3{font-family:var(--serif);font-size:25px;font-weight:600;margin:0 0 4px;line-height:1.2}
+#doc h4{font-family:var(--serif);font-size:17px;font-weight:600;margin:20px 0 4px}
+#doc p{margin:6px 0}
+#doc .meta{color:var(--mut);font-size:13px}
+#doc ul{margin:6px 0 6px 18px;padding:0}
+#doc table{margin:8px 0}
+.docbar{display:flex;gap:10px;margin:0 0 12px}
+footer{margin-top:30px;border-top:1px solid var(--rule);padding-top:12px;color:var(--mut);font-size:12.5px;max-width:820px}
+@media print{
+  body{background:#fff}
+  .wrap>header,.controls,.grid>aside,.docbar,footer,section.blk:not(#sec-doc){display:none!important}
+  .grid{display:block}
+  #doc{border:0;padding:0;max-width:none}
+}
+
+.setup{margin-top:10px;font-size:14px}
+.setup summary{cursor:pointer;color:var(--mut)}
+.setup[open] summary{color:var(--ink)}
+#setup-body{margin-top:10px;border-top:1px solid var(--rule);padding-top:10px;max-width:980px}
+.setup input[type=text]{font:inherit;font-size:13.5px;padding:4px 6px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:3px;width:100%}
+.setup input:disabled,.setup button:disabled{opacity:.5}
+.setup-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:8px 0}
+.setup-grid label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--mut)}
+.setup-t{margin:10px 0;table-layout:auto}
+.setup-t td,.setup-t th{padding:4px 8px 4px 0}
+.setup-t td.n input{max-width:90px;text-align:right}
+.setup-t td:last-child input{min-width:260px}
+.setup-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.filebtn{cursor:pointer;display:inline-block}
+@media(max-width:700px){.setup-grid{grid-template-columns:1fr}.setup-t{display:block;overflow-x:auto}}
+@media print{.setup{display:none!important}}
+.back{margin:0 0 14px;font-size:13px;color:var(--mut)}.back a{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="back"><a href="../workflows.html">Decision Memo</a> / Workflows</p>
+  <h1>Tipping Point</h1>
+  <p class="sub" id="sub">Finds where the next unit of spend does the most good and the point at which each route stops paying back. A decision-modelling workflow that runs thousands of scenarios and ends with a one-page memo.</p>
+  <p class="flag" id="flag"><b>Method demo on a hypothetical company.</b> All nine inputs are illustrative assumptions, labelled as such. The numbers are computed in your browser, not drawn from market data.</p>
+  <div class="controls">
+    <button class="btn" id="run">Run the analysis</button>
+    <label class="opt"><input type="checkbox" id="pause"> Pause at review</label>
+    <label class="opt">Speed
+      <select id="speed"><option value="1">Normal</option><option value="2">2x</option><option value="4">4x</option></select>
+    </label>
+    <button class="btn ghost small" id="reset">Reset</button>
+  </div>
+  <details class="setup" id="setup"><summary>Use your own case (optional)</summary><div id="setup-body"></div></details>
+</header>
+
+<div class="grid">
+  <aside>
+    <ol class="stages" id="stages"></ol>
+    <div class="feedtitle">Activity</div>
+    <div class="feed" id="feed"></div>
+  </aside>
+
+  <main>
+    <section class="blk show" id="sec-intro">
+      <h2>What happens when you press run</h2>
+      <p class="lede">The agent frames the decision, lists its assumptions, draws 5,000 scenarios from them, finds where each route stops paying, ranks which assumption the answer hinges on, optionally waits for your review, and writes the memo. Nothing is typed in; the run is the same every time because the random draws are seeded.</p>
+    </section>
+
+    <section class="blk" id="sec-frame">
+      <h2>The decision</h2>
+      <p class="lede" id="frame-text"></p>
+    </section>
+
+    <section class="blk" id="sec-assume">
+      <h2>Assumptions</h2>
+      <p class="lede" id="assume-lede">Each assumption is a range (low, typical, high), not a single number. None of these comes from a filing or a data source; the last column says what evidence would replace it.</p>
+      <table id="assume-table"><thead><tr><th>Assumption</th><th class="n">Low</th><th class="n">Typical</th><th class="n">High</th><th>Status</th><th>Evidence that would replace it</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <section class="blk" id="sec-sim">
+      <h2>Scenarios</h2>
+      <p class="lede" id="sim-lede">Every dot is one scenario: nine assumptions drawn at random from their ranges, then the best use of the budget worked out for that scenario. Horizontal: rupees going to quick commerce. Vertical: rupees going to general trade. What remains goes to the own site.</p>
+      <div class="two">
+        <div><canvas id="cv" width="560" height="460"></canvas>
+          <div class="count" id="count"></div></div>
+        <div>
+          <div style="font-weight:600">Which route gets the largest share of the best allocation</div>
+          <div class="win" id="win"></div>
+          <p class="note" id="win-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk" id="sec-tip">
+      <h2>Where each route stops paying</h2>
+      <p class="lede" id="tip-lede">The line shows what the next ₹1 of spend brings back in contribution, in the typical scenario; the band covers the middle 80% of scenarios. Once the line drops below ₹1, more spend loses money. The tick marks where that happens.</p>
+      <div class="multi" id="multi"></div>
+    </section>
+
+    <section class="blk" id="sec-hinge">
+      <h2>Which assumption the answer hinges on</h2>
+      <p class="lede">Each assumption is pushed to the low and high end of its range, one at a time, with the others held at typical. The bar shows how far the best split moves, in points of the budget.</p>
+      <div class="rank" id="rank"></div>
+      <p class="note" id="hinge-note"></p>
+    </section>
+
+    <section class="blk" id="sec-rev">
+      <h2>Review</h2>
+      <p class="lede" id="rev-lede"></p>
+      <div class="rev" id="rev"></div>
+      <div style="margin-top:12px"><button class="btn" id="cont" style="display:none">Continue</button></div>
+    </section>
+
+    <section class="blk" id="sec-doc">
+      <h2>The memo</h2>
+      <div class="docbar">
+        <button class="btn small" id="dl" disabled>Download (.md)</button>
+        <button class="btn ghost small" id="pr" disabled>Print or save as PDF</button>
+      </div>
+      <div id="doc"></div>
+    </section>
+  </main>
+</div>
+
+<footer id="foot">Every number on this page is computed in your browser from nine illustrative assumptions for a hypothetical company. It is not market data and not a forecast. The method (scenario draws, allocation, tipping points, ranking of assumptions) is what carries over to a real client, with their own data in place of the assumptions.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- model setup ---------- */
+var B = 100, REF = 50, N = 5000, SEED = 7, CHUNK = 500;
+
+var ROUTES = [
+  {id:'gt',  name:'General trade',  color:'#2b6cb0'},
+  {id:'qc',  name:'Quick commerce', color:'#c2571a'},
+  {id:'d2c', name:'Own site',       color:'#1a8a6e'}
+];
+var PLAN = [70,20,10];
+var PARAMS = [];
+var CUR = '₹', UNITS = ' crore', WHO = 'A hypothetical mid-size mobile operator', CUSTOM = false, SW = 'sales', LIMIT = '';
+var FOOD = {
+  id:'food', label:'Packaged-food brand (hypothetical)', who:'A hypothetical packaged-food brand', cur:'₹', unit:'lakh', custom:false, sales:'sales', limit:'',
+  routes:['General trade','Quick commerce','Own site'], plan:[70,20,10],
+  rng:[[380,500,640],[0.14,0.18,0.21],[0.45,0.60,0.72],[280,450,640],[0.10,0.16,0.22],[0.55,0.75,0.88],[90,150,260],[0.26,0.35,0.42],[0.40,0.55,0.72]],
+  ev:['Distributor sales by outlet cluster against trade-spend history','Price-to-retailer waterfall: distributor margin, schemes, freight','Spend-versus-sales tests: store or pin-code holdouts, or past flighting',
+      'Platform dashboard: sales against ad and discount spend, by city','Platform rate card: commission, ad take, margin support','Spend-versus-sales tests: store or pin-code holdouts, or past flighting',
+      'Site analytics: revenue against paid media, by month','Payment, shipping, returns and fulfilment costs','Spend-versus-sales tests: store or pin-code holdouts, or past flighting']
+};
+var TELECOM = {
+  id:'telecom', label:'Mobile operator (hypothetical)', who:'A hypothetical mid-size mobile operator', cur:'₹', unit:'crore', custom:false, sales:'revenue from new subscribers',
+  limit:'Subscriber lifetime and churn after the first year are not modelled. Revenue here is first-year revenue from customers won.',
+  routes:['Retail and dealers','Digital','Partner bundles'], plan:[70,20,10],
+  rng:[[420,560,720],[0.12,0.16,0.20],[0.45,0.58,0.70],[150,260,420],[0.24,0.32,0.40],[0.40,0.55,0.70],[200,340,560],[0.08,0.14,0.22],[0.50,0.68,0.85]],
+  ev:['Activations by dealer cluster against commission and incentive spend, by circle','Net revenue per activation after dealer commission, handset subsidy and first-year churn','Spend-versus-activation tests: circle or cohort holdouts, or past flighting',
+      'Campaign data: spend, installs and activations, by month','Payment, KYC and onboarding cost per activation','Spend-versus-activation tests: circle or cohort holdouts, or past flighting',
+      'Partner contracts: volumes, minimum commitments and revenue share','Partner contract terms: revenue share and bundle discounts','Spend-versus-activation tests: circle or cohort holdouts, or past flighting']
+};
+var PRESETS = [TELECOM, FOOD], DEFAULT_CFG = TELECOM;
+function applyCfg(cfg){
+  CUR=cfg.cur; UNITS=cfg.unit?' '+cfg.unit:''; WHO=cfg.who; CUSTOM=!!cfg.custom; PLAN=cfg.plan.slice(); SW=cfg.sales||'sales'; LIMIT=cfg.limit||'';
+  for(var r=0;r<3;r++) ROUTES[r].name=cfg.routes[r];
+  var base={R:'annual '+SW+' when spend is '+CUR+REF+UNITS, m:'contribution margin on '+SW+', before channel spend', b:'diminishing-returns exponent'};
+  PARAMS.length=0;
+  for(var j=0;j<9;j++){ var r2=Math.floor(j/3), k=['R','m','b'][j%3];
+    PARAMS.push({r:r2,k:k,lo:cfg.rng[j][0],mo:cfg.rng[j][1],hi:cfg.rng[j][2],label:cfg.routes[r2]+': '+base[k],ev:cfg.ev[j]}); }
+}
+applyCfg(DEFAULT_CFG);
+
+
+var SPLITS = [];
+(function(){ for(var g=0; g<=10; g++){ for(var q=0; q<=10-g; q++){ SPLITS.push([g*10,q*10,(10-g-q)*10]); } } })();
+
+function tri(u,lo,mo,hi){ var F=(mo-lo)/(hi-lo); return u<F ? lo+Math.sqrt(u*(hi-lo)*(mo-lo)) : hi-Math.sqrt((1-u)*(hi-lo)*(hi-mo)); }
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+function rp(v,r){ return {R:v[r*3], m:v[r*3+1], b:v[r*3+2]}; }
+function net1(p,S){ return p.m*p.R*Math.pow(S/REF,p.b)-S; }
+function marg(p,S){ return p.m*p.R*p.b/REF*Math.pow(S/REF,p.b-1); }
+function stopPt(p){ return REF*Math.pow(p.m*p.R*p.b/REF, 1/(1-p.b)); }
+function totalNet(v,a){ return net1(rp(v,0),a[0])+net1(rp(v,1),a[1])+net1(rp(v,2),a[2]); }
+function optimal(v){
+  var a=[0,0,0], p=[rp(v,0),rp(v,1),rp(v,2)];
+  for(var i=0;i<B;i++){
+    var best=-1, bv=1;
+    for(var r=0;r<3;r++){ var g=marg(p[r],a[r]+0.5); if(g>bv){bv=g;best=r;} }
+    if(best<0) break;
+    a[best]++;
+  }
+  return a;
+}
+function quant(arr,q){ var s=Array.prototype.slice.call(arr).sort(function(x,y){return x-y;}); var i=(s.length-1)*q, lo=Math.floor(i), hi=Math.ceil(i); return s[lo]+(s[hi]-s[lo])*(i-lo); }
+function mean(arr){ var s=0; for(var i=0;i<arr.length;i++) s+=arr[i]; return s/arr.length; }
+function f0(n){ return String(Math.round(n)); }
+function f1(n){ return (Math.round(n*10)/10).toFixed(1); }
+function pct(n){ return Math.round(n*100)+'%'; }
+function showP(P,x){ return P.k==='R' ? f0(x) : P.k==='m' ? f0(x*100)+'%' : x.toFixed(2); }
+
+/* ---------- state ---------- */
+var S = null, runTok = 0, speed = 1, running = false, reviewResolve = null;
+function freshState(){
+  return { V:new Float32Array(N*9), optA:new Int16Array(N*3), optNet:new Float32Array(N), planNet:new Float32Array(N),
+           splitNet:new Float32Array(N*SPLITS.length), done:0, rng:mulberry32(SEED), res:null, rev:null, doc:null, reviewMode:null };
+}
+
+function stepScenarios(st, count){
+  var P = PARAMS;
+  for(var n=0;n<count && st.done<N;n++,st.done++){
+    var i=st.done, v=[];
+    for(var j=0;j<9;j++){ v.push(tri(st.rng(),P[j].lo,P[j].mo,P[j].hi)); st.V[i*9+j]=v[j]; }
+    var a=optimal(v);
+    st.optA[i*3]=a[0]; st.optA[i*3+1]=a[1]; st.optA[i*3+2]=a[2];
+    st.optNet[i]=totalNet(v,a);
+    st.planNet[i]=totalNet(v,PLAN);
+    for(var s=0;s<SPLITS.length;s++) st.splitNet[i*SPLITS.length+s]=totalNet(v,SPLITS[s]);
+  }
+}
+
+function analyse(st){
+  var res={}, ns=SPLITS.length, i, s, r;
+  // best single split by mean
+  var means=[], p10s=[];
+  for(s=0;s<ns;s++){ var col=new Float32Array(N); for(i=0;i<N;i++) col[i]=st.splitNet[i*ns+s]; means.push(mean(col)); p10s.push(quant(col,0.1)); }
+  var bi=0; for(s=1;s<ns;s++) if(means[s]>means[bi]) bi=s;
+  res.bestIdx=bi; res.best=SPLITS[bi]; res.bestMean=means[bi]; res.bestP10=p10s[bi];
+  var planIdx=-1; for(s=0;s<ns;s++) if(SPLITS[s][0]===PLAN[0]&&SPLITS[s][1]===PLAN[1]&&SPLITS[s][2]===PLAN[2]) planIdx=s;
+  res.planMean=means[planIdx]; res.planP10=p10s[planIdx];
+  res.optMean=mean(st.optNet);
+  var beat=0; for(i=0;i<N;i++) if(st.splitNet[i*ns+bi]>st.planNet[i]) beat++;
+  res.beatPlan=beat/N;
+  res.voi=res.optMean-res.bestMean;
+  // wins and unspent
+  var wins=[0,0,0], unsp=0;
+  for(i=0;i<N;i++){
+    var a0=st.optA[i*3],a1=st.optA[i*3+1],a2=st.optA[i*3+2], w=0;
+    if(a1>a0&&a1>=a2) w=1; else if(a2>a0&&a2>a1) w=2;
+    wins[w]++; if(B-(a0+a1+a2)>5) unsp++;
+  }
+  res.wins=wins.map(function(x){return x/N;}); res.unspent=unsp/N;
+  // stop points
+  res.stop=[];
+  for(r=0;r<3;r++){
+    var arr=new Float32Array(N);
+    for(i=0;i<N;i++){ var v=[]; for(var j=0;j<9;j++) v.push(st.V[i*9+j]); arr[i]=stopPt(rp(v,r)); }
+    res.stop.push({p10:quant(arr,0.1),p50:quant(arr,0.5),p90:quant(arr,0.9)});
+  }
+  // marginal curves
+  var grid=[]; for(var g=4; g<=100; g+=4) grid.push(g);
+  res.grid=grid; res.curve=[];
+  for(r=0;r<3;r++){
+    var lo=[],md=[],hi=[];
+    for(var gi=0; gi<grid.length; gi++){
+      var col2=new Float32Array(N);
+      for(i=0;i<N;i++){ col2[i]=marg({R:st.V[i*9+r*3],m:st.V[i*9+r*3+1],b:st.V[i*9+r*3+2]},grid[gi]); }
+      lo.push(quant(col2,0.1)); md.push(quant(col2,0.5)); hi.push(quant(col2,0.9));
+    }
+    res.curve.push({lo:lo,md:md,hi:hi});
+  }
+  // hinge
+  var modes=PARAMS.map(function(P){return P.mo;});
+  var baseOpt=optimal(modes); res.baseOpt=baseOpt; res.baseNet=totalNet(modes,baseOpt);
+  var rows=[];
+  PARAMS.forEach(function(P,j){
+    var out={j:j,P:P,dist:0,net:[]};
+    [P.lo,P.hi].forEach(function(val){
+      var v=modes.slice(); v[j]=val; var a=optimal(v);
+      var d=(Math.abs(a[0]-baseOpt[0])+Math.abs(a[1]-baseOpt[1])+Math.abs(a[2]-baseOpt[2]))/2;
+      out.dist=Math.max(out.dist,d); out.net.push(totalNet(v,a));
+    });
+    rows.push(out);
+  });
+  rows.sort(function(x,y){return y.dist-x.dist;});
+  res.hinge=rows;
+  // flip threshold for top assumption
+  var top=rows[0], P0=top.P, j0=top.j;
+  function rnd(a){ return a.map(function(x){return Math.round(x/10)*10;}).join('/'); }
+  var baseR=rnd(baseOpt), below=null, above=null, k, val;
+  for(k=1;k<=40;k++){ val=P0.mo+(P0.lo-P0.mo)*k/40; var v1=modes.slice(); v1[j0]=val; if(rnd(optimal(v1))!==baseR){ below=val; break; } }
+  for(k=1;k<=40;k++){ val=P0.mo+(P0.hi-P0.mo)*k/40; var v2=modes.slice(); v2[j0]=val; if(rnd(optimal(v2))!==baseR){ above=val; break; } }
+  res.flip={below:below,above:above,baseRounded:baseR};
+  return res;
+}
+
+/* ---------- ui helpers ---------- */
+function $(id){ return document.getElementById(id); }
+var STAGES = [
+  ['Frame the decision','Budget, routes, current plan'],
+  ['List the assumptions','Ranges, each labelled'],
+  ['Run scenarios','5,000 seeded draws'],
+  ['Find the tipping points','Where each route stops paying'],
+  ['Find the hinge','Which assumption moves the answer'],
+  ['Review','Accept or hold each finding'],
+  ['Write the memo','One page, downloadable']
+];
+function buildStages(){
+  var ol=$('stages'); ol.innerHTML='';
+  STAGES.forEach(function(s,i){ var li=document.createElement('li'); li.id='st'+i; li.innerHTML=s[0]+'<small>'+s[1]+'</small>'; ol.appendChild(li); });
+}
+function setStage(i){
+  for(var k=0;k<STAGES.length;k++){ var li=$('st'+k); li.className = k<i?'done':(k===i?'active':''); }
+}
+function allDone(){ for(var k=0;k<STAGES.length;k++) $('st'+k).className='done'; }
+var tStart=0;
+function log(msg){
+  var el=document.createElement('div'); var t=Math.round((Date.now()-tStart)/1000);
+  var mm=('0'+Math.floor(t/60)).slice(-2)+':'+('0'+(t%60)).slice(-2);
+  el.innerHTML='<span>'+mm+'</span>'+msg; $('feed').appendChild(el); $('feed').scrollTop=$('feed').scrollHeight;
+}
+function show(id){ $(id).classList.add('show'); }
+function hideAll(){ ['sec-frame','sec-assume','sec-sim','sec-tip','sec-hinge','sec-rev','sec-doc'].forEach(function(id){ $(id).classList.remove('show'); }); $('sec-intro').classList.add('show'); }
+function wait(ms){ var tok=runTok; return new Promise(function(res,rej){ setTimeout(function(){ tok===runTok?res():rej('abort'); }, ms/speed); }); }
+function check(tok){ if(tok!==runTok) throw 'abort'; }
+
+/* ---------- canvas ---------- */
+var cv=null, cx=null;
+function initCanvas(){
+  cv=$('cv'); cx=null;
+  try{ cx=cv.getContext && cv.getContext('2d'); }catch(e){ cx=null; }
+  if(!cx) return;
+  var W=cv.width,H=cv.height; cx.clearRect(0,0,W,H); cx.fillStyle='#fffdf8'; cx.fillRect(0,0,W,H);
+  var ml=46, mb=40, mt=12, mr=14;
+  cx.strokeStyle='#dcd6c9'; cx.lineWidth=1; cx.fillStyle='#6a665e'; cx.font='12px sans-serif';
+  [0,25,50,75,100].forEach(function(t){
+    var x=ml+t/100*(W-ml-mr), y=H-mb-t/100*(H-mt-mb);
+    cx.beginPath(); cx.moveTo(x,mt); cx.lineTo(x,H-mb); cx.stroke();
+    cx.beginPath(); cx.moveTo(ml,y); cx.lineTo(W-mr,y); cx.stroke();
+    cx.textAlign='center'; cx.fillText(String(t),x,H-mb+16);
+    cx.textAlign='right'; cx.fillText(String(t),ml-6,y+4);
+  });
+  cx.textAlign='center'; cx.fillText(ROUTES[1].name+', '+CUR+''+UNITS+'',(ml+W-mr)/2,H-6);
+  cx.save(); cx.translate(12,(mt+H-mb)/2); cx.rotate(-Math.PI/2); cx.fillText(ROUTES[0].name+', '+CUR+''+UNITS+'',0,0); cx.restore();
+}
+function plotPoints(from,to){
+  if(!cx) return;
+  var W=cv.width,H=cv.height, ml=46, mb=40, mt=12, mr=14, st=S;
+  for(var i=from;i<to;i++){
+    var a0=st.optA[i*3],a1=st.optA[i*3+1],a2=st.optA[i*3+2], w=0;
+    if(a1>a0&&a1>=a2) w=1; else if(a2>a0&&a2>a1) w=2;
+    var x=ml+a1/100*(W-ml-mr)+(Math.random()-.5)*2, y=H-mb-a0/100*(H-mt-mb)+(Math.random()-.5)*2;
+    cx.globalAlpha=0.45; cx.fillStyle=ROUTES[w].color; cx.beginPath(); cx.arc(x,y,2.6,0,6.2832); cx.fill();
+  }
+  cx.globalAlpha=1;
+}
+
+/* ---------- renderers ---------- */
+function renderFrame(){
+  $('frame-text').innerHTML=WHO+' has <b>'+CUR+''+B+''+UNITS+'</b> of channel spend to place next year across <b>'+ROUTES[0].name+'</b>, <b>'+ROUTES[1].name+'</b> and <b>'+ROUTES[2].name+'</b>. The current plan is '+PLAN.join(' / ')+'. The question: where does the next unit of spend earn the most, where does each route stop paying, and which assumption is the answer most sensitive to? Each route follows a diminishing-returns curve: '+SW+' = R × (spend ÷ 50)<sup>exponent</sup>, and contribution = margin × '+SW+' − spend.';
+}
+function renderAssumptions(){
+  var tb=$('assume-table').querySelector('tbody'); tb.innerHTML='';
+  PARAMS.forEach(function(P,j){
+    var tr=document.createElement('tr'); tr.className='hide'; tr.id='as'+j;
+    tr.innerHTML='<td>'+P.label+'</td><td class="n">'+showP(P,P.lo)+'</td><td class="n">'+showP(P,P.mo)+'</td><td class="n">'+showP(P,P.hi)+'</td><td class="tag">'+(CUSTOM?'Assumption (entered)':'Assumption (illustrative)')+'</td><td class="tag">'+P.ev+'</td>';
+    tb.appendChild(tr);
+  });
+}
+function renderWins(res){
+  var h='';
+  for(var r=0;r<3;r++){
+    h+='<div class="row"><div>'+ROUTES[r].name+'</div><div class="bar"><i style="width:'+(res.wins[r]*100)+'%;background:'+ROUTES[r].color+'"></i></div><div style="text-align:right;font-variant-numeric:tabular-nums">'+pct(res.wins[r])+'</div></div>';
+  }
+  $('win').innerHTML=h;
+  $('win-note').textContent='In '+pct(res.unspent)+' of scenarios the best allocation leaves more than '+CUR+'5'+UNITS+' unspent, because every route has stopped paying.';
+}
+function svgMargin(res,r){
+  var W=270,H=232,ml=30,mr=10,mt=58,mb=36, YM=2.5, c=res.curve[r], g=res.grid, col=ROUTES[r].color;
+  function X(s){ return ml+s/100*(W-ml-mr); }
+  function Y(v){ return mt+(1-Math.min(v,YM)/YM)*(H-mt-mb); }
+  var o='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Marginal return by spend, '+ROUTES[r].name+'">';
+  o+='<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+(H-mb)+'" y2="'+(H-mb)+'" stroke="#6a665e"/>';
+  [0,1,2].forEach(function(t){ o+='<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="#dcd6c9"/><text class="mut" x="'+(ml-6)+'" y="'+(Y(t)+4)+'" text-anchor="end" font-size="11">'+t+'</text>'; });
+  [0,25,50,75,100].forEach(function(t){ o+='<text class="mut" x="'+X(t)+'" y="'+(H-mb+15)+'" text-anchor="middle" font-size="11">'+t+'</text>'; });
+  o+='<text class="mut" x="'+((ml+W-mr)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11">Spend on this route, '+CUR+''+UNITS+'</text>';
+  // band
+  var d='M'; g.forEach(function(s,i){ d+=(i?'L':'')+X(s)+' '+Y(c.hi[i]); });
+  for(var i=g.length-1;i>=0;i--) d+='L'+X(g[i])+' '+Y(c.lo[i]);
+  o+='<path d="'+d+'Z" fill="'+col+'" opacity="0.16"/>';
+  var ln=''; g.forEach(function(s,i){ ln+=(i?'L':'M')+X(s)+' '+Y(c.md[i]); });
+  o+='<path d="'+ln+'" fill="none" stroke="'+col+'" stroke-width="2.2"/>';
+  // reference at 1
+  o+='<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+Y(1)+'" y2="'+Y(1)+'" stroke="#1d1c1a" stroke-dasharray="4 3" stroke-width="1"/>';
+  // stop tick
+  var sp=res.stop[r];
+  if(sp.p50<=100){
+    o+='<line x1="'+X(sp.p50)+'" x2="'+X(sp.p50)+'" y1="'+mt+'" y2="'+(H-mb)+'" stroke="#1d1c1a" stroke-width="1.2"/>';
+    o+='<circle cx="'+X(sp.p50)+'" cy="'+Y(1)+'" r="4.5" fill="'+col+'" stroke="#fffdf8" stroke-width="2"/>';
+  }
+  // plan marker
+  o+='<path d="M'+X(PLAN[r])+' '+(H-mb-1)+' l-4 -8 l8 0 z" fill="#1d1c1a"/>';
+  o+='<text class="mut" x="'+X(PLAN[r])+'" y="'+(H-mb-12)+'" text-anchor="middle" font-size="10.5">plan</text>';
+  // title and labels
+  o+='<rect x="'+ml+'" y="6" width="14" height="3" fill="'+col+'"/><text x="'+(ml+20)+'" y="12" font-size="13" font-weight="600">'+ROUTES[r].name+'</text>';
+  var l1 = sp.p50<=100 ? ('Stops paying near '+CUR+''+f0(sp.p50)+''+UNITS+'') : 'Does not stop paying within';
+  var l2 = sp.p50<=100 ? ('80% range '+f0(sp.p10)+' to '+(sp.p90>100?'over 100':f0(sp.p90))) : 'the budget in the typical case';
+  o+='<text x="'+ml+'" y="30" font-size="11.5">'+l1+'</text><text class="mut" x="'+ml+'" y="44" font-size="11">'+l2+'</text>';
+  // hover rects
+  g.forEach(function(s,i){ o+='<rect x="'+(X(s)-8)+'" y="'+mt+'" width="16" height="'+(H-mt-mb)+'" fill="transparent"><title>Spend '+CUR+''+s+''+UNITS+': next '+CUR+'1 returns '+CUR+''+c.md[i].toFixed(2)+' (80% range '+c.lo[i].toFixed(2)+' to '+c.hi[i].toFixed(2)+')</title></rect>'; });
+  return o+'</svg>';
+}
+function renderTip(res){ var h=''; for(var r=0;r<3;r++) h+='<div>'+svgMargin(res,r)+'</div>'; $('multi').innerHTML=h; }
+function renderHinge(res,upto){
+  var rows=res.hinge, mx=Math.max(rows[0].dist,1), h='';
+  for(var i=0;i<rows.length;i++){
+    var R=rows[i], col=ROUTES[R.P.r].color, vis=(upto===undefined||i<upto);
+    h+='<div class="row'+(i===0?' top':'')+'" style="'+(vis?'':'visibility:hidden')+'"><div class="l">'+R.P.label+'</div><div class="bar"><i style="width:'+(R.dist/mx*100)+'%;background:'+col+'"></i></div><div style="font-variant-numeric:tabular-nums">'+f0(R.dist)+(Math.round(R.dist)===1?' point':' points')+'</div></div>';
+  }
+  $('rank').innerHTML=h;
+}
+
+/* ---------- review ---------- */
+function buildReview(res){
+  var top=res.hinge[0], capsSum=res.stop[0].p50+res.stop[1].p50+res.stop[2].p50;
+  var rev=[
+    {id:'R1', title:'Adopt the recommended split: '+res.best.join('/'),
+     rule:'Suggested accept when it beats the current plan in at least 60% of scenarios and its average is higher.',
+     suggest:(res.beatPlan>=0.6&&res.bestMean>res.planMean)?'Accept':'Hold', basis:'Beats the plan in '+pct(res.beatPlan)+' of scenarios.'},
+    {id:'R2', title:'Treat "'+top.P.label+'" as the assumption to verify before committing',
+     rule:'Suggested accept when the top-ranked assumption moves the best split by 5 points or more.',
+     suggest:top.dist>=5?'Accept':'Hold', basis:'Moves the split by up to '+f0(top.dist)+' points.'},
+    {id:'R3', title:'Cap each route at its typical stopping point',
+     rule:'Suggested accept when the three caps together still allow the full budget to be placed.',
+     suggest:capsSum>=B?'Accept':'Hold', basis:'Caps total '+CUR+''+f0(capsSum)+''+UNITS+' against a '+CUR+''+B+''+UNITS+' budget.'}
+  ];
+  rev.forEach(function(r){ r.choice=r.suggest; r.by='Demo rule, no human'; });
+  return rev;
+}
+function renderReview(paused){
+  var h='';
+  S.rev.forEach(function(r,i){
+    h+='<div class="r"><div><b>'+r.id+'. '+r.title+'</b><div class="why">'+r.basis+' '+r.rule+'</div></div><div>';
+    if(paused){
+      h+='<span class="seg" data-i="'+i+'"><button data-v="Accept" class="'+(r.choice==='Accept'?'on':'')+'">Accept</button><button data-v="Hold" class="'+(r.choice==='Hold'?'on':'')+'">Hold</button></span>';
+    } else {
+      h+='<span class="seg fixed"><button class="'+(r.choice==='Accept'?'on':'')+'">Accept</button><button class="'+(r.choice==='Hold'?'on':'')+'">Hold</button></span><div class="why" style="margin-top:4px">'+r.by+'</div>';
+    }
+    h+='</div></div>';
+  });
+  $('rev').innerHTML=h;
+  if(paused){
+    Array.prototype.forEach.call($('rev').querySelectorAll('.seg button'),function(b){
+      b.addEventListener('click',function(){ var i=+b.parentNode.getAttribute('data-i'); S.rev[i].choice=b.getAttribute('data-v'); S.rev[i].by='Reviewer'; renderReview(true); });
+    });
+  }
+}
+
+/* ---------- the note ---------- */
+function buildDoc(){
+  var res=S.res, B0=res.best, blocks=[], top=res.hinge[0], P0=top.P, second=res.hinge[1], third=res.hinge[2];
+  var ch=function(id){ for(var i=0;i<S.rev.length;i++) if(S.rev[i].id===id) return S.rev[i].choice; };
+  var gain=Math.round(res.bestMean)-Math.round(res.planMean);
+  blocks.push({t:'h3',x:'Channel mix for the next '+CUR+''+B+''+UNITS+': recommendation memo'});
+  blocks.push({t:'meta',x:WHO+(CUSTOM?'. Inputs entered by the user, not verified. ':'. Illustrative inputs. ')+'Produced by Tipping Point from '+N.toLocaleString('en-US')+' scenarios (seed '+SEED+').'});
+  blocks.push({t:'h4',x:'Recommendation'});
+  if(ch('R1')==='Accept'){
+    blocks.push({t:'p',x:'Place '+CUR+''+B0[0]+''+UNITS+' in '+ROUTES[0].name+', '+CUR+''+B0[1]+''+UNITS+' in '+ROUTES[1].name+' and '+CUR+''+B0[2]+''+UNITS+' in '+ROUTES[2].name+'. Across the scenarios this averages '+CUR+''+f0(res.bestMean)+''+UNITS+' of contribution after channel spend, against '+CUR+''+f0(res.planMean)+''+UNITS+' for the current '+PLAN.join('/')+' plan (a difference of '+CUR+''+f0(gain)+''+UNITS+'), and it beats the plan in '+pct(res.beatPlan)+' of scenarios.'});
+    blocks.push({t:'p',x:'In the worst tenth of scenarios the recommended split returns '+CUR+''+f0(res.bestP10)+''+UNITS+', against '+CUR+''+f0(res.planP10)+''+UNITS+' for the plan.'});
+  } else {
+    blocks.push({t:'p',x:'This finding was held at review. The best split found is '+B0.join('/')+', which averages '+CUR+''+f0(res.bestMean)+''+UNITS+' against '+CUR+''+f0(res.planMean)+''+UNITS+' for the current plan, and beats it in '+pct(res.beatPlan)+' of scenarios. That is not enough to recommend a change yet.'});
+  }
+  blocks.push({t:'p',x:'Knowing every assumption in advance would lift the average to '+CUR+''+f0(res.optMean)+''+UNITS+', so on these inputs better evidence is worth at most about '+CUR+''+f0(res.voi)+''+UNITS+'.'});
+  blocks.push({t:'h4',x:'Where each route stops paying'});
+  var rows=[]; for(var r=0;r<3;r++){ var sp=res.stop[r];
+    rows.push([ROUTES[r].name, sp.p50<=100?(''+CUR+''+f0(sp.p50)+''+UNITS+''):'over '+CUR+'100'+UNITS+'', f0(sp.p10)+' to '+(sp.p90>100?'over 100':f0(sp.p90)), ''+CUR+''+B0[r]+''+UNITS+'', ''+CUR+''+PLAN[r]+''+UNITS+'']); }
+  blocks.push({t:'table',head:['Route','Typical stopping point','80% range','Recommended','Current plan'],rows:rows});
+  if(ch('R3')==='Accept'){
+    blocks.push({t:'p',x:'Suggested cap: do not push any route past its typical stopping point ('+ROUTES[0].name+' '+CUR+''+f0(res.stop[0].p50)+''+UNITS+', '+ROUTES[1].name+' '+CUR+''+(res.stop[1].p50>100?'over 100':f0(res.stop[1].p50))+''+UNITS+', '+ROUTES[2].name+' '+CUR+''+f0(res.stop[2].p50)+''+UNITS+') unless new evidence moves the curve.'});
+  } else {
+    blocks.push({t:'p',x:'Spend caps at the stopping points were held at review: together they would not leave room for the full budget.'});
+  }
+  blocks.push({t:'p',x:'In '+pct(res.unspent)+' of scenarios the best allocation leaves more than '+CUR+'5'+UNITS+' unspent because every route has stopped paying.'});
+  blocks.push({t:'h4',x:'The assumption the answer hinges on'});
+  var fl=res.flip, flipTxt='';
+  var lo2=fl.below!==null?showP(P0,fl.below):null, hi2=fl.above!==null?showP(P0,fl.above):null;
+  if(lo2&&hi2) flipTxt='With everything else at typical, the best split stays at '+fl.baseRounded+' only while this stays between '+lo2+' and '+hi2+'; outside that band it moves a 10% step.';
+  else if(lo2) flipTxt='With everything else at typical, the best split moves a 10% step once this falls below '+lo2+'.';
+  else if(hi2) flipTxt='With everything else at typical, the best split moves a 10% step once this rises above '+hi2+'.';
+  else flipTxt='Within its range the rounded split does not change.';
+  if(ch('R2')==='Accept'){
+    blocks.push({t:'p',x:'The answer is most sensitive to "'+P0.label+'". Moving it to either end of its range shifts the best split by up to '+f0(top.dist)+' points of the budget (typical value '+showP(P0,P0.mo)+', range '+showP(P0,P0.lo)+' to '+showP(P0,P0.hi)+'). '+flipTxt});
+    blocks.push({t:'p',x:'What would settle it: '+P0.ev+'. Next in line: "'+second.P.label+'" ('+f0(second.dist)+' points) and "'+third.P.label+'" ('+f0(third.dist)+' points).'});
+  } else {
+    blocks.push({t:'p',x:'Held at review: no single assumption stood out enough (largest effect '+f0(top.dist)+' points) to name as the one to verify first.'});
+  }
+  blocks.push({t:'h4',x:'Decisions at review'});
+  blocks.push({t:'ul',items:S.rev.map(function(r){ return r.id+'. '+r.title+': '+r.choice+' ('+r.by+')'; })});
+  blocks.push({t:'h4',x:'Limits'});
+  blocks.push({t:'ul',items:[
+    (CUSTOM?'All nine inputs were entered by the user. This tool has not checked them against any source. The memo shows the method applied to those inputs, not market facts.':'All nine inputs are illustrative and were set by the builder. None comes from a filing, a platform or a client. The memo shows the method, not market facts.'),
+    'Each route is modelled as an independent power curve. There is no overlap between routes, no brand effect, no stock or cash timing, and no fixed cost.',
+    'Contribution here means margin on '+SW+' less channel spend over one year.',
+    'The recommended split is the best of 66 splits in 10% steps by average contribution. It is not a guarantee for any single year.'
+  ].concat(LIMIT?[LIMIT]:[])});
+  blocks.push({t:'h4',x:'Method'});
+  blocks.push({t:'p',x:N.toLocaleString('en-US')+' scenarios drawn from triangular ranges (low, typical, high) with a fixed seed. For each scenario the budget is placed one '+CUR+'1'+UNITS+' at a time wherever the next rupee returns most, stopping when no route returns '+CUR+'1. The tipping point is the spend at which the next '+CUR+'1 returns exactly '+CUR+'1. Assumptions are ranked by how far the best split moves when one is set to the low or high end of its range while the others stay at typical.'});
+  return blocks;
+}
+function renderDoc(blocks){
+  var h='';
+  blocks.forEach(function(b){
+    if(b.t==='h3') h+='<h3>'+b.x+'</h3>'; else if(b.t==='h4') h+='<h4>'+b.x+'</h4>'; else if(b.t==='meta') h+='<p class="meta">'+b.x+'</p>';
+    else if(b.t==='p') h+='<p>'+b.x+'</p>';
+    else if(b.t==='ul') h+='<ul>'+b.items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul>';
+    else if(b.t==='table'){ h+='<table><thead><tr>'+b.head.map(function(c,i){return '<th'+(i?' class="n"':'')+'>'+c+'</th>';}).join('')+'</tr></thead><tbody>'+b.rows.map(function(r){return '<tr>'+r.map(function(c,i){return '<td'+(i?' class="n"':'')+'>'+c+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table>'; }
+  });
+  $('doc').innerHTML=h;
+}
+function docToMd(blocks){
+  var m='';
+  blocks.forEach(function(b){
+    if(b.t==='h3') m+='# '+b.x+'\n\n'; else if(b.t==='h4') m+='## '+b.x+'\n\n'; else if(b.t==='meta') m+='_'+b.x+'_\n\n';
+    else if(b.t==='p') m+=b.x+'\n\n';
+    else if(b.t==='ul') m+=b.items.map(function(i){return '- '+i;}).join('\n')+'\n\n';
+    else if(b.t==='table'){ m+='| '+b.head.join(' | ')+' |\n|'+b.head.map(function(){return '---';}).join('|')+'|\n'+b.rows.map(function(r){return '| '+r.join(' | ')+' |';}).join('\n')+'\n\n'; }
+  });
+  return m.replace(/<[^>]+>/g,'');
+}
+
+/* ---------- the run ---------- */
+async function run(){
+  if(running) return;
+  resetUi();
+  running=true; var tok=++runTok; speed=+$('speed').value||1; tStart=Date.now();
+  $('run').disabled=true; $('pause').disabled=true; $('speed').disabled=true; setupLock(true);
+  S=freshState();
+  try{
+    setStage(0); $('sec-intro').classList.remove('show'); renderFrame(); show('sec-frame');
+    log('Decision framed: '+CUR+''+B+''+UNITS+' across three routes, current plan '+PLAN.join('/')); await wait(1700);
+
+    check(tok); setStage(1); renderAssumptions(); show('sec-assume');
+    log('Listing nine assumptions as ranges. '+(CUSTOM?'All were entered by the user.':'All are labelled illustrative.'));
+    for(var j=0;j<PARAMS.length;j++){ $('as'+j).className=''; await wait(260); }
+    log(CUSTOM?'No public benchmark is used. Each row carries the evidence note you entered.':'No public benchmark is used. Each row names the evidence that would replace it.'); await wait(900);
+
+    check(tok); setStage(2); show('sec-sim'); initCanvas(); $('count').textContent='0 of '+N.toLocaleString('en-US')+' scenarios';
+    while(S.done<N){
+      var from=S.done; stepScenarios(S,CHUNK); plotPoints(from,S.done);
+      $('count').textContent=S.done.toLocaleString('en-US')+' of '+N.toLocaleString('en-US')+' scenarios';
+      if(S.done%1500===0) log('Drew '+S.done.toLocaleString('en-US')+' scenarios');
+      await wait(420); check(tok);
+    }
+    S.res=analyse(S); renderWins(S.res);
+    log('Scenarios done, best single split by average contribution: '+S.res.best.join('/')); await wait(1300);
+
+    check(tok); setStage(3); show('sec-tip'); renderTip(S.res);
+    log('Stopping points (typical): '+ROUTES[0].name+' '+f0(S.res.stop[0].p50)+', '+ROUTES[1].name+' '+(S.res.stop[1].p50>100?'over 100':f0(S.res.stop[1].p50))+', '+ROUTES[2].name+' '+f0(S.res.stop[2].p50)+' ('+CUR+''+UNITS+')'); await wait(3000);
+
+    check(tok); setStage(4); show('sec-hinge');
+    for(var q=0;q<=S.res.hinge.length;q++){ renderHinge(S.res,q); await wait(280); check(tok); }
+    var T=S.res.hinge[0];
+    $('hinge-note').textContent='Largest effect: '+T.P.label+', up to '+f0(T.dist)+' points of the budget.';
+    log('Hinge assumption: '+T.P.label); await wait(1500);
+
+    check(tok); setStage(5); show('sec-rev'); S.rev=buildReview(S.res);
+    var paused=$('pause').checked;
+    if(paused){
+      $('rev-lede').textContent='The agent suggests a choice for each finding by a stated rule. Change any of them, then continue.';
+      renderReview(true); $('cont').style.display='';
+      log('Paused for review.');
+      await new Promise(function(res,rej){ reviewResolve=function(ok){ ok?res():rej('abort'); }; });
+      $('cont').style.display='none'; check(tok);
+      S.rev.forEach(function(r){ if(r.by==='Demo rule, no human') r.by='Reviewer, kept suggestion'; });
+      renderReview(false);
+      log('Review submitted.');
+    } else {
+      $('rev-lede').textContent='Pause at review was off, so the agent applied its own suggestions by the stated rules. This is a demo rule, not human approval.';
+      renderReview(false); log('Review skipped: demo rule applied.'); await wait(1800);
+    }
+
+    check(tok); setStage(6); show('sec-doc');
+    S.doc=buildDoc(); renderDoc(S.doc); $('dl').disabled=false; $('pr').disabled=false;
+    log('Memo written.'); await wait(500);
+    allDone();
+  } catch(e){ if(e!=='abort') throw e; }
+  finally{ if(tok===runTok){ running=false; setupLock(false); $('run').disabled=false; $('pause').disabled=false; $('speed').disabled=false; } }
+}
+function resetUi(){
+  runTok++; running=false; if(reviewResolve){ var f=reviewResolve; reviewResolve=null; f(false); }
+  hideAll(); buildStages(); $('feed').innerHTML=''; $('doc').innerHTML=''; $('dl').disabled=true; $('pr').disabled=true;
+  $('cont').style.display='none'; setupLock(false); $('run').disabled=false; $('pause').disabled=false; $('speed').disabled=false;
+  $('multi').innerHTML=''; $('rank').innerHTML=''; $('win').innerHTML=''; $('hinge-note').textContent=''; $('win-note').textContent=''; $('count').textContent='';
+}
+
+
+/* ---------- your own case (optional) ---------- */
+var CFG = DEFAULT_CFG, DEF_TXT = null;
+var ROWNAME = ['annual sales when spend is half the budget','contribution margin on sales, before channel spend (%)','diminishing-returns exponent (0.05 to 0.95)'];
+function strip(s){ return String(s==null?'':s).replace(/[<>&"`\u0000-\u001f]/g,' ').replace(/\s+/g,' ').trim(); }
+function num(v){ if(typeof v==='number') return v; v=String(v==null?'':v).replace(/,/g,'').trim(); return v===''?NaN:Number(v); }
+function pctShow(j,x){ return (j%3===1)?Math.round(x*10000)/100:x; }
+function setupLock(lock){ var s=$('setup'); if(!s) return; Array.prototype.forEach.call(s.querySelectorAll('input,button'),function(el){ el.disabled=lock; }); }
+function showMsg(list,isErr){ var el=$('e-msg'); if(!el) return; el.style.color=isErr?'#8a2b1a':''; el.innerHTML=list.join('<br>'); }
+function labels(){ for(var j=0;j<9;j++){ var r=Math.floor(j/3); var nm=strip($('e-name'+r).value)||('Route '+(r+1)); $('e-lab'+j).textContent=nm+': '+ROWNAME[j%3]; } }
+function buildEditor(cfg){
+  var h='<p class="note" style="margin-top:0">Enter your own case. All amounts are in one unit, and the budget is fixed at 100 of that unit (for example 100 lakh). Margins are percentages. The current plan must be in steps of 10 and add up to 100. The numbers are computed in your browser and nothing is sent anywhere. The tool does not check your inputs.</p>';
+  h+='<p style="margin:8px 0"><label>Start from <select id="e-preset">'+PRESETS.map(function(P){ return '<option value="'+P.id+'"'+(cfg.id===P.id?' selected':'')+'>'+P.label+'</option>'; }).join('')+'<option value=""'+(cfg.id?'':' selected')+'>Your own case</option></select></label></p><div class="setup-grid"><label>Who is deciding<input id="e-who" type="text" maxlength="80" value="'+cfg.who+'"></label><label>Currency<input id="e-cur" type="text" maxlength="3" value="'+cfg.cur+'"></label><label>Unit word<input id="e-unit" type="text" maxlength="12" value="'+cfg.unit+'"></label></div>';
+  h+='<table class="setup-t"><thead><tr><th>Route</th><th class="n">Current plan, % of budget</th></tr></thead><tbody>';
+  for(var r=0;r<3;r++) h+='<tr><td><input id="e-name'+r+'" type="text" maxlength="30" value="'+cfg.routes[r]+'"></td><td class="n"><input id="e-plan'+r+'" type="text" inputmode="numeric" value="'+cfg.plan[r]+'"></td></tr>';
+  h+='</tbody></table>';
+  h+='<table class="setup-t"><thead><tr><th>Assumption</th><th class="n">Low</th><th class="n">Typical</th><th class="n">High</th><th>Evidence note</th></tr></thead><tbody>';
+  for(var j=0;j<9;j++){
+    h+='<tr><td id="e-lab'+j+'"></td>'+['lo','mo','hi'].map(function(f,i){ return '<td class="n"><input id="e-'+f+j+'" type="text" inputmode="decimal" value="'+pctShow(j,cfg.rng[j][i])+'"></td>'; }).join('')+'<td><input id="e-ev'+j+'" type="text" maxlength="140" value="'+cfg.ev[j]+'"></td></tr>';
+  }
+  h+='</tbody></table>';
+  h+='<div class="setup-actions"><button class="btn small" id="e-apply">Apply</button><button class="btn ghost small" id="e-reset">Reset to the example</button><button class="btn ghost small" id="e-dl">Download template (.csv)</button><label class="btn ghost small filebtn">Import (.csv)<input type="file" id="e-file" accept=".csv,text/csv" hidden></label></div><div id="e-msg" class="note" role="status"></div>';
+  $('setup-body').innerHTML=h;
+  labels(); [0,1,2].forEach(function(r){ $('e-name'+r).addEventListener('input',labels); });
+  $('e-preset').addEventListener('change',function(){ var id=this.value; if(!id) return; var P=PRESETS.filter(function(x){ return x.id===id; })[0]; buildEditor(P); applyAndRefresh(P); showMsg(['Loaded the example: '+P.label+'.'],false); });
+  $('e-apply').addEventListener('click',function(){ var cfg2=readEditor(), errs=validate(cfg2); if(errs.length){ showMsg(errs,true); return; } var sc=scrubExample(cfg2); if(sc){ for(var j=0;j<9;j++) $('e-ev'+j).value=cfg2.ev[j]; } applyAndRefresh(cfg2); showMsg(['The case is applied; press "Run the analysis" above.'].concat(sc?[sc+' evidence note(s) were still the example text for a different route, so they were replaced with a placeholder for you to rewrite.']:[]),false); });
+  $('e-reset').addEventListener('click',function(){ buildEditor(DEFAULT_CFG); applyAndRefresh(DEFAULT_CFG); showMsg(['Back to the example case.'],false); });
+  $('e-dl').addEventListener('click',function(){ var c=readEditor(); saveText('tipping-point-template.csv',toCSV(c),'text/csv'); });
+  $('e-file').addEventListener('change',function(ev){ var f=ev.target.files&&ev.target.files[0]; if(!f) return; var fr=new FileReader();
+    fr.onload=function(){ var res=cfgFromCSV(String(fr.result||'')); var errs=res.errors.concat(res.errors.length?[]:validate(res.cfg));
+      if(errs.length){ showMsg(errs,true); return; } var sc=scrubExample(res.cfg); buildEditor(res.cfg); applyAndRefresh(res.cfg); showMsg(['Imported and applied; press "Run the analysis" above.'].concat(sc?[sc+' evidence note(s) were still the example text for a different route, so they were replaced with a placeholder for you to rewrite.']:[]),false); };
+    fr.readAsText(f); });
+}
+function readEditor(){
+  var cfg={who:strip($('e-who').value),cur:strip($('e-cur').value),unit:strip($('e-unit').value),routes:[],plan:[],rng:[],ev:[],custom:true};
+  for(var r=0;r<3;r++){ cfg.routes.push(strip($('e-name'+r).value)); cfg.plan.push(num($('e-plan'+r).value)); }
+  for(var j=0;j<9;j++){ var d=(j%3===1)?100:1;
+    cfg.rng.push([num($('e-lo'+j).value)/d,num($('e-mo'+j).value)/d,num($('e-hi'+j).value)/d]);
+    cfg.ev.push(strip($('e-ev'+j).value)||'Your own data for this assumption'); }
+  return cfg;
+}
+function validate(cfg){
+  var e=[], i;
+  if(!cfg.who) e.push('Say who is deciding, in one short phrase.');
+  if(!cfg.cur) e.push('Currency is empty.');
+  var seen={}; for(i=0;i<3;i++){ var n=(cfg.routes[i]||'').toLowerCase(); if(!n) e.push('Route '+(i+1)+' needs a name.'); else if(seen[n]) e.push('Route names must be different.'); seen[n]=1; }
+  var sum=0, planOk=true; for(i=0;i<3;i++){ var p=cfg.plan[i]; if(!isFinite(p)||p<0||p%10!==0){ planOk=false; } sum+=p; }
+  if(!planOk) e.push('The current plan must be whole numbers in steps of 10 (for example 70, 20, 10).'); else if(sum!==100) e.push('The current plan adds up to '+sum+'. It must add up to 100.');
+  for(i=0;i<9;i++){ var v=cfg.rng[i], r=Math.floor(i/3), k=i%3, tag=(cfg.routes[r]||('Route '+(r+1)))+', '+['sales','margin','exponent'][k]+': ';
+    if(!isFinite(v[0])||!isFinite(v[1])||!isFinite(v[2])){ e.push(tag+'low, typical and high must all be numbers.'); continue; }
+    if(!(v[0]<=v[1]&&v[1]<=v[2]&&v[0]<v[2])) e.push(tag+'needs low <= typical <= high, and low below high.');
+    if(k===0&&v[0]<=0) e.push(tag+'sales must be above 0.');
+    if(k===1&&(v[0]<=0||v[2]>=1)) e.push(tag+'margin must be between 0 and 100 percent.');
+    if(k===2&&(v[0]<0.05||v[2]>0.95)) e.push(tag+'exponent must be between 0.05 and 0.95.');
+  }
+  return e;
+}
+function csvq(v){ v=String(v==null?'':v); return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function toCSV(cfg){
+  var L=[['type','name','low','typical','high','note']];
+  L.push(['case','','','','',cfg.who]); L.push(['currency','','','','',cfg.cur]); L.push(['unit','','','','',cfg.unit]);
+  for(var r=0;r<3;r++) L.push(['route',cfg.routes[r],'','','',cfg.plan[r]]);
+  for(var j=0;j<9;j++) L.push(['assumption',cfg.routes[Math.floor(j/3)]+': '+ROWNAME[j%3],cfg.rng[j][0]*((j%3===1)?100:1),cfg.rng[j][1]*((j%3===1)?100:1),cfg.rng[j][2]*((j%3===1)?100:1),cfg.ev[j]]);
+  L=L.map(function(row){ return row.map(function(c,i){ return (typeof c==='number')?csvq(Math.round(c*10000)/10000):csvq(c); }).join(','); });
+  return '﻿'+L.join('\r\n')+'\r\n';
+}
+function parseCSV(t){
+  var rows=[], row=[], f='', q=false, i, c;
+  for(i=0;i<t.length;i++){ c=t.charAt(i);
+    if(q){ if(c==='"'){ if(t.charAt(i+1)==='"'){ f+='"'; i++; } else q=false; } else f+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ row.push(f); f=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&t.charAt(i+1)==='\n') i++; row.push(f); f=''; rows.push(row); row=[]; }
+    else f+=c; }
+  if(f!==''||row.length){ row.push(f); rows.push(row); }
+  return rows.filter(function(r){ return r.some(function(x){ return String(x).trim()!==''; }); });
+}
+function cfgFromCSV(text){
+  var rows=parseCSV(text.replace(/^﻿/,'')), errs=[], cfg={who:'',cur:'',unit:'',routes:[],plan:[],rng:[],ev:[],custom:true};
+  rows.forEach(function(r,i){
+    var t=String(r[0]||'').trim().toLowerCase(); if(!t||(i===0&&t==='type')) return;
+    if(t==='case') cfg.who=strip(r[5]); else if(t==='currency') cfg.cur=strip(r[5]); else if(t==='unit') cfg.unit=strip(r[5]);
+    else if(t==='route'){ cfg.routes.push(strip(r[1])); cfg.plan.push(num(r[5])); }
+    else if(t==='assumption'){ var j=cfg.rng.length, d=(j%3===1)?100:1; cfg.rng.push([num(r[2])/d,num(r[3])/d,num(r[4])/d]); cfg.ev.push(strip(r[5])||'Your own data for this assumption'); }
+    else errs.push('Row '+(i+1)+': unknown type "'+strip(t)+'".');
+  });
+  if(cfg.routes.length!==3) errs.push('Expected 3 route rows, found '+cfg.routes.length+'.');
+  if(cfg.rng.length!==9) errs.push('Expected 9 assumption rows, found '+cfg.rng.length+'.');
+  return {cfg:cfg,errors:errs};
+}
+function saveText(name,text,type){ try{ var url=URL.createObjectURL(new Blob([text],{type:type})); var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000); }catch(e){} }
+function lc1(t){ return t.charAt(0).toLowerCase()+t.slice(1); }
+function updateStatic(){
+  $('sub').textContent='Finds where the next '+CUR+'1 of spend does the most good and the point at which each route stops paying back. A decision-modelling workflow that runs thousands of scenarios and ends with a one-page memo.';
+  $('flag').innerHTML=CUSTOM?'<b>Your case.</b> All nine inputs are assumptions entered by the user. This tool has not checked them against any source. The numbers are computed in your browser and nothing is sent anywhere.':'<b>Method demo on '+lc1(WHO)+'.</b> All nine inputs are illustrative assumptions, labelled as such. The numbers are computed in your browser, not drawn from market data.';
+  $('sim-lede').textContent='Every dot is one scenario: nine assumptions drawn at random from their ranges, then the best use of the budget worked out for that scenario. Horizontal: spend going to '+ROUTES[1].name+'. Vertical: spend going to '+ROUTES[0].name+'. What remains goes to '+ROUTES[2].name+'.';
+  $('tip-lede').textContent='The line shows what the next '+CUR+'1 of spend brings back in contribution, in the typical scenario; the band covers the middle 80% of scenarios. Once the line drops below '+CUR+'1, more spend loses money. The tick marks where that happens.';
+  $('assume-lede').textContent=CUSTOM?'Each assumption is a range (low, typical, high), not a single number. You entered these ranges. The last column is your note on where each would come from.':'Each assumption is a range (low, typical, high), not a single number. None of these comes from a filing or a data source; the last column says what evidence would replace it.';
+  $('foot').textContent=CUSTOM?'Every number on this page is computed in your browser from the nine assumptions entered above. It is not market data and not a forecast. The tool does not check the inputs, so the result is only as good as they are.':'Every number on this page is computed in your browser from nine illustrative assumptions for a hypothetical company. It is not market data and not a forecast. The method (scenario draws, allocation, tipping points, ranking of assumptions) is what carries over to a real client, with their own data in place of the assumptions.';
+}
+function scrubExample(cfg){
+  var n=0; for(var j=0;j<9;j++){ var r=Math.floor(j/3), hit=false;
+    PRESETS.forEach(function(P){ if(cfg.ev[j]===P.ev[j] && String(cfg.routes[r]).toLowerCase()!==P.routes[r].toLowerCase()) hit=true; });
+    if(hit){ cfg.ev[j]='Your own data for this assumption'; n++; } }
+  return n;
+}
+function applyAndRefresh(cfg){ CFG=cfg; applyCfg(cfg); updateStatic(); resetUi(); S=null; }
+buildEditor(DEFAULT_CFG); updateStatic();
+
+$('run').addEventListener('click',run);
+$('reset').addEventListener('click',function(){ resetUi(); S=null; });
+$('cont').addEventListener('click',function(){ if(reviewResolve){ var f=reviewResolve; reviewResolve=null; f(true); } });
+$('pr').addEventListener('click',function(){ window.print(); });
+$('dl').addEventListener('click',function(){
+  if(!S||!S.doc) return;
+  var md=docToMd(S.doc);
+  try{
+    var url=URL.createObjectURL(new Blob([md],{type:'text/markdown'})); var a=document.createElement('a'); a.href=url; a.download='tipping-point-memo.md'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  }catch(e){}
+});
+buildStages();
+
+window.__tp = {
+  run:run, state:function(){return S;}, md:function(){return S&&S.doc?docToMd(S.doc):'';},
+  stepScenarios:stepScenarios, applyCfg:applyCfg, applyAndRefresh:applyAndRefresh, cfgFromCSV:cfgFromCSV, toCSV:toCSV, validate:validate, getCfg:function(){return CFG;}, DEFAULT_CFG:DEFAULT_CFG, PRESETS:PRESETS, freshState:freshState, analyse:analyse, PARAMS:PARAMS, ROUTES:ROUTES, SPLITS:SPLITS, optimal:optimal, totalNet:totalNet,
+  isRunning:function(){return running;}
+};
+})();
+</script>
+</body>
+</html>

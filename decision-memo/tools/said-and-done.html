@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Said and Done | Decision Memo</title>
+<style>
+:root{
+  --bg:#f6f3ec; --paper:#fffdf8; --ink:#1c1b19; --mut:#66625a; --rule:#d9d3c4; --soft:#efeadd; --accent:#1f3a5f; --warn:#8a3a22;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 60px}
+header{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:20px}
+.back{margin:0 0 14px;font-size:13px;color:var(--mut)}.back a{color:var(--mut)}
+h1{font-family:var(--serif);font-weight:600;font-size:34px;margin:0 0 2px;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:0;max-width:760px}
+.flag{margin-top:10px;color:var(--mut);font-size:13px;max-width:900px}.flag b{color:var(--ink);font-weight:600}
+.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:18px 0 6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:9px 20px;border-radius:3px;font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.small{padding:5px 12px;font-size:13px}
+label.opt{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:14px}
+select,input[type=text],input[type=date],textarea{font:inherit;font-size:13.5px;padding:4px 6px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:3px}
+.grid{display:grid;grid-template-columns:250px 1fr;gap:34px;margin-top:22px}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr);gap:20px}}
+.grid>*{min-width:0}
+.stages{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule)}
+.stages li{padding:6px 0 6px 16px;position:relative;color:var(--mut)}
+.stages li:before{content:"";position:absolute;left:-5px;top:13px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:1px solid var(--mut)}
+.stages li.active{color:var(--ink);font-weight:600}.stages li.active:before{background:var(--ink);border-color:var(--ink)}
+.stages li.done{color:var(--ink)}.stages li.done:before{background:var(--mut);border-color:var(--mut)}
+.stages small{display:block;font-weight:400;color:var(--mut);font-size:12.5px}
+.feedtitle{font-size:13px;color:var(--mut);margin:22px 0 6px}
+.feed{font-size:12.5px;color:var(--mut);max-height:230px;overflow:auto;border-top:1px solid var(--rule)}
+.feed div{padding:4px 0;border-bottom:1px solid var(--soft)}.feed span{color:var(--ink);font-variant-numeric:tabular-nums;margin-right:8px}
+section.blk{display:none;margin-bottom:34px}section.blk.show{display:block}
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:0 0 4px}
+.lede{margin:0 0 12px;color:var(--mut);max-width:780px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-weight:600;color:var(--mut);font-size:13px;border-bottom:1px solid var(--ink);padding:6px 10px 6px 0}
+td{padding:6px 10px 6px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hide{display:none}
+.tag{color:var(--mut);font-size:12.5px}
+.st{font-weight:600}.st.Missed,.st.Overdue{color:var(--warn)}.st.Pending{color:var(--mut);font-weight:400}.st.Partly{font-style:italic}
+.wrapx{overflow-x:auto}
+.strip{display:grid;grid-template-columns:minmax(180px,34%) 1fr 92px;gap:12px;align-items:center;border-bottom:1px solid var(--rule);padding:6px 0;font-size:13.5px}
+.strip svg{width:100%;height:34px;display:block}
+@media(max-width:700px){.strip{grid-template-columns:1fr}}
+.note{color:var(--mut);font-size:13px;margin-top:8px}
+.rev{border-top:1px solid var(--ink)}
+.rev .r{display:grid;grid-template-columns:1fr 170px;gap:16px;padding:10px 0;border-bottom:1px solid var(--rule)}
+@media(max-width:700px){.rev .r{grid-template-columns:1fr}}
+.rev .why{color:var(--mut);font-size:13px}
+.calc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:8px 0}
+.calc label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--mut)}
+@media(max-width:700px){.calc{grid-template-columns:1fr 1fr}}
+#doc{background:var(--paper);border:1px solid var(--rule);padding:34px 40px;max-width:900px}
+@media(max-width:600px){#doc{padding:20px 16px}}
+#doc h3{font-family:var(--serif);font-size:25px;font-weight:600;margin:0 0 4px;line-height:1.2}
+#doc h4{font-family:var(--serif);font-size:17px;font-weight:600;margin:20px 0 4px}
+#doc p{margin:6px 0}#doc .meta{color:var(--mut);font-size:13px}#doc ul{margin:6px 0 6px 18px;padding:0}#doc table{margin:8px 0}
+.docbar{display:flex;gap:10px;margin:0 0 12px;flex-wrap:wrap}
+details.setup{margin-top:10px;font-size:14px}details.setup summary{cursor:pointer;color:var(--mut)}details.setup[open] summary{color:var(--ink)}
+#setup-body{margin-top:10px;border-top:1px solid var(--rule);padding-top:10px}
+.etable{min-width:1020px}.etable td{padding:3px 6px 3px 0;border:0}.etable input,.etable select{width:100%}
+.etable td:nth-child(3) input{min-width:220px}.etable td:nth-child(10) input{min-width:130px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.filebtn{cursor:pointer;display:inline-block}
+footer{margin-top:30px;border-top:1px solid var(--rule);padding-top:12px;color:var(--mut);font-size:12.5px;max-width:880px}
+@media print{body{background:#fff}.wrap>header,.controls,.grid>aside,.docbar,footer,details.setup,section.blk:not(#sec-doc){display:none!important}.grid{display:block}#doc{border:0;padding:0;max-width:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="back"><a href="../workflows.html">Decision Memo</a> / Workflows</p>
+  <h1>Said and Done</h1>
+  <p class="sub">What was promised, when, and what happened. A dated ledger of commitments, scored by fixed rules, ending in a one-page memo.</p>
+  <p class="flag" id="flag"><b>Live in your browser.</b> The example is a hypothetical consumer-goods company with invented figures. Replace it with your own ledger under the button. Nothing you enter leaves your browser. It is a record-keeping aid and not investment advice.</p>
+  <div class="controls">
+    <button class="btn" id="run">Run the ledger</button>
+    <label class="opt"><input type="checkbox" id="pause"> Pause at review</label>
+    <label class="opt">Speed <select id="speed"><option value="1">Normal</option><option value="2">2x</option><option value="4">4x</option></select></label>
+    <button class="btn ghost small" id="reset">Reset</button>
+  </div>
+  <details class="setup" id="setup"><summary>Use your own ledger (optional)</summary><div id="setup-body"></div></details>
+</header>
+
+<div class="grid">
+  <aside>
+    <ol class="stages" id="stages"></ol>
+    <div class="feedtitle">Activity</div>
+    <div class="feed" id="feed"></div>
+  </aside>
+  <main>
+    <section class="blk show" id="sec-intro">
+      <h2>What happens when you press run</h2>
+      <p class="lede">The workflow reads the ledger, applies fixed scoring rules to each commitment, optionally waits for a reviewer to overrule any score, builds a profile by topic with the count shown beside every rate, works out what the current full-year guidance implies for the rest of the year, and writes the memo. The rules are shown below before any score appears.</p>
+    </section>
+    <section class="blk" id="sec-read">
+      <h2>The ledger</h2>
+      <p class="lede" id="read-lede"></p>
+      <div class="wrapx"><table id="read-table"><thead><tr><th>Said</th><th>Topic</th><th>Commitment</th><th>Terms</th><th>Due</th><th>Outcome</th></tr></thead><tbody></tbody></table></div>
+    </section>
+    <section class="blk" id="sec-rules">
+      <h2>Scoring rules</h2>
+      <p class="lede">These are fixed before any commitment is scored.</p>
+      <ul id="rules-list" style="margin:0 0 14px 18px;padding:0;max-width:780px"></ul>
+      <div class="wrapx"><table id="score-table"><thead><tr><th>Commitment</th><th>Status</th><th>Why</th></tr></thead><tbody></tbody></table></div>
+    </section>
+    <section class="blk" id="sec-rev">
+      <h2>Review</h2>
+      <p class="lede" id="rev-lede"></p>
+      <div class="rev" id="rev"></div>
+      <div style="margin-top:12px"><button class="btn" id="cont" style="display:none">Continue</button></div>
+    </section>
+    <section class="blk" id="sec-prof">
+      <h2>Record by topic</h2>
+      <p class="lede">A rate is shown only when at least four commitments in that topic have an outcome. Below that, only the counts are shown.</p>
+      <div class="wrapx"><table id="prof-table"><thead><tr><th>Topic</th><th class="n">Commitments</th><th class="n">With outcome</th><th class="n">Met</th><th class="n">Partly</th><th class="n">Missed</th><th class="n">Open</th><th>Met rate</th></tr></thead><tbody></tbody></table></div>
+      <p class="note" id="prof-note"></p>
+    </section>
+    <section class="blk" id="sec-strip">
+      <h2>Stated range against outcome</h2>
+      <p class="lede">Each row is one numeric commitment. The bar is the stated range, the mark is what was reported: a filled circle for met, a diamond for partly, a cross for missed. No mark means no outcome yet.</p>
+      <div id="strips"></div>
+    </section>
+    <section class="blk" id="sec-imp">
+      <h2>What the full-year range implies</h2>
+      <p class="lede">Arithmetic on the numbers below, not a forecast. It assumes every period counts equally.</p>
+      <div class="calc">
+        <label>Measure<input type="text" id="i-label" maxlength="40"></label>
+        <label>Range low<input type="text" id="i-low" inputmode="decimal"></label>
+        <label>Range high<input type="text" id="i-high" inputmode="decimal"></label>
+        <label>Periods in the year<input type="text" id="i-per" inputmode="numeric"></label>
+        <label>Reported so far (comma separated)<input type="text" id="i-act"></label>
+      </div>
+      <p id="imp-out" style="max-width:780px;margin:8px 0"></p>
+    </section>
+    <section class="blk" id="sec-doc">
+      <h2>The memo</h2>
+      <div class="docbar">
+        <button class="btn small" id="dl" disabled>Download memo (.md)</button>
+        <button class="btn ghost small" id="dlcsv" disabled>Download ledger (.csv)</button>
+        <button class="btn ghost small" id="pr" disabled>Print or save as PDF</button>
+      </div>
+      <div id="doc"></div>
+    </section>
+  </main>
+</div>
+<footer id="foot">Every score on this page comes from the rules shown, applied in your browser to the entries in the ledger. The example is invented. The tool does not check any entry against a source, so a record is only as good as what is entered into it. It is not investment advice.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var TOL_BAND=0.25, TOL_ONE=0.03, LATE_DAYS=90, MIN_RATE=4;
+var STAGES=[['Read the ledger','Dated commitments, with terms'],['Apply the rules','Met, partly, missed, open'],['Review','Overrule any score, with a reason'],['Profile by topic','Counts first, rates only if enough'],['Stated range against outcome','Where each number landed'],['Implied range','What is left to deliver'],['Write the memo','One page, downloadable']];
+
+var EXAMPLE={
+  who:'A hypothetical consumer-goods company (invented figures)', asOf:'2026-10-31', custom:false,
+  implied:{label:'Operating margin, FY26',low:'16.5',high:'18',per:'4',act:'17.2, 16.6'},
+  rows:[
+   ['2025-02-06','Volume growth','FY25 underlying volume growth of 4 to 6 percent','band','4','6','%','2026-02-05','5.3','Example, invented'],
+   ['2025-05-08','Volume growth','Q2 volume growth of at least 5 percent','band','5','','%','2025-08-07','4.6','Example, invented'],
+   ['2025-08-07','Volume growth','Q3 volume growth of 4 to 5 percent','band','4','5','%','2025-11-06','4.1','Example, invented'],
+   ['2025-11-06','Volume growth','FY25 volume growth narrowed to 5 to 5.5 percent','band','5','5.5','%','2026-02-05','5.3','Example, invented'],
+   ['2026-02-05','Volume growth','FY26 underlying volume growth of 4 to 6 percent','band','4','6','%','2027-02-04','','Example, invented'],
+   ['2025-02-06','Operating margin','FY25 operating margin of 17 to 19 percent','band','17','19','%','2026-02-05','17.9','Example, invented'],
+   ['2025-08-07','Operating margin','Q3 operating margin of at least 18 percent','band','18','','%','2025-11-06','17.7','Example, invented'],
+   ['2026-02-05','Operating margin','FY26 operating margin of 16.5 to 18 percent','band','16.5','18','%','2027-02-04','','Example, invented'],
+   ['2026-05-07','Operating margin','Q2 operating margin of 17 to 18 percent','band','17','18','%','2026-08-06','16.6','Example, invented'],
+   ['2025-05-08','Cost programme','Savings of at least 120 million in FY25','band','120','','m','2026-02-05','131','Example, invented'],
+   ['2026-02-05','Cost programme','Savings of at least 150 million in FY26','band','150','','m','2027-02-04','','Example, invented'],
+   ['2025-05-08','Launches','Relaunch of the flagship range in India by 31 December 2025','milestone','','','','2025-12-31','2025-12-18','Example, invented'],
+   ['2025-08-07','Launches','Launch in Indonesia by 31 March 2026','milestone','','','','2026-03-31','2026-05-20','Example, invented'],
+   ['2025-11-06','Launches','Launch of the premium line by 30 June 2026','milestone','','','','2026-06-30','2026-10-14','Example, invented'],
+   ['2026-05-07','Launches','Launch of a ready-to-drink variant by 30 September 2026','milestone','','','','2026-09-30','','Example, invented']
+  ]
+};
+var BLANK={label:'',low:'',high:'',per:'4',act:''};
+var L=clone(EXAMPLE), S=null, runTok=0, speed=1, running=false, reviewResolve=null, tStart=0;
+
+function $(id){return document.getElementById(id);}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function strip(s){return String(s==null?'':s).replace(/[<>&"`\u0000-\u001f]/g,' ').replace(/\s+/g,' ').trim();}
+function num(v){ if(typeof v==='number') return v; v=String(v==null?'':v).replace(/,/g,'').trim(); return v===''?NaN:Number(v); }
+function r2(n){return Math.round(n*100)/100;}
+function fm(n){return String(r2(n));}
+function isoOK(s){ if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false; var d=new Date(s+'T00:00:00Z'); return !isNaN(d) && d.toISOString().slice(0,10)===s; }
+function dnum(s){ return Math.round(new Date(s+'T00:00:00Z').getTime()/86400000); }
+
+/* ---------- validation and scoring ---------- */
+function validate(list,asOf){
+  var errs=[], clean=[];
+  if(!isoOK(asOf)) errs.push('"As of" must be a date in the form YYYY-MM-DD.');
+  if(list.length<1) errs.push('Add at least one row.');
+  if(list.length>200) errs.push('At most 200 rows.');
+  list.forEach(function(r,i){
+    var t='Row '+(i+1)+': ', e0=errs.length;
+    var said=strip(r[0]), topic=strip(r[1]), text=strip(r[2]), type=strip(r[3]).toLowerCase(), unit=strip(r[6]), due=strip(r[7]), out=strip(r[8]), src=strip(r[9]);
+    if(!isoOK(said)) errs.push(t+'"said" must be a date, YYYY-MM-DD.');
+    if(!topic) errs.push(t+'topic is empty.');
+    if(!text) errs.push(t+'commitment is empty.');
+    if(type!=='band'&&type!=='milestone') errs.push(t+'type must be band or milestone.');
+    if(!isoOK(due)) errs.push(t+'"due" must be a date, YYYY-MM-DD.');
+    if(isoOK(said)&&isoOK(due)&&dnum(due)<dnum(said)) errs.push(t+'due date is before the date it was said.');
+    var low=null, high=null, outv=null;
+    if(type==='band'){
+      var lo=strip(r[4]), hi=strip(r[5]);
+      if(lo==='' && hi==='') errs.push(t+'a band needs a low, a high, or both.');
+      if(lo!==''){ low=num(lo); if(!isFinite(low)) errs.push(t+'low is not a number.'); }
+      if(hi!==''){ high=num(hi); if(!isFinite(high)) errs.push(t+'high is not a number.'); }
+      if(low!==null&&high!==null&&isFinite(low)&&isFinite(high)&&low>high) errs.push(t+'low is above high.');
+      if(out!==''){ outv=num(out); if(!isFinite(outv)) errs.push(t+'outcome must be a number.'); }
+    } else if(type==='milestone'){
+      if(out!==''){ if(!isoOK(out)) errs.push(t+'outcome must be the date it was delivered, YYYY-MM-DD.'); else outv=out; }
+    }
+    if(errs.length===e0) clean.push({said:said,topic:topic,text:text,type:type,low:low,high:high,unit:unit,due:due,outcome:outv,source:src});
+  });
+  return {errs:errs,clean:clean};
+}
+function rangeText(c){
+  var u=c.unit?(c.unit==='%'?'%':' '+c.unit):'';
+  if(c.low!==null&&c.high!==null) return c.low===c.high? fm(c.low)+u : fm(c.low)+' to '+fm(c.high)+u;
+  if(c.low!==null) return 'at least '+fm(c.low)+u; return 'at most '+fm(c.high)+u;
+}
+function score(c,asOf){
+  var u=c.unit?(c.unit==='%'?'%':' '+c.unit):'';
+  if(c.type==='band'){
+    if(c.outcome===null){ return dnum(c.due)>=dnum(asOf)? {s:'Pending',why:'No outcome yet. Due '+c.due+'.'} : {s:'Overdue',why:'Due '+c.due+' and no outcome recorded.'}; }
+    var v=c.outcome, d=0, side='';
+    if(c.low!==null&&v<c.low){ d=c.low-v; side='below'; } else if(c.high!==null&&v>c.high){ d=v-c.high; side='above'; }
+    if(d===0) return {s:'Met',why:'Reported '+fm(v)+u+' is inside '+rangeText(c)+'.'};
+    var tol;
+    if(c.low!==null&&c.high!==null&&c.high>c.low) tol=TOL_BAND*(c.high-c.low);
+    else tol=TOL_ONE*Math.abs(side==='below'?c.low:c.high);
+    d=r2(d); tol=r2(tol);
+    return {s:(d<=tol?'Partly':'Missed'),why:'Reported '+fm(v)+u+' is '+fm(d)+u+' '+side+' '+rangeText(c)+'. Allowed gap for partly: '+fm(tol)+u+'.'};
+  }
+  if(c.outcome===null){ return dnum(c.due)>=dnum(asOf)? {s:'Pending',why:'Not delivered yet. Due '+c.due+'.'} : {s:'Overdue',why:'Due '+c.due+' and no delivery recorded.'}; }
+  var late=dnum(c.outcome)-dnum(c.due);
+  if(late<=0) return {s:'Met',why:'Delivered '+c.outcome+', on or before '+c.due+'.'};
+  return {s:(late<=LATE_DAYS?'Partly':'Missed'),why:'Delivered '+c.outcome+', '+late+' days after '+c.due+'. Partly if within '+LATE_DAYS+' days.'};
+}
+function ruleLines(){
+  return ['A numeric commitment is met if the reported figure is inside the stated range, or on the right side of a one-sided limit.',
+   'Outside a two-sided range by no more than a quarter of its width counts as partly. Beyond that it is missed.',
+   'For a one-sided limit or a single figure, within '+Math.round(TOL_ONE*100)+' percent of the limit counts as partly.',
+   'A dated milestone is met if delivered on or before the due date, partly if up to '+LATE_DAYS+' days late, missed after that.',
+   'With no outcome recorded, a commitment is pending through its due date and overdue from the day after. Overdue is not scored as missed, because the absence of a record is not evidence.',
+   'A reviewer can overrule any score. Every override is listed in the memo.'];
+}
+function analyse(clean,asOf,over){
+  var rows=clean.map(function(c,i){ var sc=score(c,asOf), fin=over[i]&&over[i].status?over[i].status:sc.s; return {c:c,rule:sc.s,why:sc.why,final:fin,over:(fin!==sc.s),reason:over[i]?over[i].reason:''}; });
+  var topics=[], map={};
+  rows.forEach(function(r){ if(!map[r.c.topic]){ map[r.c.topic]={topic:r.c.topic,n:0,Met:0,Partly:0,Missed:0,Pending:0,Overdue:0}; topics.push(map[r.c.topic]); } var t=map[r.c.topic]; t.n++; t[r.final]++; });
+  function fin(t){ t.res=t.Met+t.Partly+t.Missed; t.open=t.Pending+t.Overdue; t.rate=t.res>=MIN_RATE?Math.round(t.Met/t.res*100):null; return t; }
+  topics.forEach(fin);
+  var all=fin({topic:'All topics',n:rows.length,Met:0,Partly:0,Missed:0,Pending:0,Overdue:0});
+  rows.forEach(function(r){ all[r.final]++; }); fin(all);
+  return {rows:rows,topics:topics,all:all};
+}
+function implied(i){
+  var low=num(i.low), high=num(i.high), P=num(i.per), parts=String(i.act||'').split(/[,;\s]+/).filter(function(x){return x!=='';}), acts=parts.map(Number);
+  if(!isFinite(low)||!isFinite(high)||low>high) return {err:'Enter a low and a high, with low not above high.'};
+  if(!isFinite(P)||P<1||P>12||Math.round(P)!==P) return {err:'Periods in the year must be a whole number from 1 to 12.'};
+  if(acts.some(function(x){return !isFinite(x);})) return {err:'Reported figures must be numbers separated by commas.'};
+  if(acts.length>P) return {err:'More reported figures than periods in the year.'};
+  var k=acts.length, sum=acts.reduce(function(a,b){return a+b;},0), rem=P-k;
+  if(rem===0){ var avg=sum/P; return {done:true,avg:r2(avg),inside:(avg>=low&&avg<=high)}; }
+  return {done:false,k:k,rem:rem,low:r2((low*P-sum)/rem),high:r2((high*P-sum)/rem),last:k?acts[k-1]:null,avgSoFar:k?r2(sum/k):null};
+}
+function impliedText(i,res){
+  if(res.err) return res.err;
+  if(res.done) return 'All '+i.per+' periods are reported, and the average is '+fm(res.avg)+', which is '+(res.inside?'inside':'outside')+' the range of '+fm(num(i.low))+' to '+fm(num(i.high))+'.';
+  var t='For '+(i.label||'this measure')+' to finish inside '+fm(num(i.low))+' to '+fm(num(i.high))+', the remaining '+res.rem+' of '+i.per+' periods must average between '+fm(res.low)+' and '+fm(res.high)+'.';
+  if(res.last!==null){ t+=' The latest reported period was '+fm(res.last)+'.'; if(res.last<res.low) t+=' That is below the lowest average now required.'; else if(res.last>res.high) t+=' That is above the highest average now required.'; else t+=' That is inside the range now required.'; }
+  return t;
+}
+
+/* ---------- ui helpers ---------- */
+function buildStages(){ var ol=$('stages'); ol.innerHTML=''; STAGES.forEach(function(s,i){ var li=document.createElement('li'); li.id='st'+i; li.innerHTML=s[0]+'<small>'+s[1]+'</small>'; ol.appendChild(li); }); }
+function setStage(i){ for(var k=0;k<STAGES.length;k++) $('st'+k).className=k<i?'done':(k===i?'active':''); }
+function allDone(){ for(var k=0;k<STAGES.length;k++) $('st'+k).className='done'; }
+function log(msg){ var el=document.createElement('div'), t=Math.round((Date.now()-tStart)/1000); el.innerHTML='<span>'+('0'+Math.floor(t/60)).slice(-2)+':'+('0'+(t%60)).slice(-2)+'</span>'+msg; $('feed').appendChild(el); $('feed').scrollTop=$('feed').scrollHeight; }
+function show(id){ $(id).classList.add('show'); }
+function hideAll(){ ['sec-read','sec-rules','sec-rev','sec-prof','sec-strip','sec-imp','sec-doc'].forEach(function(id){ $(id).classList.remove('show'); }); $('sec-intro').classList.add('show'); }
+function wait(ms){ var tok=runTok; return new Promise(function(res,rej){ setTimeout(function(){ tok===runTok?res():rej('abort'); }, ms/speed); }); }
+function check(tok){ if(tok!==runTok) throw 'abort'; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- renderers ---------- */
+function termsText(c){ return c.type==='band'?rangeText(c):'Delivery date'; }
+function outText(c){ if(c.outcome===null) return ''; return c.type==='band'?fm(c.outcome)+(c.unit?(c.unit==='%'?'%':' '+c.unit):''):c.outcome; }
+function renderRead(clean,asOf){
+  $('read-lede').textContent=L.who+'. '+clean.length+' commitments, scored as of '+asOf+'.';
+  var tb=$('read-table').querySelector('tbody'); tb.innerHTML='';
+  clean.forEach(function(c,i){ var tr=document.createElement('tr'); tr.className='hide'; tr.id='rd'+i;
+    tr.innerHTML='<td>'+c.said+'</td><td>'+esc(c.topic)+'</td><td>'+esc(c.text)+(c.source?'<div class="tag">'+esc(c.source)+'</div>':'')+'</td><td>'+esc(termsText(c))+'</td><td>'+c.due+'</td><td>'+esc(outText(c))+'</td>'; tb.appendChild(tr); });
+}
+function renderScores(rows,upto){
+  var tb=$('score-table').querySelector('tbody'); tb.innerHTML='';
+  rows.forEach(function(r,i){ var vis=(upto===undefined||i<upto);
+    tb.innerHTML+='<tr><td>'+esc(r.c.text)+'</td><td class="st '+(vis?r.rule:'')+'">'+(vis?r.rule:'')+'</td><td class="tag">'+(vis?esc(r.why):'')+'</td></tr>'; });
+}
+function renderProfile(A){
+  var tb=$('prof-table').querySelector('tbody'), h='';
+  A.topics.concat([A.all]).forEach(function(t,i){ var last=(i===A.topics.length);
+    h+='<tr'+(last?' style="font-weight:600"':'')+'><td>'+esc(t.topic)+'</td><td class="n">'+t.n+'</td><td class="n">'+t.res+'</td><td class="n">'+t.Met+'</td><td class="n">'+t.Partly+'</td><td class="n">'+t.Missed+'</td><td class="n">'+t.open+'</td><td>'+(t.rate!==null?(t.rate+'% ('+t.Met+' of '+t.res+')'):'<span class="tag">too few to show a rate ('+t.res+' with outcome)</span>')+'</td></tr>'; });
+  tb.innerHTML=h;
+  var thin=A.topics.filter(function(t){return t.rate===null;});
+  $('prof-note').textContent=thin.length?('Topics without a rate: '+thin.map(function(t){return t.topic+' (n='+t.res+')';}).join(', ')+'. With so few outcomes, any percentage would mislead.'):'Every topic has enough outcomes to show a rate. Rates from small samples still move a lot with one more outcome.';
+}
+function svgStrip(r){
+  var c=r.c, W=360, H=34, ml=8, mr=8, pts=[], i;
+  if(c.low!==null) pts.push(c.low); if(c.high!==null) pts.push(c.high); if(c.outcome!==null) pts.push(c.outcome);
+  var mn=Math.min.apply(null,pts), mx=Math.max.apply(null,pts), span=mx-mn, pad=span>0?span*0.3:(Math.abs(mx)*0.1||1);
+  mn-=pad; mx+=pad;
+  function X(v){ return ml+(v-mn)/(mx-mn)*(W-ml-mr); }
+  var x1=c.low!==null?X(c.low):ml, x2=c.high!==null?X(c.high):W-mr;
+  var o='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Range and outcome">';
+  o+='<line x1="'+ml+'" x2="'+(W-mr)+'" y1="20" y2="20" stroke="#d9d3c4"/>';
+  o+='<rect x="'+x1+'" y="16" width="'+Math.max(2,x2-x1)+'" height="8" fill="#cfc8b6"/>';
+  if(c.low===null||c.high===null){ var ex=c.low===null?x1:x2; o+='<line x1="'+ex+'" x2="'+ex+'" y1="12" y2="28" stroke="#cfc8b6" stroke-dasharray="2 2"/>'; }
+  if(c.outcome!==null){ var x=X(c.outcome), y=20;
+    if(r.final==='Met') o+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="#1c1b19"/>';
+    else if(r.final==='Partly') o+='<path d="M'+x+' '+(y-6)+' L'+(x+6)+' '+y+' L'+x+' '+(y+6)+' L'+(x-6)+' '+y+' Z" fill="#1c1b19"/>';
+    else o+='<path d="M'+(x-5)+' '+(y-5)+' L'+(x+5)+' '+(y+5)+' M'+(x+5)+' '+(y-5)+' L'+(x-5)+' '+(y+5)+'" stroke="#8a3a22" stroke-width="2"/>';
+    o+='<text x="'+x+'" y="9" font-size="10.5" text-anchor="middle" fill="#1c1b19">'+fm(c.outcome)+'</text>'; }
+  return o+'</svg>';
+}
+function renderStrips(A){
+  var h='', n=0;
+  A.rows.forEach(function(r){ if(r.c.type!=='band') return; n++;
+    h+='<div class="strip"><div>'+esc(r.c.text)+'<div class="tag">'+r.c.said+' to '+r.c.due+'</div></div><div>'+svgStrip(r)+'</div><div class="st '+r.final+'">'+r.final+'</div></div>'; });
+  $('strips').innerHTML=h||'<p class="note">No numeric commitments in this ledger.</p>';
+}
+function renderImplied(){
+  var i=readImplied(), res=implied(i); $('imp-out').textContent=impliedText(i,res); return {i:i,res:res};
+}
+function readImplied(){ return {label:strip($('i-label').value),low:$('i-low').value,high:$('i-high').value,per:$('i-per').value,act:$('i-act').value}; }
+function writeImplied(i){ $('i-label').value=i.label; $('i-low').value=i.low; $('i-high').value=i.high; $('i-per').value=i.per; $('i-act').value=i.act; }
+
+function buildDoc(){
+  var A=S.A, asOf=S.asOf, T=A.topics, blocks=[], a=A.all, ov=A.rows.filter(function(r){return r.over;});
+  blocks.push({t:'h3',x:'Say-do record: '+L.who});
+  blocks.push({t:'meta',x:'As of '+asOf+'. '+A.rows.length+' commitments. '+(L.custom?'Ledger entered by the user; entries have not been checked against any source.':'Invented example; no real company or figure is described.')+' Scored by the fixed rules below.'});
+  blocks.push({t:'h4',x:'Summary'});
+  blocks.push({t:'p',x:a.res+' of '+a.n+' commitments have an outcome: '+a.Met+' met, '+a.Partly+' partly, '+a.Missed+' missed. '+a.Pending+' are pending and '+a.Overdue+' are past their due date with no outcome recorded.'+(ov.length?' The reviewer overruled '+ov.length+' score'+(ov.length>1?'s':'')+'.':'')});
+  blocks.push({t:'h4',x:'Record by topic'});
+  var rows=T.map(function(t){ return [t.topic,String(t.n),String(t.res),String(t.Met),String(t.Partly),String(t.Missed),String(t.open),t.rate!==null?(t.rate+'% ('+t.Met+' of '+t.res+')'):'n='+t.res+', too few']; });
+  blocks.push({t:'table',head:['Topic','Commitments','With outcome','Met','Partly','Missed','Open','Met rate'],rows:rows});
+  var thin=T.filter(function(t){return t.rate===null;});
+  blocks.push({t:'p',x:thin.length?'Rates are withheld where fewer than '+MIN_RATE+' commitments have an outcome: '+thin.map(function(t){return t.topic;}).join(', ')+'.':'Every topic has at least '+MIN_RATE+' outcomes, so rates are shown. They still move a lot with one more outcome.'});
+  var res=A.rows.filter(function(r){return r.final==='Met'||r.final==='Partly'||r.final==='Missed';});
+  blocks.push({t:'h4',x:'Commitments with an outcome'});
+  blocks.push({t:'table',head:['Said','Topic','Commitment','Outcome','Status'],rows:res.map(function(r){ return [r.c.said,r.c.topic,r.c.text,outText(r.c),r.final+(r.over?' (overruled)':'')]; })});
+  var open=A.rows.filter(function(r){return r.final==='Pending'||r.final==='Overdue';});
+  blocks.push({t:'h4',x:'Still open'});
+  if(open.length) blocks.push({t:'ul',items:open.map(function(r){ return r.c.text+': '+r.final.toLowerCase()+', due '+r.c.due+'.'; })}); else blocks.push({t:'p',x:'Nothing is open.'});
+  if(ov.length){ blocks.push({t:'h4',x:'Reviewer overrides'}); blocks.push({t:'ul',items:ov.map(function(r){ return r.c.text+': rule gave '+r.rule+', reviewer set '+r.final+(r.reason?'. Reason: '+r.reason:'.'); })}); }
+  if(S.imp&&!S.imp.res.err){ blocks.push({t:'h4',x:'What the full-year range implies'}); blocks.push({t:'p',x:impliedText(S.imp.i,S.imp.res)+' This is arithmetic with equal weight for every period, not a forecast.'}); }
+  blocks.push({t:'h4',x:'Scoring rules'}); blocks.push({t:'ul',items:ruleLines()});
+  blocks.push({t:'h4',x:'Limits'});
+  blocks.push({t:'ul',items:['A record is only as good as its entries. This tool does not check any entry against a source.','Scores follow the rules above and nothing else. They do not judge whether a commitment was sensible or whether circumstances changed.','Small counts say little. Treat any rate with fewer than a dozen outcomes as a description of the record, not a prediction.','This is a record-keeping aid. It is not investment advice, and it does not describe any real company.']});
+  return blocks;
+}
+function renderDoc(blocks){
+  var h='';
+  blocks.forEach(function(b){ if(b.t==='h3') h+='<h3>'+esc(b.x)+'</h3>'; else if(b.t==='h4') h+='<h4>'+b.x+'</h4>'; else if(b.t==='meta') h+='<p class="meta">'+esc(b.x)+'</p>'; else if(b.t==='p') h+='<p>'+esc(b.x)+'</p>';
+    else if(b.t==='ul') h+='<ul>'+b.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join('')+'</ul>';
+    else if(b.t==='table') h+='<div class="wrapx"><table><thead><tr>'+b.head.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>'+b.rows.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>'; });
+  $('doc').innerHTML=h;
+}
+function docToMd(blocks){
+  var m=''; blocks.forEach(function(b){ if(b.t==='h3') m+='# '+b.x+'\n\n'; else if(b.t==='h4') m+='## '+b.x+'\n\n'; else if(b.t==='meta') m+='_'+b.x+'_\n\n'; else if(b.t==='p') m+=b.x+'\n\n';
+    else if(b.t==='ul') m+=b.items.map(function(i){return '- '+i;}).join('\n')+'\n\n';
+    else if(b.t==='table') m+='| '+b.head.join(' | ')+' |\n|'+b.head.map(function(){return '---';}).join('|')+'|\n'+b.rows.map(function(r){return '| '+r.map(function(c){return String(c).replace(/\|/g,'/');}).join(' | ')+' |';}).join('\n')+'\n\n'; });
+  return m;
+}
+
+/* ---------- review ---------- */
+function renderReview(paused){
+  var h='', rows=S.A0.rows.filter(function(r){return r.rule==='Met'||r.rule==='Partly'||r.rule==='Missed';});
+  S.revIdx=rows.map(function(r){return S.A0.rows.indexOf(r);});
+  rows.forEach(function(r,k){ var i=S.revIdx[k], cur=(S.over[i]&&S.over[i].status)||r.rule;
+    h+='<div class="r"><div><b>'+esc(r.c.text)+'</b><div class="why">Rule result: '+r.rule+'. '+esc(r.why)+'</div>'+(paused?'<div style="margin-top:6px"><input type="text" data-reason="'+i+'" placeholder="Reason, if you change it" style="width:100%" maxlength="120" value="'+esc((S.over[i]&&S.over[i].reason)||'')+'"></div>':'')+'</div><div>'+
+      (paused?'<select data-i="'+i+'">'+['Met','Partly','Missed'].map(function(s){return '<option'+(s===cur?' selected':'')+'>'+s+'</option>';}).join('')+'</select>':'<span class="st '+cur+'">'+cur+'</span><div class="why">Rule applied, no human</div>')+'</div></div>'; });
+  $('rev').innerHTML=h||'<p class="note">No scored commitments to review.</p>';
+  if(paused){
+    Array.prototype.forEach.call($('rev').querySelectorAll('select'),function(sel){ sel.addEventListener('change',function(){ var i=+sel.getAttribute('data-i'); var rule=S.A0.rows[i].rule; S.over[i]=S.over[i]||{}; S.over[i].status=(sel.value===rule?null:sel.value); }); });
+    Array.prototype.forEach.call($('rev').querySelectorAll('input[data-reason]'),function(inp){ inp.addEventListener('input',function(){ var i=+inp.getAttribute('data-reason'); S.over[i]=S.over[i]||{}; S.over[i].reason=strip(inp.value); }); });
+  }
+}
+
+/* ---------- the run ---------- */
+async function run(){
+  if(running) return;
+  resetUi(); var v=validate(L.rows,L.asOf);
+  if(v.errs.length){ showMsg(v.errs,true); $('setup').open=true; return; }
+  running=true; var tok=++runTok; speed=+$('speed').value||1; tStart=Date.now();
+  $('run').disabled=true; $('pause').disabled=true; $('speed').disabled=true; setupLock(true);
+  S={clean:v.clean,asOf:L.asOf,over:{},A0:null,A:null,imp:null,doc:null};
+  try{
+    setStage(0); $('sec-intro').classList.remove('show'); renderRead(S.clean,S.asOf); show('sec-read');
+    log('Reading '+S.clean.length+' commitments');
+    for(var i=0;i<S.clean.length;i++){ $('rd'+i).className=''; await wait(140); check(tok); }
+    await wait(700);
+    check(tok); setStage(1); S.A0=analyse(S.clean,S.asOf,{});
+    var rl=$('rules-list'); rl.innerHTML=ruleLines().map(function(t){return '<li>'+esc(t)+'</li>';}).join(''); show('sec-rules'); renderScores(S.A0.rows,0);
+    log('Rules shown before scoring');
+    await wait(1200);
+    for(var k=1;k<=S.A0.rows.length;k++){ renderScores(S.A0.rows,k); check(tok); var rr=S.A0.rows[k-1]; if(k%5===0||k===S.A0.rows.length) log('Scored '+k+' of '+S.A0.rows.length); await wait(200); }
+    await wait(900);
+    check(tok); setStage(2); show('sec-rev'); var paused=$('pause').checked;
+    if(paused){
+      $('rev-lede').textContent='The rules give a score for each commitment that has an outcome. Change any of them and say why, then continue. Changes are listed in the memo.';
+      renderReview(true); $('cont').style.display=''; log('Paused for review.');
+      await new Promise(function(res,rej){ reviewResolve=function(ok){ ok?res():rej('abort'); }; });
+      $('cont').style.display='none'; check(tok); renderReview(false);
+      var nov=Object.keys(S.over).filter(function(x){return S.over[x]&&S.over[x].status;}).length; log('Review submitted, '+nov+' override'+(nov===1?'':'s')+'.');
+    } else {
+      $('rev-lede').textContent='Pause at review was off, so the rule results stand. This is a rule applied, not a human decision.';
+      renderReview(false); log('Review skipped: rule results kept.'); await wait(1500);
+    }
+    check(tok); S.A=analyse(S.clean,S.asOf,S.over);
+    setStage(3); renderProfile(S.A); show('sec-prof'); log('Profile built: '+S.A.topics.length+' topics'); await wait(2200);
+    check(tok); setStage(4); renderStrips(S.A); show('sec-strip'); log('Numeric commitments plotted against their ranges'); await wait(2400);
+    check(tok); setStage(5); show('sec-imp'); S.imp=renderImplied(); log('Implied range worked out from the full-year range and what is reported'); await wait(2000);
+    check(tok); setStage(6); show('sec-doc'); S.doc=buildDoc(); renderDoc(S.doc); ['dl','dlcsv','pr'].forEach(function(x){$(x).disabled=false;}); log('Memo written.'); await wait(500);
+    allDone();
+  } catch(e){ if(e!=='abort') throw e; }
+  finally{ if(tok===runTok){ running=false; $('run').disabled=false; $('pause').disabled=false; $('speed').disabled=false; setupLock(false); } }
+}
+function resetUi(){
+  runTok++; running=false; if(reviewResolve){ var f=reviewResolve; reviewResolve=null; f(false); }
+  hideAll(); buildStages(); $('feed').innerHTML=''; $('doc').innerHTML=''; ['dl','dlcsv','pr'].forEach(function(x){$(x).disabled=true;});
+  $('cont').style.display='none'; $('run').disabled=false; $('pause').disabled=false; $('speed').disabled=false; setupLock(false); S=null;
+}
+
+/* ---------- editor, csv ---------- */
+var COLS=['said','topic','commitment','type','low','high','unit','due','outcome','source'];
+function showMsg(list,isErr){ var el=$('e-msg'); if(!el) return; el.style.color=isErr?'#8a2b1a':''; el.innerHTML=list.map(esc).join('<br>'); }
+function setupLock(lock){ Array.prototype.forEach.call($('setup').querySelectorAll('input,button,select'),function(el){ el.disabled=lock; }); }
+function rowHtml(r,i){
+  var h='<tr data-r="'+i+'">';
+  for(var j=0;j<10;j++){
+    if(j===3) h+='<td><select data-c="3"><option value="band"'+(r[3]==='band'?' selected':'')+'>band</option><option value="milestone"'+(r[3]==='milestone'?' selected':'')+'>milestone</option></select></td>';
+    else h+='<td><input type="text" data-c="'+j+'" value="'+esc(String(r[j]).replace(/"/g,''))+'"'+((j===0||j===7||(j===8&&r[3]==='milestone'))?' placeholder="YYYY-MM-DD"':'')+'></td>';
+  }
+  return h+'<td><button class="btn ghost small" data-del="'+i+'" type="button">Remove</button></td></tr>';
+}
+function buildEditor(){
+  var h='<p class="note" style="margin-top:0">One row per commitment. A band has a low, a high, or both, and the outcome is the reported number. A milestone has no low or high, and the outcome is the date it was delivered. Leave the outcome empty if nothing has happened yet. Dates are YYYY-MM-DD. Nothing you enter leaves your browser.</p>';
+  h+='<div style="display:flex;gap:14px;flex-wrap:wrap;margin:8px 0"><label class="tag">Whose commitments<br><input type="text" id="e-who" maxlength="80" style="width:300px"></label><label class="tag">Score as of<br><input type="text" id="e-asof" placeholder="YYYY-MM-DD" style="width:130px"></label></div>';
+  h+='<div class="wrapx"><table class="etable"><thead><tr><th>Said</th><th>Topic</th><th>Commitment (short, in your words)</th><th>Type</th><th>Low</th><th>High</th><th>Unit</th><th>Due</th><th>Outcome</th><th>Source or note</th><th></th></tr></thead><tbody id="e-body"></tbody></table></div>';
+  h+='<div class="actions"><button class="btn small" id="e-apply" type="button">Apply</button><button class="btn ghost small" id="e-add" type="button">Add row</button><button class="btn ghost small" id="e-reset" type="button">Reset to the example</button><button class="btn ghost small" id="e-dl" type="button">Download ledger (.csv)</button><label class="btn ghost small filebtn">Import (.csv)<input type="file" id="e-file" accept=".csv,text/csv" hidden></label></div><div id="e-msg" class="note" role="status"></div>';
+  $('setup-body').innerHTML=h;
+  $('e-add').addEventListener('click',function(){ syncFromEditor(); L.rows.push([isoToday(),'','','band','','','','','','']); fillEditor(); });
+  $('e-apply').addEventListener('click',function(){ syncFromEditor(); var v=validate(L.rows,L.asOf); if(v.errs.length){ showMsg(v.errs,true); return; } var was=L.custom; L.custom=true; L.who=strip($('e-who').value)||'Your ledger'; if(!was) writeImplied(BLANK); applyImplied(); resetUi(); showMsg(['The ledger is applied; press "Run the ledger" above.'],false); updateTexts(); });
+  $('e-reset').addEventListener('click',function(){ L=clone(EXAMPLE); fillEditor(); writeImplied(L.implied); resetUi(); updateTexts(); showMsg(['Back to the example.'],false); });
+  $('e-dl').addEventListener('click',function(){ syncFromEditor(); saveText('ledger.csv',toCSV(L.rows),'text/csv'); });
+  $('e-file').addEventListener('change',function(ev){ var f=ev.target.files&&ev.target.files[0]; if(!f) return; var fr=new FileReader();
+    fr.onload=function(){ var rows=parseCSV(String(fr.result||'').replace(/^﻿/,'')); if(rows.length&&String(rows[0][0]).toLowerCase()==='said') rows.shift();
+      rows=rows.map(function(r){ var o=[]; for(var j=0;j<10;j++) o.push(r[j]==null?'':r[j]); return o; });
+      var v=validate(rows,strip($('e-asof').value)||isoToday()); if(v.errs.length){ showMsg(v.errs,true); return; }
+      var was2=L.custom; if(!was2) writeImplied(BLANK); L.rows=rows; L.custom=true; L.asOf=strip($('e-asof').value)||isoToday(); L.who=strip($('e-who').value)||'Your ledger'; fillEditor(); resetUi(); updateTexts(); showMsg(['Imported '+rows.length+' rows and applied them; press "Run the ledger" above.'],false); };
+    fr.readAsText(f); });
+  fillEditor();
+}
+function isoToday(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+function fillEditor(){
+  $('e-who').value=L.who; $('e-asof').value=L.asOf;
+  $('e-body').innerHTML=L.rows.map(rowHtml).join('');
+  Array.prototype.forEach.call($('e-body').querySelectorAll('[data-del]'),function(b){ b.addEventListener('click',function(){ syncFromEditor(); L.rows.splice(+b.getAttribute('data-del'),1); fillEditor(); }); });
+}
+function syncFromEditor(){
+  var rows=[]; Array.prototype.forEach.call($('e-body').querySelectorAll('tr'),function(tr){ var r=[]; for(var j=0;j<10;j++){ var el=tr.querySelector('[data-c="'+j+'"]'); r.push(el?el.value:''); } rows.push(r); });
+  L.rows=rows; L.asOf=strip($('e-asof').value); L.who=strip($('e-who').value)||L.who;
+}
+function applyImplied(){ L.implied=readImplied(); }
+function csvq(v){ v=String(v==null?'':v); return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function toCSV(rows){ return '﻿'+[COLS].concat(rows).map(function(r){return r.map(csvq).join(',');}).join('\r\n')+'\r\n'; }
+function parseCSV(t){
+  var rows=[], row=[], f='', q=false, i, c;
+  for(i=0;i<t.length;i++){ c=t.charAt(i);
+    if(q){ if(c==='"'){ if(t.charAt(i+1)==='"'){ f+='"'; i++; } else q=false; } else f+=c; }
+    else if(c==='"') q=true; else if(c===','){ row.push(f); f=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&t.charAt(i+1)==='\n') i++; row.push(f); f=''; rows.push(row); row=[]; } else f+=c; }
+  if(f!==''||row.length){ row.push(f); rows.push(row); }
+  return rows.filter(function(r){ return r.some(function(x){ return String(x).trim()!==''; }); });
+}
+function saveText(name,text,type){ try{ var url=URL.createObjectURL(new Blob([text],{type:type})); var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000); }catch(e){} }
+function updateTexts(){
+  $('flag').innerHTML=L.custom?'<b>Your ledger.</b> The entries are yours and are not checked against any source. Scores follow the fixed rules below. Nothing you enter leaves your browser. It is a record-keeping aid and not investment advice.':'<b>Live in your browser.</b> The example is a hypothetical consumer-goods company with invented figures. Replace it with your own ledger under the button. Nothing you enter leaves your browser. It is a record-keeping aid and not investment advice.';
+  $('foot').textContent=L.custom?'Every score on this page comes from the rules shown, applied in your browser to the entries in the ledger. The tool does not check any entry against a source, so a record is only as good as what is entered into it. It is not investment advice.':'Every score on this page comes from the rules shown, applied in your browser to the entries in the ledger. The example is invented. The tool does not check any entry against a source, so a record is only as good as what is entered into it. It is not investment advice.';
+}
+
+$('run').addEventListener('click',run);
+$('reset').addEventListener('click',function(){ resetUi(); });
+$('cont').addEventListener('click',function(){ if(reviewResolve){ var f=reviewResolve; reviewResolve=null; f(true); } });
+$('pr').addEventListener('click',function(){ window.print(); });
+$('dl').addEventListener('click',function(){ if(S&&S.doc) saveText('said-and-done-memo.md',docToMd(S.doc),'text/markdown'); });
+$('dlcsv').addEventListener('click',function(){ saveText('ledger.csv',toCSV(L.rows),'text/csv'); });
+['i-label','i-low','i-high','i-per','i-act'].forEach(function(id){ $(id).addEventListener('input',function(){ if(S&&S.A){ S.imp=renderImplied(); if(S.doc){ S.doc=buildDoc(); renderDoc(S.doc); } } else { renderImplied(); } }); });
+writeImplied(EXAMPLE.implied); buildEditor(); buildStages(); updateTexts();
+
+window.__sd={score:score,validate:validate,analyse:analyse,implied:implied,impliedText:impliedText,toCSV:toCSV,parseCSV:parseCSV,state:function(){return S;},md:function(){return S&&S.doc?docToMd(S.doc):'';},EXAMPLE:EXAMPLE,run:run,ledger:function(){return L;}};
+})();
+</script>
+</body>
+</html>

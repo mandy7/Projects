@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Condition Watch | Decision Memo</title>
+<style>
+:root{
+  --bg:#f6f3ec; --paper:#fffdf8; --ink:#1c1b19; --mut:#66625a; --rule:#d9d3c4; --soft:#efeadd; --accent:#1f3a5f; --warn:#8a3a22;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 60px}
+header{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:20px}
+.back{margin:0 0 14px;font-size:13px;color:var(--mut)}.back a{color:var(--mut)}
+h1{font-family:var(--serif);font-weight:600;font-size:34px;margin:0 0 2px;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:0;max-width:780px}
+.flag{margin-top:10px;color:var(--mut);font-size:13px;max-width:900px}.flag b{color:var(--ink);font-weight:600}
+.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:18px 0 6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:9px 20px;border-radius:3px;font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.small{padding:5px 12px;font-size:13px}
+label.opt{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:14px}
+select,input[type=text],textarea{font:inherit;font-size:13.5px;padding:4px 6px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:3px;width:100%}
+select{width:auto}
+.controls select{width:auto}
+a{color:var(--accent)}
+.grid{display:grid;grid-template-columns:250px 1fr;gap:34px;margin-top:22px}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr);gap:20px}}
+.grid>*{min-width:0}
+.stages{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule)}
+.stages li{padding:6px 0 6px 16px;position:relative;color:var(--mut)}
+.stages li:before{content:"";position:absolute;left:-5px;top:13px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:1px solid var(--mut)}
+.stages li.active{color:var(--ink);font-weight:600}.stages li.active:before{background:var(--ink);border-color:var(--ink)}
+.stages li.done{color:var(--ink)}.stages li.done:before{background:var(--mut);border-color:var(--mut)}
+.stages small{display:block;font-weight:400;color:var(--mut);font-size:12.5px}
+.feedtitle{font-size:13px;color:var(--mut);margin:22px 0 6px}
+.feed{font-size:12.5px;color:var(--mut);max-height:230px;overflow:auto;border-top:1px solid var(--rule)}
+.feed div{padding:4px 0;border-bottom:1px solid var(--soft)}.feed span{color:var(--ink);font-variant-numeric:tabular-nums;margin-right:8px}
+section.blk{margin-bottom:34px}
+section.blk.run{display:none}section.blk.run.show{display:block}
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:0 0 4px}
+.lede{margin:0 0 12px;color:var(--mut);max-width:780px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-weight:600;color:var(--mut);font-size:13px;border-bottom:1px solid var(--ink);padding:6px 10px 6px 0}
+td{padding:6px 10px 6px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.tag{color:var(--mut);font-size:12.5px}
+.wrapx{overflow-x:auto}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+.fields label,.dec label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--mut)}
+@media(max-width:700px){.fields{grid-template-columns:1fr}}
+.dec{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--rule)}
+@media(max-width:700px){.dec{grid-template-columns:1fr}}
+.dec b{font-family:var(--serif)}
+.etable{min-width:900px}.etable td{padding:3px 6px 3px 0;border:0}.etable input,.etable select{width:100%}
+.etable td:nth-child(3) input{min-width:260px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.filebtn{cursor:pointer;display:inline-block}
+.src li{margin-bottom:6px}
+.meter{display:inline-flex;gap:3px;margin-right:8px;vertical-align:middle}.meter i{width:9px;height:9px;border-radius:50%;border:1px solid var(--ink);display:block}.meter i.f{background:var(--ink)}
+.card{border-top:1px solid var(--rule);padding:10px 0 12px;max-width:820px}.card h3{font-family:var(--serif);font-size:16.5px;font-weight:600;margin:0 0 4px}
+.rev{border-top:1px solid var(--ink)}
+.rev .r{display:grid;grid-template-columns:1fr 150px;gap:16px;padding:10px 0;border-bottom:1px solid var(--rule)}
+@media(max-width:700px){.rev .r{grid-template-columns:1fr}}
+.rev .why{color:var(--mut);font-size:13px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;height:32px}
+.seg button{border:0;background:var(--paper);padding:0 12px;color:var(--mut)}.seg button.on{background:var(--ink);color:var(--paper)}.seg.fixed button{cursor:default}
+.note{color:var(--mut);font-size:13px;margin-top:8px}
+#doc{background:var(--paper);border:1px solid var(--rule);padding:34px 40px;max-width:900px}
+@media(max-width:600px){#doc{padding:20px 16px}}
+#doc h3{font-family:var(--serif);font-size:25px;font-weight:600;margin:0 0 4px;line-height:1.2}
+#doc h4{font-family:var(--serif);font-size:17px;font-weight:600;margin:20px 0 4px}
+#doc p{margin:6px 0}#doc .meta{color:var(--mut);font-size:13px}#doc ul{margin:6px 0 6px 18px;padding:0}#doc table{margin:8px 0}
+.docbar{display:flex;gap:10px;margin:0 0 12px;flex-wrap:wrap}
+footer{margin-top:30px;border-top:1px solid var(--rule);padding-top:12px;color:var(--mut);font-size:12.5px;max-width:880px}
+@media print{body{background:#fff}.wrap>header,.controls,.grid>aside,.docbar,footer,section.blk:not(#sec-doc){display:none!important}.grid{display:block}#doc{border:0;padding:0;max-width:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="back"><a href="../workflows.html">Decision Memo</a> / Workflows</p>
+  <h1>Condition Watch</h1>
+  <p class="sub">Name a condition and the watch sets itself up: the standing decisions, the source plan and the rating rules. Keep a dated ledger as you read, and the memo builds from it.</p>
+  <p class="flag"><b>Live in your browser.</b> This page does not fetch or read any source. The ledger entries in the example are invented, about a fictional compound from a fictional company. In an engagement the desk reads the sources and you review what it finds. Nothing you type leaves your browser.</p>
+  <div class="controls">
+    <button class="btn" id="run">Build the memo</button>
+    <label class="opt"><input type="checkbox" id="pause"> Pause at review</label>
+    <label class="opt">Speed <select id="speed"><option value="1">Normal</option><option value="2">2x</option><option value="4">4x</option></select></label>
+    <button class="btn ghost small" id="reset">Reset</button>
+  </div>
+</header>
+
+<div class="grid">
+  <aside>
+    <ol class="stages" id="stages"></ol>
+    <div class="feedtitle">Activity</div>
+    <div class="feed" id="feed"></div>
+  </aside>
+  <main>
+    <section class="blk" id="sec-scope">
+      <h2>1. Scope</h2>
+      <p class="lede">Change the condition and the decisions below rewrite themselves. Try adding a second condition, such as insomnia, and watch the questions and the source plan change. Edit any decision directly if you prefer your own wording.</p>
+      <div class="fields">
+        <label>Who is watching<input type="text" id="f-who" maxlength="80"></label>
+        <label>Conditions (comma separated)<input type="text" id="f-cond" maxlength="80"></label>
+        <label>Companies to watch (comma separated, optional)<input type="text" id="f-comp" maxlength="120" placeholder="Add the companies you want followed"></label>
+        <label>Score the ledger as of<input type="text" id="f-asof" maxlength="10" placeholder="YYYY-MM-DD"></label>
+      </div>
+      <div id="decs"></div>
+      <div class="actions"><button class="btn ghost small" id="regen" type="button">Rewrite decisions from the conditions</button></div>
+    </section>
+
+    <section class="blk" id="sec-plan">
+      <h2>2. Source plan</h2>
+      <p class="lede" id="plan-lede"></p>
+      <div class="wrapx"><table id="plan-table"><thead><tr><th>Source class</th><th>What it tells you</th><th>Where to look</th></tr></thead><tbody></tbody></table></div>
+      <p class="note">Links open searches or home pages on those sites. This page does not check what they return.</p>
+      <h3 style="font-family:var(--serif);font-size:16px;margin:16px 0 4px">Rating rules</h3>
+      <ul id="rules" style="margin:0 0 0 18px;padding:0;max-width:780px"></ul>
+    </section>
+
+    <section class="blk" id="sec-led">
+      <h2>3. Ledger</h2>
+      <p class="lede">One row per thing that happened. Each keeps its date, its source class, a status, and where you saw it. The example rows are invented. Replace them with your own, or load them back at any time.</p>
+      <div class="wrapx"><table class="etable"><thead><tr><th>Date</th><th>Source class</th><th>What happened</th><th>Status</th><th>Source or reference</th><th>Decision</th><th></th></tr></thead><tbody id="l-body"></tbody></table></div>
+      <div class="actions">
+        <button class="btn small" id="l-add" type="button">Add row</button>
+        <button class="btn ghost small" id="l-ex" type="button">Load the invented example</button>
+        <button class="btn ghost small" id="l-clear" type="button">Clear all rows</button>
+        <button class="btn ghost small" id="l-dl" type="button">Download ledger (.csv)</button>
+        <label class="btn ghost small filebtn">Import (.csv)<input type="file" id="l-file" accept=".csv,text/csv" hidden></label>
+        <label class="opt"><input type="checkbox" id="l-keep"> Remember this watch in this browser</label>
+      </div>
+      <div id="l-msg" class="note" role="status"></div>
+    </section>
+
+    <section class="blk run" id="sec-map">
+      <h2>4. Map to decisions</h2>
+      <p class="lede">Each ledger row linked to a decision counts toward its evidence rating, by the rating rules above. A row that links to no decision is still kept in the memo.</p>
+      <div id="cards"></div>
+    </section>
+    <section class="blk run" id="sec-rev">
+      <h2>5. Review</h2>
+      <p class="lede" id="rev-lede"></p>
+      <div class="rev" id="rev"></div>
+      <div style="margin-top:12px"><button class="btn" id="cont" style="display:none">Continue</button></div>
+    </section>
+    <section class="blk run" id="sec-doc">
+      <h2>6. The memo</h2>
+      <div class="docbar">
+        <button class="btn small" id="dl" disabled>Download memo (.md)</button>
+        <button class="btn ghost small" id="pr" disabled>Print or save as PDF</button>
+      </div>
+      <div id="doc"></div>
+    </section>
+  </main>
+</div>
+<footer>This page keeps a record and applies the rules shown. It reads no source, checks no entry, and gives no medical, regulatory or investment advice. The example is invented.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var CLASSES=['Trial registry','Regulator','Company disclosure','Conference or journal','Payer or HTA body','Analyst or press'];
+var STATUSES=['Disclosed','Company stated','Not disclosed','Opinion','Inference','Scheduled'];
+var PRIMARY={'Disclosed':1,'Company stated':1};
+var STAGES=[['Scope','Condition, decisions'],['Source plan','Where to look, and the rating rules'],['Read the ledger','Dated, sourced, with status'],['Map to decisions','Evidence rating by rule'],['Review','Approve or hold each decision'],['Write the memo','One page, downloadable']];
+var KEY='cw-watch-v1';
+
+var EXAMPLE_ROWS=[
+ ['2026-03-12','Trial registry','A phase 3 study of Compound X in the condition is registered; primary completion is listed as June 2027.','Disclosed','Registry entry (example, invented)','D3'],
+ ['2026-05-20','Company disclosure','Company A says it expects to file for approval in the first half of 2027.','Company stated','Company A results release (example, invented)','D1'],
+ ['2026-06-02','Regulator','The regulator gives Compound X an expedited review designation.','Disclosed','Regulator announcement (example, invented)','D4'],
+ ['2026-07-15','Conference or journal','An abstract reports less daytime sleepiness than placebo in a phase 2 study. The sample is small.','Disclosed','Abstract (example, invented)','D1'],
+ ['2026-08-04','Analyst or press','A commentator argues Compound X could take most new patient starts within three years.','Opinion','Trade article (example, invented)','D2'],
+ ['2026-10-02','Company disclosure','Price and access terms for Compound X have not been disclosed.','Not disclosed','Company A results release (example, invented)','D2'],
+ ['2026-10-02','Company disclosure','No head-to-head data against the current standard of care has been disclosed.','Not disclosed','Company A results release (example, invented)','D3'],
+ ['2026-11-18','Payer or HTA body','A review of Compound X is scheduled.','Scheduled','Agency calendar (example, invented)','D4']
+];
+var W={who:'A hypothetical specialty-pharma company',cond:'narcolepsy',comp:'',asof:'2026-10-31',decs:[],rows:EXAMPLE_ROWS.map(function(r){return r.slice();}),dirty:[false,false,false,false],example:true};
+var S=null, runTok=0, speed=1, running=false, reviewResolve=null, tStart=0;
+
+function $(id){return document.getElementById(id);}
+function strip(s){return String(s==null?'':s).replace(/[<>&"`\u0000-\u001f]/g,' ').replace(/\s+/g,' ').trim();}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function isoOK(s){ if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false; var d=new Date(s+'T00:00:00Z'); return !isNaN(d)&&d.toISOString().slice(0,10)===s; }
+function conds(){ return strip(W.cond).split(/[,;]+/).map(strip).filter(Boolean).slice(0,4); }
+function joinC(a){ if(!a.length) return 'the condition'; if(a.length===1) return a[0]; return a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
+function genDecs(){
+  var c=joinC(conds());
+  return [
+    {q:'Do we start or continue a development program in '+c+'?',a:'The late-stage pipeline in '+c+' will not change our position within the planning window.'},
+    {q:'How do we price and position against current and incoming treatments in '+c+'?',a:'We will know enough about incoming prices and access terms to set ours.'},
+    {q:'Do we run or join a trial in '+c+', and against which comparator?',a:'The comparator we would choose is still the standard of care.'},
+    {q:'What do we expect from regulators and payers in '+c+'?',a:'Review timelines and evidence standards will stay as they are today.'}
+  ];
+}
+function ensureDecs(force){
+  var g=genDecs(); if(!W.decs.length) W.decs=g.map(function(d){return {q:d.q,a:d.a};});
+  for(var i=0;i<4;i++){ if(force||!W.dirty[i]){ W.decs[i]={q:g[i].q,a:g[i].a}; W.dirty[i]=false; } }
+}
+
+/* ---------- scope and plan ---------- */
+function renderScope(){
+  $('f-who').value=W.who; $('f-cond').value=W.cond; $('f-comp').value=W.comp; $('f-asof').value=W.asof;
+  var h=''; W.decs.forEach(function(d,i){ h+='<div class="dec"><label><b>D'+(i+1)+'</b> Decision<textarea rows="2" data-d="'+i+'" data-k="q" maxlength="220">'+esc(d.q)+'</textarea></label><label>Assumption at risk<textarea rows="2" data-d="'+i+'" data-k="a" maxlength="220">'+esc(d.a)+'</textarea></label></div>'; });
+  $('decs').innerHTML=h;
+  Array.prototype.forEach.call($('decs').querySelectorAll('textarea'),function(t){ t.addEventListener('input',function(){ var i=+t.getAttribute('data-d'); W.decs[i][t.getAttribute('data-k')]=strip(t.value); W.dirty[i]=true; persist(); }); });
+}
+function linksFor(cls){
+  var cs=conds(), h='';
+  function L(u,t){ return '<a href="'+u+'" target="_blank" rel="noopener">'+esc(t)+'</a>'; }
+  if(cls==='Trial registry'){ h=cs.map(function(c){return L('https://clinicaltrials.gov/search?cond='+encodeURIComponent(c),'ClinicalTrials.gov: '+c);}).join('<br>')+'<br>'+L('https://trialsearch.who.int/','WHO trial search portal'); }
+  else if(cls==='Regulator') h=L('https://www.fda.gov/','FDA')+'<br>'+L('https://www.ema.europa.eu/','EMA');
+  else if(cls==='Company disclosure'){ var co=strip(W.comp).split(/[,;]+/).map(strip).filter(Boolean); h=co.length?'Results releases, investor presentations and pipeline pages for: '+esc(co.join(', ')):'Add companies in the scope above to list them here.'; }
+  else if(cls==='Conference or journal') h=cs.map(function(c){return L('https://pubmed.ncbi.nlm.nih.gov/?term='+encodeURIComponent(c),'PubMed: '+c);}).join('<br>')+'<br>Abstracts from the relevant society meetings';
+  else if(cls==='Payer or HTA body') h=L('https://www.nice.org.uk/','NICE')+'<br>'+L('https://icer.org/','ICER');
+  else h='Trade press and analyst notes of your choice, treated as leads';
+  return h;
+}
+var CLASS_TELLS={'Trial registry':'Registered studies, with phase, size, comparator and listed dates.','Regulator':'Approvals, designations, safety notices and meeting dates.','Company disclosure':'What the sponsor says about timing, data and plans, and what it leaves out.','Conference or journal':'Results in detail, with sample size and limits.','Payer or HTA body':'Assessment and coverage decisions, and when they are due.','Analyst or press':'Commentary and reporting, useful as a lead and rarely as evidence.'};
+function renderPlan(){
+  $('plan-lede').textContent='Six kinds of source for '+joinC(conds())+'. Each has a different job and a different reliability.';
+  var h=''; CLASSES.forEach(function(c){ h+='<tr><td><b>'+esc(c)+'</b></td><td>'+esc(CLASS_TELLS[c])+'</td><td>'+linksFor(c)+'</td></tr>'; });
+  $('plan-table').querySelector('tbody').innerHTML=h;
+  $('rules').innerHTML=ratingRules().map(function(t){return '<li>'+esc(t)+'</li>';}).join('');
+}
+function ratingRules(){
+  return ['Strong: at least two entries with status disclosed or company stated, from at least two source classes, and no entry marked not disclosed.',
+          'Mixed: at least one entry with status disclosed or company stated, but it does not meet the Strong test. A gap is logged, or only one source class or one entry supports it.',
+          'Inference only: no disclosed or company-stated entry. There is commentary or inference.',
+          'Nothing disclosed yet: no entries, or only not disclosed and scheduled entries.',
+          'The suggested review choice is approve for Strong and Mixed, hold for the rest. A reviewer can change it.'];
+}
+
+/* ---------- ledger ---------- */
+function rowHtml(r,i){
+  var h='<tr data-r="'+i+'"><td><input type="text" data-c="0" value="'+esc(r[0])+'" placeholder="YYYY-MM-DD" maxlength="10" style="width:110px"></td>';
+  h+='<td><select data-c="1">'+CLASSES.map(function(c){return '<option'+(c===r[1]?' selected':'')+'>'+c+'</option>';}).join('')+'</select></td>';
+  h+='<td><input type="text" data-c="2" value="'+esc(r[2])+'" maxlength="260"></td>';
+  h+='<td><select data-c="3">'+STATUSES.map(function(c){return '<option'+(c===r[3]?' selected':'')+'>'+c+'</option>';}).join('')+'</select></td>';
+  h+='<td><input type="text" data-c="4" value="'+esc(r[4])+'" maxlength="200"></td>';
+  h+='<td><select data-c="5"><option value="">None</option>'+[1,2,3,4].map(function(n){return '<option value="D'+n+'"'+(r[5]==='D'+n?' selected':'')+'>D'+n+'</option>';}).join('')+'</select></td>';
+  return h+'<td><button class="btn ghost small" data-del="'+i+'" type="button">Remove</button></td></tr>';
+}
+function renderLedger(){
+  $('l-body').innerHTML=W.rows.map(rowHtml).join('');
+  Array.prototype.forEach.call($('l-body').querySelectorAll('[data-del]'),function(b){ b.addEventListener('click',function(){ syncRows(); W.rows.splice(+b.getAttribute('data-del'),1); W.example=false; renderLedger(); persist(); }); });
+  Array.prototype.forEach.call($('l-body').querySelectorAll('input,select'),function(el){ el.addEventListener('change',function(){ syncRows(); W.example=false; persist(); }); });
+}
+function syncRows(){
+  var rows=[]; Array.prototype.forEach.call($('l-body').querySelectorAll('tr'),function(tr){ var r=[]; for(var j=0;j<6;j++){ r.push(tr.querySelector('[data-c="'+j+'"]').value); } rows.push(r); });
+  W.rows=rows;
+}
+function validateRows(rows){
+  var errs=[], clean=[];
+  rows.forEach(function(r,i){ var t='Row '+(i+1)+': ', e0=errs.length, d=strip(r[0]), c=strip(r[1]), w=strip(r[2]), s=strip(r[3]), ref=strip(r[4]), dc=strip(r[5]).toUpperCase();
+    if(!isoOK(d)) errs.push(t+'date must be YYYY-MM-DD.'); if(CLASSES.indexOf(c)<0) errs.push(t+'source class is not one of the six.');
+    if(!w) errs.push(t+'say what happened.'); if(STATUSES.indexOf(s)<0) errs.push(t+'status is not one of the six.');
+    if(dc!==''&&!/^D[1-4]$/.test(dc)) errs.push(t+'decision must be D1 to D4, or empty.');
+    if(errs.length===e0) clean.push({date:d,cls:c,what:w,status:s,ref:ref,dec:dc});
+  });
+  return {errs:errs,clean:clean};
+}
+function csvq(v){ v=String(v==null?'':v); return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function toCSV(rows){ return '﻿'+[['date','source_class','what_happened','status','source_or_reference','decision']].concat(rows).map(function(r){return r.map(csvq).join(',');}).join('\r\n')+'\r\n'; }
+function parseCSV(t){
+  var rows=[], row=[], f='', q=false, i, c;
+  for(i=0;i<t.length;i++){ c=t.charAt(i);
+    if(q){ if(c==='"'){ if(t.charAt(i+1)==='"'){ f+='"'; i++; } else q=false; } else f+=c; }
+    else if(c==='"') q=true; else if(c===','){ row.push(f); f=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&t.charAt(i+1)==='\n') i++; row.push(f); f=''; rows.push(row); row=[]; } else f+=c; }
+  if(f!==''||row.length){ row.push(f); rows.push(row); }
+  return rows.filter(function(r){ return r.some(function(x){ return String(x).trim()!==''; }); });
+}
+function saveText(name,text,type){ try{ var url=URL.createObjectURL(new Blob([text],{type:type})); var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000); }catch(e){} }
+function msg(list,isErr){ var el=$('l-msg'); el.style.color=isErr?'#8a2b1a':''; el.innerHTML=list.map(esc).join('<br>'); }
+
+/* ---------- persistence (this browser only) ---------- */
+function store(){ try{ return window.localStorage; }catch(e){ return null; } }
+function persist(){ var st=store(); if(!st||!$('l-keep').checked) return; try{ st.setItem(KEY,JSON.stringify({who:W.who,cond:W.cond,comp:W.comp,asof:W.asof,decs:W.decs,dirty:W.dirty,rows:W.rows,keep:true})); }catch(e){} }
+function restore(){ var st=store(); if(!st){ $('l-keep').disabled=true; return; } try{ var raw=st.getItem(KEY); if(!raw) return; var o=JSON.parse(raw); if(!o||!o.rows) return; W.who=o.who; W.cond=o.cond; W.comp=o.comp||''; W.asof=o.asof; W.decs=o.decs; W.dirty=o.dirty||[true,true,true,true]; W.rows=o.rows; W.example=false; $('l-keep').checked=true; }catch(e){} }
+
+/* ---------- analysis ---------- */
+function rate(rows){
+  var prim=rows.filter(function(r){return PRIMARY[r.status];}), classes={}, gap=rows.some(function(r){return r.status==='Not disclosed';});
+  prim.forEach(function(r){classes[r.cls]=1;});
+  var nc=Object.keys(classes).length;
+  if(prim.length>=2&&nc>=2&&!gap) return {k:'Strong',n:4,why:prim.length+' disclosed or company-stated entries from '+nc+' source classes, no gap logged.'};
+  if(prim.length>=1) return {k:'Mixed',n:2,why:prim.length+' disclosed or company-stated entr'+(prim.length===1?'y':'ies')+(gap?', and a gap is logged.':' from '+nc+' source class'+(nc===1?'':'es')+'.')};
+  if(rows.some(function(r){return r.status==='Opinion'||r.status==='Inference';})) return {k:'Inference only',n:1,why:'Only commentary or inference is logged.'};
+  return {k:'Nothing disclosed yet',n:0,why:rows.length?'Only not-disclosed or scheduled entries.':'No entries linked.'};
+}
+function analyse(clean,decs){
+  var out=decs.map(function(d,i){ var id='D'+(i+1), linked=clean.filter(function(r){return r.dec===id;}); var rt=rate(linked); return {id:id,q:d.q,a:d.a,rows:linked,rate:rt,sug:(rt.k==='Strong'||rt.k==='Mixed')?'approve':'hold'}; });
+  return out;
+}
+function meter(n){ var h='<span class="meter">'; for(var i=0;i<4;i++) h+='<i class="'+(i<n?'f':'')+'"></i>'; return h+'</span>'; }
+
+/* ---------- ui helpers ---------- */
+function buildStages(){ var ol=$('stages'); ol.innerHTML=''; STAGES.forEach(function(s,i){ var li=document.createElement('li'); li.id='st'+i; li.innerHTML=s[0]+'<small>'+s[1]+'</small>'; ol.appendChild(li); }); }
+function setStage(i){ for(var k=0;k<STAGES.length;k++) $('st'+k).className=k<i?'done':(k===i?'active':''); }
+function allDone(){ for(var k=0;k<STAGES.length;k++) $('st'+k).className='done'; }
+function log(m){ var el=document.createElement('div'), t=Math.round((Date.now()-tStart)/1000); el.innerHTML='<span>'+('0'+Math.floor(t/60)).slice(-2)+':'+('0'+(t%60)).slice(-2)+'</span>'+esc(m); $('feed').appendChild(el); $('feed').scrollTop=$('feed').scrollHeight; }
+function show(id){ $(id).classList.add('show'); }
+function hideRun(){ ['sec-map','sec-rev','sec-doc'].forEach(function(id){ $(id).classList.remove('show'); }); }
+function wait(ms){ var tok=runTok; return new Promise(function(res,rej){ setTimeout(function(){ tok===runTok?res():rej('abort'); }, ms/speed); }); }
+function check(tok){ if(tok!==runTok) throw 'abort'; }
+function lock(on){ Array.prototype.forEach.call(document.querySelectorAll('#sec-scope input,#sec-scope textarea,#sec-scope button,#sec-led input,#sec-led select,#sec-led button'),function(el){ el.disabled=on; }); }
+function fmtRow(r){ return r.date+' ['+r.cls+'] '+r.what+' ('+r.status+(r.ref?'; '+r.ref:'')+')'; }
+
+/* ---------- memo ---------- */
+function buildDoc(){
+  var A=S.A, ap=A.filter(function(d){return S.dec[d.id]==='approve';}), hd=A.filter(function(d){return S.dec[d.id]==='hold';}), rows=S.clean.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;});
+  var cs=joinC(conds()), B=[];
+  B.push({t:'h3',x:'Watch memo: '+cs});
+  B.push({t:'meta',x:W.who+'. As of '+S.asof+'. '+S.clean.length+' ledger entries. '+(W.example?'The entries are invented for illustration; no real company or compound is described.':'Entries were made by the user and have not been checked against any source.')+' Reviewer: approved '+ap.length+', held '+hd.length+'.'});
+  B.push({t:'h4',x:'What is on the record'});
+  var rec=rows.filter(function(r){return r.status!=='Not disclosed'&&r.status!=='Scheduled';});
+  B.push(rec.length?{t:'ul',items:rec.map(fmtRow)}:{t:'p',x:'No entries yet.'});
+  B.push({t:'h4',x:'Decisions touched (approved)'});
+  if(ap.length) B.push({t:'ul',items:ap.map(function(d){ return d.id+'. '+d.q+' Assumption at risk: '+d.a+' Evidence: '+d.rate.k+'. '+d.rate.why; })}); else B.push({t:'p',x:'None approved in this run.'});
+  B.push({t:'h4',x:'On hold'});
+  if(hd.length) B.push({t:'ul',items:hd.map(function(d){ return d.id+'. '+d.q+' Evidence: '+d.rate.k+'. '+d.rate.why; })}); else B.push({t:'p',x:'Nothing on hold.'});
+  var gaps=rows.filter(function(r){return r.status==='Not disclosed';});
+  B.push({t:'h4',x:'Not disclosed'});
+  B.push(gaps.length?{t:'ul',items:gaps.map(fmtRow)}:{t:'p',x:'No gaps logged.'});
+  var sch=rows.filter(function(r){return r.status==='Scheduled';});
+  B.push({t:'h4',x:'Watch next'});
+  B.push(sch.length?{t:'ul',items:sch.map(function(r){ return r.date+': '+r.what+' ('+r.cls+')'; })}:{t:'p',x:'No scheduled events logged.'});
+  var used={}; S.clean.forEach(function(r){used[r.cls]=1;}); var unused=CLASSES.filter(function(c){return !used[c];});
+  B.push({t:'h4',x:'Coverage'});
+  B.push({t:'p',x:unused.length?'No entries yet from: '+unused.join(', ')+'. A conclusion drawn without these is drawn without them.':'Every source class has at least one entry.'});
+  B.push({t:'h4',x:'Rating rules'}); B.push({t:'ul',items:ratingRules()});
+  B.push({t:'h4',x:'Limits'});
+  B.push({t:'ul',items:['This memo reflects only what was entered. The tool reads no source and checks no entry.','Ratings follow the rating rules and nothing else. They do not weigh how reliable a particular source is.','Nothing here is medical, regulatory or investment advice.']});
+  return B;
+}
+function renderDoc(B){
+  var h=''; B.forEach(function(b){ if(b.t==='h3') h+='<h3>'+esc(b.x)+'</h3>'; else if(b.t==='h4') h+='<h4>'+esc(b.x)+'</h4>'; else if(b.t==='meta') h+='<p class="meta">'+esc(b.x)+'</p>'; else if(b.t==='p') h+='<p>'+esc(b.x)+'</p>'; else if(b.t==='ul') h+='<ul>'+b.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join('')+'</ul>'; });
+  $('doc').innerHTML=h;
+}
+function docToMd(B){ var m=''; B.forEach(function(b){ if(b.t==='h3') m+='# '+b.x+'\n\n'; else if(b.t==='h4') m+='## '+b.x+'\n\n'; else if(b.t==='meta') m+='_'+b.x+'_\n\n'; else if(b.t==='p') m+=b.x+'\n\n'; else if(b.t==='ul') m+=b.items.map(function(i){return '- '+i;}).join('\n')+'\n\n'; }); return m; }
+
+/* ---------- review ---------- */
+function renderReview(paused){
+  var h=''; S.A.forEach(function(d){ var cur=S.dec[d.id];
+    h+='<div class="r"><div><b>'+d.id+'. '+esc(d.q)+'</b><div class="why">'+meter(d.rate.n)+esc(d.rate.k)+'. '+esc(d.rate.why)+'</div></div><div>';
+    if(paused) h+='<span class="seg" data-i="'+d.id+'"><button data-v="approve" class="'+(cur==='approve'?'on':'')+'">Approve</button><button data-v="hold" class="'+(cur==='hold'?'on':'')+'">Hold</button></span>';
+    else h+='<span class="seg fixed"><button class="'+(cur==='approve'?'on':'')+'">Approve</button><button class="'+(cur==='hold'?'on':'')+'">Hold</button></span><div class="why" style="margin-top:4px">Rule applied, no human</div>';
+    h+='</div></div>'; });
+  $('rev').innerHTML=h;
+  if(paused) Array.prototype.forEach.call($('rev').querySelectorAll('.seg button'),function(b){ b.addEventListener('click',function(){ S.dec[b.parentNode.getAttribute('data-i')]=b.getAttribute('data-v'); renderReview(true); }); });
+}
+
+/* ---------- the run ---------- */
+async function run(){
+  if(running) return;
+  syncRows(); W.who=strip($('f-who').value)||W.who; W.cond=strip($('f-cond').value); W.comp=strip($('f-comp').value); W.asof=strip($('f-asof').value);
+  if(!conds().length){ msg(['Name at least one condition.'],true); return; }
+  if(!isoOK(W.asof)){ msg(['"As of" must be a date, YYYY-MM-DD.'],true); return; }
+  var v=validateRows(W.rows); if(v.errs.length){ msg(v.errs,true); return; }
+  for(var i=0;i<4;i++){ if(!strip(W.decs[i].q)){ msg(['Decision D'+(i+1)+' is empty.'],true); return; } }
+  msg([],false); resetUi(); var tok=++runTok; running=true; speed=+$('speed').value||1; tStart=Date.now();
+  $('run').disabled=true; $('pause').disabled=true; $('speed').disabled=true; lock(true);
+  S={clean:v.clean,asof:W.asof,A:null,dec:{},doc:null};
+  try{
+    setStage(0); log('Scope: '+joinC(conds())+'; '+W.decs.length+' standing decisions'); await wait(900);
+    check(tok); setStage(1); log('Source plan: '+CLASSES.length+' source classes; rating rules fixed'); await wait(900);
+    check(tok); setStage(2); log('Reading '+S.clean.length+' ledger entries'); await wait(1000);
+    check(tok); setStage(3); S.A=analyse(S.clean,W.decs); show('sec-map'); $('cards').innerHTML='';
+    for(var k=0;k<S.A.length;k++){ var d=S.A[k]; var c=document.createElement('div'); c.className='card';
+      c.innerHTML='<h3>'+d.id+'. '+esc(d.q)+'</h3><div class="tag">Assumption at risk</div><div>'+esc(d.a)+'</div><div class="tag" style="margin-top:6px">Evidence</div><div>'+meter(d.rate.n)+'<b>'+esc(d.rate.k)+'</b>. '+esc(d.rate.why)+'</div><div class="tag" style="margin-top:6px">Linked entries</div><div>'+(d.rows.length?d.rows.map(function(r){return esc(r.date+' '+r.what+' ('+r.status+')');}).join('<br>'):'None')+'</div>';
+      $('cards').appendChild(c); log(d.id+' rated: '+d.rate.k); await wait(1100); check(tok); }
+    await wait(500);
+    check(tok); setStage(4); show('sec-rev'); S.A.forEach(function(d){ S.dec[d.id]=d.sug; });
+    if($('pause').checked){
+      $('rev-lede').textContent='The rating rules suggest a choice for each decision. Change any of them, then continue.'; renderReview(true); $('cont').style.display=''; log('Paused for review.');
+      await new Promise(function(res,rej){ reviewResolve=function(ok){ ok?res():rej('abort'); }; });
+      $('cont').style.display='none'; check(tok); renderReview(false); log('Review submitted.');
+    } else { $('rev-lede').textContent='Pause at review was off, so the suggested choices stand. This is a rule applied, not human approval.'; renderReview(false); log('Review skipped: rule applied.'); await wait(1500); }
+    check(tok); setStage(5); show('sec-doc'); S.doc=buildDoc(); renderDoc(S.doc); $('dl').disabled=false; $('pr').disabled=false; log('Memo written.'); await wait(400);
+    allDone();
+  } catch(e){ if(e!=='abort') throw e; }
+  finally{ if(tok===runTok){ running=false; $('run').disabled=false; $('pause').disabled=false; $('speed').disabled=false; lock(false); } }
+}
+function resetUi(){
+  runTok++; running=false; if(reviewResolve){ var f=reviewResolve; reviewResolve=null; f(false); }
+  hideRun(); buildStages(); $('feed').innerHTML=''; $('doc').innerHTML=''; $('dl').disabled=true; $('pr').disabled=true; $('cont').style.display='none';
+  $('run').disabled=false; $('pause').disabled=false; $('speed').disabled=false; lock(false); S=null;
+}
+
+/* ---------- wiring ---------- */
+function scopeChanged(){ W.who=strip($('f-who').value); W.cond=strip($('f-cond').value); W.comp=strip($('f-comp').value); W.asof=strip($('f-asof').value); ensureDecs(false); renderScope(); renderPlan(); persist(); }
+['f-who','f-comp','f-asof'].forEach(function(id){ $(id).addEventListener('input',function(){ W.who=strip($('f-who').value)||W.who; W.comp=strip($('f-comp').value); W.asof=strip($('f-asof').value); renderPlan(); persist(); }); });
+$('f-cond').addEventListener('input',function(){ var pos=$('f-cond').selectionStart; W.cond=strip($('f-cond').value); ensureDecs(false); var h=''; renderDecsOnly(); renderPlan(); persist(); });
+function renderDecsOnly(){ var h=''; W.decs.forEach(function(d,i){ h+='<div class="dec"><label><b>D'+(i+1)+'</b> Decision<textarea rows="2" data-d="'+i+'" data-k="q" maxlength="220">'+esc(d.q)+'</textarea></label><label>Assumption at risk<textarea rows="2" data-d="'+i+'" data-k="a" maxlength="220">'+esc(d.a)+'</textarea></label></div>'; });
+  $('decs').innerHTML=h; Array.prototype.forEach.call($('decs').querySelectorAll('textarea'),function(t){ t.addEventListener('input',function(){ var i=+t.getAttribute('data-d'); W.decs[i][t.getAttribute('data-k')]=strip(t.value); W.dirty[i]=true; persist(); }); }); }
+$('regen').addEventListener('click',function(){ ensureDecs(true); renderDecsOnly(); persist(); });
+$('l-add').addEventListener('click',function(){ syncRows(); W.example=false; W.rows.push([W.asof||'','Company disclosure','','Disclosed','','']); renderLedger(); persist(); });
+$('l-ex').addEventListener('click',function(){ W.rows=EXAMPLE_ROWS.map(function(r){return r.slice();}); W.example=true; renderLedger(); persist(); msg(['The invented example is loaded.'],false); });
+$('l-clear').addEventListener('click',function(){ W.rows=[]; W.example=false; renderLedger(); persist(); msg(['Ledger cleared.'],false); });
+$('l-dl').addEventListener('click',function(){ syncRows(); saveText('condition-watch-ledger.csv',toCSV(W.rows),'text/csv'); });
+$('l-file').addEventListener('change',function(ev){ var f=ev.target.files&&ev.target.files[0]; if(!f) return; var fr=new FileReader();
+  fr.onload=function(){ var rows=parseCSV(String(fr.result||'').replace(/^﻿/,'')); if(rows.length&&/^date$/i.test(String(rows[0][0]).trim())) rows.shift();
+    rows=rows.map(function(r){ var o=[]; for(var j=0;j<6;j++) o.push(r[j]==null?'':r[j]); return o; }); var v=validateRows(rows); if(v.errs.length){ msg(v.errs,true); return; }
+    W.rows=rows; W.example=false; renderLedger(); persist(); msg(['Imported '+rows.length+' rows.'],false); };
+  fr.readAsText(f); });
+$('l-keep').addEventListener('change',function(){ var st=store(); if(!st) return; if($('l-keep').checked){ persist(); msg(['Saved in this browser only. It is not sent anywhere. Clear it by unticking the box.'],false); } else { try{ st.removeItem(KEY); }catch(e){} msg(['Removed from this browser.'],false); } });
+$('run').addEventListener('click',run);
+$('reset').addEventListener('click',function(){ resetUi(); });
+$('cont').addEventListener('click',function(){ if(reviewResolve){ var f=reviewResolve; reviewResolve=null; f(true); } });
+$('pr').addEventListener('click',function(){ window.print(); });
+$('dl').addEventListener('click',function(){ if(S&&S.doc) saveText('condition-watch-memo.md',docToMd(S.doc),'text/markdown'); });
+
+restore(); ensureDecs(false); renderScope(); renderPlan(); renderLedger(); buildStages();
+window.__cw={W:W,validateRows:validateRows,rate:rate,analyse:analyse,genDecs:genDecs,toCSV:toCSV,parseCSV:parseCSV,state:function(){return S;},md:function(){return S&&S.doc?docToMd(S.doc):'';},EXAMPLE_ROWS:EXAMPLE_ROWS,CLASSES:CLASSES,STATUSES:STATUSES};
+})();
+</script>
+</body>
+</html>
