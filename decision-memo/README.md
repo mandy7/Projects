@@ -14,8 +14,8 @@ assets/site.js              Form handling
 assets/img/                 Real screenshots of the tools, used on the cards
 tools/shiftwatch.html       Hotels: recorded research run
 tools/tipping-point.html    Telecom: interactive model, illustrative inputs
-tools/condition-watch.html  Pharma: interactive prototype, manual evidence entry
-tools/guidance-tracker.html Consumer goods: interactive prototype, manual data entry
+tools/condition-watch.html  Pharma: live evidence board, manual evidence entry
+tools/guidance-tracker.html Consumer goods: live scores and record by topic, manual data entry
 ```
 
 ## Before you publish
@@ -53,6 +53,7 @@ A link ending in `?source=arjan` stores `arjan` with a form message. This tells 
 | What you type into the examples stays in your browser | A browser test recorded no network requests from any tool during a full run. |
 | Tipping Point reruns give identical results, and its arithmetic is right | Two runs matched. Its allocation, stopping points and averages were recomputed independently and agreed. |
 | Scoring and rating rules behave at their boundaries | Boundary tests for Guidance Tracker and Condition Watch. |
+| Changing an input changes the visible output in Condition Watch and Guidance Tracker | Browser tests that change a result, a status, an override or the condition, and check the score, the board, the memo and the plain-language note of what moved. |
 | No accuracy or time-saving figure is claimed | None appears on any page. |
 
 ## Not tested
