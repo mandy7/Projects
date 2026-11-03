@@ -14,7 +14,7 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--text);font:15px/1.5 var(--serif);display:grid;grid-template-rows:54px minmax(0,1fr) 30px;overflow:hidden}
+body{background:var(--bg);color:var(--text);font:15px/1.5 var(--serif);display:grid;grid-template-rows:auto 54px minmax(0,1fr) 30px;overflow:hidden}
 a{color:var(--teal)}
 button{font:inherit;color:inherit;cursor:pointer}
 
@@ -199,12 +199,31 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
   main{display:block}.doc{border:0}
   .paper{margin:0;border:0;max-height:none;overflow:visible;padding:0}
 }
+
+.sitebar{background:#f6f3ec;border-bottom:1px solid #d9d3c4;font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;line-height:1.4}
+.sitebar .sb{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+.sitebar .sb-word{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:600;font-size:19px;color:#1c1b19;text-decoration:none}
+.sitebar nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:14.5px}
+.sitebar nav a{color:#625e56;text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+.sitebar nav a:hover{color:#1c1b19}
+.sitebar nav a[aria-current=page]{color:#1c1b19;border-bottom-color:#1c1b19}
+.sitebar nav a.sb-btn{background:#8a3a22;color:#fffdf8;padding:7px 14px;border-radius:2px;border:1px solid #8a3a22;font-weight:600}
+.sitebar nav a.sb-btn:hover{background:#6e2d19;color:#fff}
+@media print{.sitebar{display:none!important}}
 </style>
 </head>
 <body>
+<div class="sitebar"><div class="sb">
+  <a class="sb-word" href="../index.html">Decision Memo</a>
+  <nav aria-label="Main">
+    <a href="../examples.html" aria-current="page">Examples</a>
+    <a href="../method.html">How it works</a>
+    <a href="../working-together.html">Working together</a>
+    <a class="sb-btn" href="../contact.html">Free audit</a>
+  </nav>
+</div></div>
 
 <header>
-  <a class="backlink" href="../examples.html">Decision Memo</a>
   <div class="brand"><b>Shiftwatch</b><em>weekly market-shift record</em></div>
   <div class="case">Hypothetical mid-size Indian hotel chain<br>Topic: AI-agent hotel booking</div>
   <div class="controls">

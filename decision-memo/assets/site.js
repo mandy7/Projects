@@ -34,11 +34,25 @@
     msg.className = isErr ? 'err' : '';
   }
 
+  function done() {
+    form.reset();
+    say('Thank you. I read every message and will reply to the address or profile you gave.', false);
+    btn.disabled = false;
+  }
+  function failed() {
+    say('The message did not go through. Please check your connection and try again.', true);
+    btn.disabled = false;
+  }
+
+  var google = cfg.googleForm && cfg.googleForm.action && cfg.googleForm.entries &&
+    cfg.googleForm.entries.pain && cfg.googleForm.entries.industry && cfg.googleForm.entries.contact;
+
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
     var pain = form.pain.value.trim();
     var industry = form.industry.value.trim();
     var contact = form.contact.value.trim();
+    var source = document.getElementById('f-source').value;
 
     if (form._gotcha && form._gotcha.value) { return; }
     if (pain.length < 10) { say('Please describe the decision or pain in a sentence or two.', true); return; }
@@ -46,6 +60,25 @@
     var looksEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
     var looksLinkedIn = /linkedin\.com\/.+/i.test(contact);
     if (!looksEmail && !looksLinkedIn) { say('Please give an email address or a LinkedIn profile link so I can reply.', true); return; }
+
+    if (google) {
+      // Posts to a Google Form. The browser cannot read Google's reply, so a sent request counts as success.
+      var e = cfg.googleForm.entries;
+      var body = new URLSearchParams();
+      body.append(e.pain, pain);
+      body.append(e.industry, industry);
+      body.append(e.contact, contact);
+      if (e.source) { body.append(e.source, source); }
+      btn.disabled = true;
+      say('Sending.', false);
+      fetch(cfg.googleForm.action, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      }).then(done).catch(failed);
+      return;
+    }
 
     if (!cfg.formEndpoint) {
       say('This form is not connected yet, so nothing was sent.', true);
@@ -59,14 +92,10 @@
       headers: { 'Accept': 'application/json' },
       body: new FormData(form)
     }).then(function (r) {
-      if (r.ok) {
-        form.reset();
-        say('Thank you. I read every message and will reply to the address or profile you gave.', false);
-      } else {
+      if (r.ok) { done(); } else {
         say('The message did not go through. Please try again in a few minutes.', true);
+        btn.disabled = false;
       }
-    }).catch(function () {
-      say('The message did not go through. Please check your connection and try again.', true);
-    }).then(function () { btn.disabled = false; });
+    }).catch(failed);
   });
 })();

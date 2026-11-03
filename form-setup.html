@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Form setup helper</title>
+<style>
+body{font:16px/1.55 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;max-width:46rem;margin:2rem auto;padding:0 1rem;color:#1c1b19;background:#f6f3ec}
+h1{font:600 1.7rem Georgia,serif;margin:0 0 .5rem}
+h2{font:600 1.15rem Georgia,serif;margin:1.8rem 0 .4rem}
+ol{padding-left:1.2rem}li{margin-bottom:.5rem}
+textarea,input{width:100%;font:inherit;padding:.5rem;border:1px solid #b9b3a2;background:#fffdf8;border-radius:2px}
+textarea{min-height:5rem}
+button{font:inherit;font-weight:600;background:#8a3a22;color:#fffdf8;border:0;padding:.65rem 1.2rem;border-radius:2px;cursor:pointer;margin-top:.7rem}
+pre{background:#fffdf8;border:1px solid #d9d3c4;padding:1rem;overflow:auto;white-space:pre-wrap;word-break:break-all;font-size:.85rem}
+.err{color:#8a2b1a}.small{color:#625e56;font-size:.9rem}
+</style>
+</head>
+<body>
+<h1>Form setup helper</h1>
+<p class="small">This page runs only on your computer. Open it by double-clicking the file. It sends nothing anywhere. Do not upload it to your site.</p>
+
+<h2>Step 1. Build the Google Form</h2>
+<ol>
+  <li>Go to forms.google.com and start a blank form. Title it "Tell me about a decision".</li>
+  <li>Add four questions, in this order: a <b>Paragraph</b> question "The decision or the pain", then three <b>Short answer</b> questions: "Your industry", "Email or LinkedIn profile", and "Source" (leave Source optional).</li>
+  <li>In Settings, make sure "Collect email addresses" is off and the form is open to anyone with the link.</li>
+  <li>In the Responses tab, link the form to a Google Sheet, and use the three-dot menu to turn on email notifications for new responses.</li>
+</ol>
+
+<h2>Step 2. Get the pre-filled link</h2>
+<ol>
+  <li>In the form editor, open the three-dot menu at the top right and choose "Get pre-filled link".</li>
+  <li>Type exactly <b>AAA</b> in the first question, <b>BBB</b> in the second, <b>CCC</b> in the third and <b>DDD</b> in the fourth.</li>
+  <li>Click "Get link", then "Copy link", and paste it below.</li>
+</ol>
+<label for="link"><b>Pre-filled link</b></label>
+<textarea id="link" placeholder="https://docs.google.com/forms/d/e/.../viewform?usp=pp_url&entry.123=AAA&entry.456=BBB..."></textarea>
+<label for="mail" style="display:block;margin-top:.8rem"><b>Contact email to show on the site</b> (optional)</label>
+<input id="mail" type="text" placeholder="you@example.com">
+<button id="go" type="button">Make my settings</button>
+<p id="err" class="err"></p>
+
+<h2>Step 3. Paste the result</h2>
+<p>Open <code>assets/config.js</code> in your site's repository, replace everything in it with the text below, and commit the change.</p>
+<pre id="out">The settings will appear here.</pre>
+
+<script>
+(function(){
+  function $(i){return document.getElementById(i);}
+  $('go').addEventListener('click',function(){
+    var err=$('err'); err.textContent='';
+    var raw=$('link').value.trim(), u;
+    try{ u=new URL(raw); }catch(e){ err.textContent='That does not look like a link. Paste the whole pre-filled link.'; return; }
+    if(!/docs\.google\.com$/.test(u.hostname)||!/\/forms\//.test(u.pathname)){ err.textContent='This is not a Google Form link.'; return; }
+    var map={AAA:'pain',BBB:'industry',CCC:'contact',DDD:'source'}, entries={pain:'',industry:'',contact:'',source:''};
+    u.searchParams.forEach(function(v,k){ if(/^entry\.\d+$/.test(k)&&map[v]) entries[map[v]]=k; });
+    if(!entries.pain||!entries.industry||!entries.contact){ err.textContent='I could not find the field numbers. Type AAA, BBB and CCC in the first three questions, then get the link again.'; return; }
+    var action=u.origin+u.pathname.replace(/\/viewform.*$/,'/formResponse');
+    var mail=$('mail').value.trim().replace(/"/g,'');
+    var t='window.SITE = {\n  googleForm: {\n    action: "'+action+'",\n    entries: { pain: "'+entries.pain+'", industry: "'+entries.industry+'", contact: "'+entries.contact+'", source: "'+entries.source+'" }\n  },\n  formEndpoint: "",\n  contactEmail: "'+mail+'"\n};\n';
+    $('out').textContent=t;
+  });
+})();
+</script>
+</body>
+</html>

@@ -20,9 +20,12 @@ tools/guidance-tracker.html Consumer goods: interactive prototype, manual data e
 
 ## Before you publish
 
-1. **Connect the form.** Create a form on a form service that accepts a plain POST and returns JSON. Copy its address into `assets/config.js` as `formEndpoint`. Until then the form says it is not connected and sends nothing. I have not checked any form service's current limits or terms.
+1. **Connect the form.** You do not need to buy anything. There are two routes, and the site supports both:
+   - **A Google Form (free, uses your Google account).** Build the form, then open `form-setup.html` from the download on your own computer. Paste Google's pre-filled link into it and it writes the exact text for `assets/config.js`. Responses arrive in a Google Sheet, and you can switch on email notifications. The browser cannot read Google's reply, so the site shows its thank-you message once the request is sent. Submit a test message yourself and check that it appears in the Sheet. The Google route was tested against a stand-in, not against Google.
+   - **A form service** that accepts a plain POST and returns JSON. Put its address in `formEndpoint`. I have not checked any service's current free limits or terms.
+   Until one is set, the form says it is not connected and sends nothing. Do not upload `form-setup.html` to the site.
 2. **Set a contact email** in `assets/config.js` as `contactEmail`. It appears in the privacy section. If it is empty, the page tells people to reply to any message from you.
-3. **Read the privacy section** on `contact.html` and make sure each sentence is true of what you do. It says the message is held by the form service and in your email, is used only to reply, is not sold, and does not join a mailing list. It also says the site has no analytics scripts and that the host may keep standard server logs.
+3. **Read the privacy section** on `contact.html` and make sure each sentence is true of what you do. It says the message is held by the form service (for a Google Form, that is Google) and in your email, is used only to reply, is not sold, and does not join a mailing list. It also says the site has no analytics scripts and that the host may keep standard server logs.
 4. **Confirm the offers.** These sentences are commitments: "a focused 45-minute conversation" and "within a few days" on `working-together.html`, and the free audit on every page. Pilots appear only as a selective offer after the first conversation.
 5. **Check the name.** "Decision Memo" is a working name. Check trademarks and domains before you use it. To rename it, search for `Decision Memo` across the files and replace it.
 6. **Open every page** on a phone and a laptop, and click each link.
@@ -55,7 +58,7 @@ A link ending in `?source=arjan` stores `arjan` with a form message. This tells 
 ## Not tested
 
 - Browsers other than Chromium, and real phones.
-- A real form service. The form was tested against a stand-in endpoint.
+- A real form service or a real Google Form. Both routes were tested against stand-in endpoints.
 - Print and PDF output of the memos.
 - Any example against real documents or real outcomes.
 - The search links in Condition Watch. They open searches on those sites, and what comes back has not been reviewed.

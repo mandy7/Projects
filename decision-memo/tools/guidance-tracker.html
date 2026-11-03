@@ -74,12 +74,32 @@ details.setup{margin-top:10px;font-size:14px}details.setup summary{cursor:pointe
 .filebtn{cursor:pointer;display:inline-block}
 footer{margin-top:30px;border-top:1px solid var(--rule);padding-top:12px;color:var(--mut);font-size:12.5px;max-width:880px}
 @media print{body{background:#fff}.wrap>header,.controls,.grid>aside,.docbar,footer,details.setup,section.blk:not(#sec-doc){display:none!important}.grid{display:block}#doc{border:0;padding:0;max-width:none}}
+
+.sitebar{background:#f6f3ec;border-bottom:1px solid #d9d3c4;font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;line-height:1.4}
+.sitebar .sb{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+.sitebar .sb-word{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:600;font-size:19px;color:#1c1b19;text-decoration:none}
+.sitebar nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:14.5px}
+.sitebar nav a{color:#625e56;text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+.sitebar nav a:hover{color:#1c1b19}
+.sitebar nav a[aria-current=page]{color:#1c1b19;border-bottom-color:#1c1b19}
+.sitebar nav a.sb-btn{background:#8a3a22;color:#fffdf8;padding:7px 14px;border-radius:2px;border:1px solid #8a3a22;font-weight:600}
+.sitebar nav a.sb-btn:hover{background:#6e2d19;color:#fff}
+@media print{.sitebar{display:none!important}}
 </style>
 </head>
 <body>
+<div class="sitebar"><div class="sb">
+  <a class="sb-word" href="../index.html">Decision Memo</a>
+  <nav aria-label="Main">
+    <a href="../examples.html" aria-current="page">Examples</a>
+    <a href="../method.html">How it works</a>
+    <a href="../working-together.html">Working together</a>
+    <a class="sb-btn" href="../contact.html">Free audit</a>
+  </nav>
+</div></div>
 <div class="wrap">
 <header>
-  <p class="back"><a href="../examples.html">Decision Memo</a> / Examples</p>
+  <p class="back"><a href="../examples.html">Examples</a> / Guidance Tracker</p>
   <h1>Guidance Tracker</h1>
   <p class="sub">Compare stated targets with reported results, using explicit scoring rules and a reviewable record. It tracks numeric ranges and dated milestones, and ends in a one-page memo.</p>
   <p class="flag" id="flag"><b>Live in your browser.</b> The example is a hypothetical consumer-goods company with invented figures. Replace it with your own ledger under the button. Nothing you enter leaves your browser. It is a record-keeping aid and not investment advice.</p>
