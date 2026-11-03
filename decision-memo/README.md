@@ -3,53 +3,53 @@
 Five pages and four tools. There is no build step and no server. Every file is plain HTML, CSS and JavaScript.
 
 ```
-index.html                 Home
-workflows.html             The four workflows
-method.html                How it works, what was tested
-working-together.html      Audit, pilot, pricing approach, data
-contact.html               Three-field form, about, privacy
-assets/site.css            Shared styles
-assets/config.js           Settings you fill in (form address, contact email)
-assets/site.js             Form handling
-tools/shiftwatch.html      Hotels: recorded sample on public sources
-tools/tipping-point.html   Telecom: live in the browser, own inputs or CSV
-tools/condition-watch.html Pharma: live in the browser, scope and ledger
-tools/said-and-done.html   Consumer goods: live in the browser, own ledger or CSV
+index.html                  Home
+examples.html               The four examples, one block each
+method.html                 How a memo gets made, what was tested, limits
+working-together.html       Free audit, pilots, pricing, where it runs, data
+contact.html                Three-field form, about, privacy
+assets/site.css             Shared styles
+assets/config.js            Settings you fill in (form address, contact email)
+assets/site.js              Form handling
+assets/img/                 Real screenshots of the tools, used on the cards
+tools/shiftwatch.html       Hotels: recorded research run
+tools/tipping-point.html    Telecom: interactive model, illustrative inputs
+tools/condition-watch.html  Pharma: interactive prototype, manual evidence entry
+tools/guidance-tracker.html Consumer goods: interactive prototype, manual data entry
 ```
 
 ## Before you publish
 
-1. **Connect the form.** Create a form on a form service that accepts a plain POST and returns JSON, copy its address into `assets/config.js` as `formEndpoint`. Until you do, the form says it is not connected and sends nothing. I have not checked any form service's current free limits or terms, so read them first.
-2. **Set a contact email** in `assets/config.js` as `contactEmail`. It appears in the privacy section for questions and deletion requests. If you leave it empty, the page tells people to reply to any message from you. Do not use an address you do not want published.
-3. **Read the privacy section** on `contact.html` and make sure each sentence is true of what you actually do. It says the message is used only to reply, that it is not sold, that you add no one to a mailing list, and that the site uses no analytics.
-4. **Confirm the offers.** These sentences are commitments, and you should change any you do not want to keep: "about 45 minutes", "within a few days", "no charge, for the first few teams", and the four-week and two-week pilot lengths on `working-together.html`.
-5. **Check the name.** "Decision Memo" is a working name. Check trademarks and domains before you use it. To rename it, search for `Decision Memo` across the files and replace it. It appears in each page, the tools' back links and titles, and the footer.
-6. **Open every page once** on a phone and a laptop, and click each link.
+1. **Connect the form.** Create a form on a form service that accepts a plain POST and returns JSON. Copy its address into `assets/config.js` as `formEndpoint`. Until then the form says it is not connected and sends nothing. I have not checked any form service's current limits or terms.
+2. **Set a contact email** in `assets/config.js` as `contactEmail`. It appears in the privacy section. If it is empty, the page tells people to reply to any message from you.
+3. **Read the privacy section** on `contact.html` and make sure each sentence is true of what you do. It says the message is held by the form service and in your email, is used only to reply, is not sold, and does not join a mailing list. It also says the site has no analytics scripts and that the host may keep standard server logs.
+4. **Confirm the offers.** These sentences are commitments: "a focused 45-minute conversation" and "within a few days" on `working-together.html`, and the free audit on every page. Pilots appear only as a selective offer after the first conversation.
+5. **Check the name.** "Decision Memo" is a working name. Check trademarks and domains before you use it. To rename it, search for `Decision Memo` across the files and replace it.
+6. **Open every page** on a phone and a laptop, and click each link.
 
-## Deploy on Vercel
+## Headline
 
-These steps are as I understand Vercel's current interface, so check them against what you see.
+The home page headline is "An analyst for the work your team repeats every week." It is the `h1` in `index.html`. Another option that was suggested is "Turn recurring analysis into clearer decisions." It is more abstract, so test both on a few people if you can.
 
-1. Put this folder in a Git repository, or use the `decision-memo` folder of this one.
-2. In Vercel, add a new project and import the repository.
-3. Set the root directory to `decision-memo`. Choose the "Other" framework preset. Leave the build command and output directory empty.
-4. Deploy. Add your own domain under the project's domain settings when you have one.
+## Deploy
 
-Any static host works the same way, since there is nothing to build.
+1. Create a new private GitHub repository for the site and upload the contents of this folder, so that `index.html` sits at the top level.
+2. In Vercel, add a new project and import that repository. Choose "Other" as the framework preset, leave the root directory and build settings empty, and deploy.
+3. When you replace files later, delete any file that was renamed. The old `workflows.html` and `tools/said-and-done.html` no longer exist and should be removed from the repository.
 
 ## Source tags
 
-If you share a link ending in `?source=arjan`, the form stores `arjan` with the message. This tells you which introduction produced which reply. The privacy section already mentions it.
+A link ending in `?source=arjan` stores `arjan` with a form message. This tells you which introduction produced which reply.
 
-## What each page claims, and what backs it
+## What the site claims, and what backs it
 
-| Claim on the site | Backed by |
+| Claim | Backed by |
 |---|---|
-| Shiftwatch is a recorded replay | The page's data is stored in the file. It makes no network request. |
-| The workflow version was tested only on mock services | Your own statement. This repository does not contain that workflow. |
-| The examples send nothing anywhere | A browser test recorded zero network requests from each tool during a full run. |
-| Tipping Point reruns give identical results | Two runs produced identical memos in a browser test. |
-| Scoring and rating rules behave at their boundaries | Boundary tests for Said and Done and Condition Watch. |
+| Shiftwatch is a recorded run | Its data is stored in the file, and it makes no network request. |
+| The workflow version was tested only on mock services | Your own statement. That workflow is not in this repository. |
+| What you type into the examples stays in your browser | A browser test recorded no network requests from any tool during a full run. |
+| Tipping Point reruns give identical results, and its arithmetic is right | Two runs matched. Its allocation, stopping points and averages were recomputed independently and agreed. |
+| Scoring and rating rules behave at their boundaries | Boundary tests for Guidance Tracker and Condition Watch. |
 | No accuracy or time-saving figure is claimed | None appears on any page. |
 
 ## Not tested
@@ -57,6 +57,6 @@ If you share a link ending in `?source=arjan`, the form stores `arjan` with the 
 - Browsers other than Chromium, and real phones.
 - A real form service. The form was tested against a stand-in endpoint.
 - Print and PDF output of the memos.
-- Any of the four workflows against real documents or real outcomes.
+- Any example against real documents or real outcomes.
 - The search links in Condition Watch. They open searches on those sites, and what comes back has not been reviewed.
-- The Shiftwatch data. It was supplied, and it has not been re-checked against its sources here.
+- The Shiftwatch data, which was supplied and has not been re-checked against its sources here.

@@ -120,7 +120,7 @@ footer{margin-top:30px;border-top:1px solid var(--rule);padding-top:12px;color:v
 <body>
 <div class="wrap">
 <header>
-  <p class="back"><a href="../workflows.html">Decision Memo</a> / Workflows</p>
+  <p class="back"><a href="../examples.html">Decision Memo</a> / Examples</p>
   <h1>Tipping Point</h1>
   <p class="sub" id="sub">Finds where the next unit of spend does the most good and the point at which each route stops paying back. A decision-modelling workflow that runs thousands of scenarios and ends with a one-page memo.</p>
   <p class="flag" id="flag"><b>Method demo on a hypothetical company.</b> All nine inputs are illustrative assumptions, labelled as such. The numbers are computed in your browser, not drawn from market data.</p>
@@ -571,7 +571,7 @@ function buildDoc(){
     (CUSTOM?'All nine inputs were entered by the user. This tool has not checked them against any source. The memo shows the method applied to those inputs, not market facts.':'All nine inputs are illustrative and were set by the builder. None comes from a filing, a platform or a client. The memo shows the method, not market facts.'),
     'Each route is modelled as an independent power curve. There is no overlap between routes, no brand effect, no stock or cash timing, and no fixed cost.',
     'Contribution here means margin on '+SW+' less channel spend over one year.',
-    'The recommended split is the best of 66 splits in 10% steps by average contribution. It is not a guarantee for any single year.'
+    'The recommended split is the best of 66 splits in 10% steps by average contribution. It is the best split inside this model, not a forecast of what is best in the market, and not a guarantee for any single year.'
   ].concat(LIMIT?[LIMIT]:[])});
   blocks.push({t:'h4',x:'Method'});
   blocks.push({t:'p',x:N.toLocaleString('en-US')+' scenarios drawn from triangular ranges (low, typical, high) with a fixed seed. For each scenario the budget is placed one '+CUR+'1'+UNITS+' at a time wherever the next rupee returns most, stopping when no route returns '+CUR+'1. The tipping point is the spend at which the next '+CUR+'1 returns exactly '+CUR+'1. Assumptions are ranked by how far the best split moves when one is set to the low or high end of its range while the others stay at typical.'});

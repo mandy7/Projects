@@ -4,71 +4,66 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tell me about a decision | Decision Memo</title>
-<meta name="description" content="Three short fields: the decision or pain, your industry, and an email or LinkedIn link. I read every message.">
+<meta name="description" content="Three short fields: the decision or pain, your industry, and an email or LinkedIn link. I read every message and reply to say whether a free decision audit looks useful.">
 <meta name="theme-color" content="#f6f3ec">
 <meta property="og:title" content="Tell me about a decision | Decision Memo">
-<meta property="og:description" content="Three short fields: the decision or pain, your industry, and an email or LinkedIn link. I read every message.">
+<meta property="og:description" content="Three short fields: the decision or pain, your industry, and an email or LinkedIn link. I read every message and reply to say whether a free decision audit looks useful.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to the content</a>
-<div class="mast"><div class="wrap">
+<header class="mast"><div class="wrap">
   <a class="word" href="index.html">Decision Memo</a>
-  <nav class="nav" aria-label="Main"><a href="workflows.html">Workflows</a><a href="method.html">Method</a><a href="working-together.html">Working together</a><a href="contact.html" aria-current="page">Contact</a></nav>
-</div></div>
-<main id="main" class="wrap">
+  <nav class="nav" aria-label="Main"><a href="examples.html">Examples</a><a href="method.html">How it works</a><a href="working-together.html">Working together</a><a href="contact.html" class="btn" aria-current="page">Free audit</a></nav>
+</div></header>
+<main id="main">
 
-<section class="page-head">
+<section class="page-head"><div class="wrap">
   <h1>Tell me about a decision</h1>
-  <p class="lead">The form has three short fields. I read every message, and my reply will suggest a time for the exploratory audit.</p>
-</section>
+  <p class="lead">Describe the decision that keeps coming back to your team. A few lines are enough to start. I read every message myself, and I will reply to say whether a free decision audit looks useful and, if so, suggest a time.</p>
+</div></section>
 
-<section class="sec row">
-  <div class="label">The form</div>
+<section class="block"><div class="wrap">
+  <form class="ask" id="ask" novalidate>
+    <label for="f-pain">The decision or the pain</label>
+    <p class="hint">A few lines are enough.</p>
+    <textarea id="f-pain" name="pain" maxlength="1200" required></textarea>
+
+    <label for="f-industry">Your industry</label>
+    <input type="text" id="f-industry" name="industry" maxlength="80" autocomplete="off" required>
+
+    <label for="f-contact">Email or LinkedIn profile</label>
+    <p class="hint">So I can reply.</p>
+    <input type="text" id="f-contact" name="contact" maxlength="200" autocomplete="email" required>
+
+    <input type="hidden" id="f-source" name="source" value="">
+    <div class="trap" aria-hidden="true"><label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
+
+    <p class="consent">By sending this you agree that I may contact you about it. <a href="#privacy">What I do with it</a>.</p>
+    <button class="btn" type="submit" id="send">Send</button>
+    <div id="form-msg" role="status" aria-live="polite"></div>
+  </form>
+</div></section>
+
+<section class="block"><div class="wrap two">
+  <h2>About me</h2>
+  <p>I am Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor with a background in travel marketplaces. I am building Decision Memo around one idea: a decision that recurs should leave a record.</p>
+</div></section>
+
+<section class="block" id="privacy"><div class="wrap two">
+  <h2>Privacy</h2>
   <div>
-    <form class="ask" id="ask" novalidate>
-      <label for="f-pain">The decision or the pain</label>
-      <p class="hint">Say what your team keeps reopening, or still does by hand.</p>
-      <textarea id="f-pain" name="pain" maxlength="1200" required></textarea>
-
-      <label for="f-industry">Your industry</label>
-      <input type="text" id="f-industry" name="industry" maxlength="80" autocomplete="off" required>
-
-      <label for="f-contact">Email or LinkedIn profile</label>
-      <p class="hint">So I can reply.</p>
-      <input type="text" id="f-contact" name="contact" maxlength="200" autocomplete="email" required>
-
-      <input type="hidden" id="f-source" name="source" value="">
-      <div class="trap" aria-hidden="true"><label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
-
-      <p class="consent">By sending this you agree that I may contact you about it. <a href="#privacy">What I do with it</a>.</p>
-      <button class="btn" type="submit" id="send">Send</button>
-      <div id="form-msg" role="status" aria-live="polite"></div>
-    </form>
-  </div>
-</section>
-
-<section class="sec row">
-  <div class="label">Who I am</div>
-  <div>
-    <p>I am Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor with a background in travel marketplaces. I am building Decision Memo around one idea: a decision that recurs should leave a record.</p>
-  </div>
-</section>
-
-<section class="sec row" id="privacy">
-  <div class="label">Privacy</div>
-  <div>
-    <p>The form collects the three things you type. If the link that brought you here carried a source tag, that tag is stored with your message. The form service may also record technical details such as the time and your IP address.</p>
-    <p>I use your message only to reply to you. It is held by the form service and in my email, and I do not sell it or add you to a mailing list.</p>
-    <p>The four examples on this site run in your browser. They send nothing anywhere, and this site uses no analytics.</p>
+    <p>You can use every example without sharing contact details, and the examples never ask for an email address. What you type into them stays in your browser.</p>
+    <p>The site has no analytics scripts, and my host may keep standard server logs.</p>
+    <p>A message sent through this form is held by the form service and in my email. If the link that brought you here carried a source tag, the tag is stored with your message. I use your message to reply to you, I do not sell it, and I do not add you to a mailing list.</p>
     <p id="mail-line"></p>
   </div>
-</section>
+</div></section>
 
 </main>
 <footer class="foot"><div class="wrap">
-  <p>Decision Memo, by Mandhir Dua. The four examples use hypothetical companies or invented figures. Nothing here is investment, legal or medical advice.</p>
+  <p>Decision Memo, by Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor. All examples use hypothetical companies and invented figures. Nothing here is investment, legal or medical advice.</p>
   <p><a href="contact.html#privacy">Privacy</a></p>
 </div></footer>
 <script src="assets/config.js"></script>

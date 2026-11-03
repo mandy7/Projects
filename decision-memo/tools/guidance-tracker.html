@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Said and Done | Decision Memo</title>
+<title>Guidance Tracker | Decision Memo</title>
 <style>
 :root{
   --bg:#f6f3ec; --paper:#fffdf8; --ink:#1c1b19; --mut:#66625a; --rule:#d9d3c4; --soft:#efeadd; --accent:#1f3a5f; --warn:#8a3a22;
@@ -79,9 +79,9 @@ footer{margin-top:30px;border-top:1px solid var(--rule);padding-top:12px;color:v
 <body>
 <div class="wrap">
 <header>
-  <p class="back"><a href="../workflows.html">Decision Memo</a> / Workflows</p>
-  <h1>Said and Done</h1>
-  <p class="sub">What was promised, when, and what happened. A dated ledger of commitments, scored by fixed rules, ending in a one-page memo.</p>
+  <p class="back"><a href="../examples.html">Decision Memo</a> / Examples</p>
+  <h1>Guidance Tracker</h1>
+  <p class="sub">Compare stated targets with reported results, using explicit scoring rules and a reviewable record. It tracks numeric ranges and dated milestones, and ends in a one-page memo.</p>
   <p class="flag" id="flag"><b>Live in your browser.</b> The example is a hypothetical consumer-goods company with invented figures. Replace it with your own ledger under the button. Nothing you enter leaves your browser. It is a record-keeping aid and not investment advice.</p>
   <div class="controls">
     <button class="btn" id="run">Run the ledger</button>
@@ -350,7 +350,7 @@ function writeImplied(i){ $('i-label').value=i.label; $('i-low').value=i.low; $(
 
 function buildDoc(){
   var A=S.A, asOf=S.asOf, T=A.topics, blocks=[], a=A.all, ov=A.rows.filter(function(r){return r.over;});
-  blocks.push({t:'h3',x:'Say-do record: '+L.who});
+  blocks.push({t:'h3',x:'Targets and results: '+L.who});
   blocks.push({t:'meta',x:'As of '+asOf+'. '+A.rows.length+' commitments. '+(L.custom?'Ledger entered by the user; entries have not been checked against any source.':'Invented example; no real company or figure is described.')+' Scored by the fixed rules below.'});
   blocks.push({t:'h4',x:'Summary'});
   blocks.push({t:'p',x:a.res+' of '+a.n+' commitments have an outcome: '+a.Met+' met, '+a.Partly+' partly, '+a.Missed+' missed. '+a.Pending+' are pending and '+a.Overdue+' are past their due date with no outcome recorded.'+(ov.length?' The reviewer overruled '+ov.length+' score'+(ov.length>1?'s':'')+'.':'')});
@@ -507,7 +507,7 @@ $('run').addEventListener('click',run);
 $('reset').addEventListener('click',function(){ resetUi(); });
 $('cont').addEventListener('click',function(){ if(reviewResolve){ var f=reviewResolve; reviewResolve=null; f(true); } });
 $('pr').addEventListener('click',function(){ window.print(); });
-$('dl').addEventListener('click',function(){ if(S&&S.doc) saveText('said-and-done-memo.md',docToMd(S.doc),'text/markdown'); });
+$('dl').addEventListener('click',function(){ if(S&&S.doc) saveText('guidance-tracker-memo.md',docToMd(S.doc),'text/markdown'); });
 $('dlcsv').addEventListener('click',function(){ saveText('ledger.csv',toCSV(L.rows),'text/csv'); });
 ['i-label','i-low','i-high','i-per','i-act'].forEach(function(id){ $(id).addEventListener('input',function(){ if(S&&S.A){ S.imp=renderImplied(); if(S.doc){ S.doc=buildDoc(); renderDoc(S.doc); } } else { renderImplied(); } }); });
 writeImplied(EXAMPLE.implied); buildEditor(); buildStages(); updateTexts();
