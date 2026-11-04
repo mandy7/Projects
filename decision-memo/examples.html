@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Examples | Decision Memo</title>
-<meta name="description" content="Four working examples of intelligence jobs: decision modelling, market monitoring, evidence checking and tracking commitments, each with its inputs, outputs, what is automated and what is not.">
+<meta name="description" content="Four working examples of intelligence jobs: decision modelling, market monitoring, evidence checking and tracking commitments, each with its inputs, outputs and limits.">
 <meta name="theme-color" content="#f6f3ec">
 <meta property="og:title" content="Examples | Decision Memo">
-<meta property="og:description" content="Four working examples of intelligence jobs: decision modelling, market monitoring, evidence checking and tracking commitments, each with its inputs, outputs, what is automated and what is not.">
+<meta property="og:description" content="Four working examples of intelligence jobs: decision modelling, market monitoring, evidence checking and tracking commitments, each with its inputs, outputs and limits.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -20,65 +20,60 @@
 <main id="main">
 
 <section class="page-head"><div class="wrap">
-  <h1>Examples</h1>
-  <p class="lead">Four different jobs: modelling a decision, monitoring a market, checking evidence and tracking commitments. Each one is a working page. Open it, change an input and watch the output change. None of them asks for an email address.</p>
-  <p class="small" style="margin-top:.8rem">The home page demo also compares price moves and ranks options, which run only in the demo for now. Each example is labelled by what it really is: a recording, an illustrative model, or a prototype where a person enters the evidence.</p>
+  <h1>Four examples of work that comes back every month</h1>
+  <p class="lead">Each one is a working page. Open it, change an input and watch the output change. None of them asks for an email address.</p>
 </div></section>
-<section class="block exm" id="tipping-point"><div class="wrap two">
+<section class="wrap exm" id="tipping-point">
+  <div class="exm-img"><img src="assets/img/card-tipping-point.webp" alt="The Tipping Point result for a hypothetical hotel chain: a recommended split of the budget across three routes, with the trade-off, the key uncertainty and the next action." width="1400" height="933" loading="lazy"></div>
   <div>
-    <img src="assets/img/card-tipping-point.webp" alt="The Tipping Point result for a hypothetical hotel chain: a recommended split of the budget across three routes, with the trade-off, the key uncertainty and the next action." width="1400" height="933" loading="lazy">
-  </div>
-  <div>
-    <p class="eyebrow">Decision modelling and scenario analysis <span class="chip">Interactive model, illustrative inputs</span></p>
+    <p class="eyebrow">Decision modelling <span class="chip">Interactive model</span></p>
     <h2>Tipping Point</h2>
     <p class="job">Where should the next rupee of budget go?</p>
-    <dl class="facts"><div><dt>What the workflow does</dt><dd>Turns each input into a range, runs 5,000 scenarios, finds the best split inside the model, shows where each route stops paying back, ranks the assumptions by how much they matter, and writes a one-page memo.</dd></div><div><dt>What it needs</dt><dd>For each of three routes: sales at half the budget, margin and how fast returns fade, each as a low, typical and high value. Also the current plan.</dd></div><div><dt>What it produces</dt><dd>A recommended split, the trade-off against the current plan, a stopping point for each route, the key uncertainty and a memo.</dd></div><div><dt>Automated and manual</dt><dd>The calculations are automated. The numbers are yours to supply or replace, and a person judges whether the model is fair to the business.</dd></div></dl>
-    <details class="more"><summary>Method and assumptions</summary><div>Each route is an independent curve of diminishing returns, with inputs drawn from triangular ranges using a fixed seed, so a rerun gives the same answer. The best split is the best of 66 splits in steps of 10%. There is no overlap between routes, no brand effect and no fixed cost.</div></details><details class="more"><summary>Limits and status</summary><div>The result is the best split inside the model and not a forecast. It has not been compared with real outcomes. The hotel case is the default, and pharma, telecom and food cases are available. Inputs entered stay in your browser.</div></details>
+    <p>Turns each input into a range, runs 5,000 scenarios, and finds the best split inside the model, where each route stops paying back and which assumption matters most.</p>
+    <p class="small">You supply the numbers. A person judges whether the model is fair to the business.</p>
+    <details class="more"><summary>Inputs and output</summary><div>In: a low, typical and high value for each route&rsquo;s sales, margin and how fast returns fade, plus your current split. Out: a recommended split, the trade-off against your plan, a stopping point for each route, the key uncertainty and a one-page memo.</div></details><details class="more"><summary>Method and limits</summary><div>Each route is an independent curve of diminishing returns, drawn from triangular ranges with a fixed seed, so a rerun gives the same answer. The result is the best split inside the model and not a forecast, and it has not been compared with real outcomes. The hotel case is the default, with pharma, telecom and food cases available.</div></details>
     <div class="btns"><a class="btn" href="tools/tipping-point.html">Open Tipping Point</a></div>
   </div>
-</div></section><section class="block exm" id="shiftwatch"><div class="wrap two">
+</section><section class="wrap exm rev" id="shiftwatch">
+  <div class="exm-img"><img src="assets/img/card-shiftwatch.webp" alt="Part of the Shiftwatch example: a dated log of market events, each with a status such as disclosed or not disclosed, and a source." width="1400" height="933" loading="lazy"></div>
   <div>
-    <img src="assets/img/card-shiftwatch.webp" alt="Part of the Shiftwatch example: a dated log of market events, each with a status such as disclosed or not disclosed, and a source." width="1400" height="933" loading="lazy">
-  </div>
-  <div>
-    <p class="eyebrow">Monitoring and evidence logging <span class="chip">Recorded research run</span></p>
+    <p class="eyebrow">Market monitoring <span class="chip">Recorded run</span></p>
     <h2>Shiftwatch</h2>
     <p class="job">What changed in the market this week, and does it matter for our decisions?</p>
-    <dl class="facts"><div><dt>What the workflow does</dt><dd>Reads a fixed list of public sources, logs each event with a date, a source and a status, names what is not disclosed, ties events to the decisions you track and drafts a memo.</dd></div><div><dt>What it needs</dt><dd>A list of sources, and the decisions you want events tied to.</dd></div><div><dt>What it produces</dt><dd>A dated event log, a list of gaps and a memo that links each change to a decision.</dd></div><div><dt>Automated and manual</dt><dd>The recorded run shows what a workflow produced. A person picks the sources and approves each flag.</dd></div></dl>
-    <details class="more"><summary>Inputs and method</summary><div>A hotel-sector run on public sources, recorded and checked on 29 October 2026. Each event carries one of six statuses, and a gap is logged as a gap.</div></details><details class="more"><summary>Limits and status</summary><div>It is a recording and fetches nothing when you open it. The data was supplied and has not been re-checked against its sources here. A workflow version exists and has been tested end to end only against mock services. Accuracy is not measured.</div></details>
+    <p>Reads a fixed list of public sources, logs each event with a date, a source and a status, names what is not disclosed, and ties events to the decisions you track.</p>
+    <p class="small">A person picks the sources and approves each flag.</p>
+    <details class="more"><summary>Inputs and output</summary><div>In: a list of sources and the decisions you want events tied to. Out: a dated event log, a list of gaps, and a memo that links each change to a decision.</div></details><details class="more"><summary>Method and limits</summary><div>A hotel-sector run on public sources, recorded and checked on 29 October 2026. It fetches nothing when you open it, and the data has not been re-checked against its sources here. A workflow version exists and has been tested end to end only against mock services. Accuracy is not measured.</div></details>
     <div class="btns"><a class="btn" href="tools/shiftwatch.html">Open Shiftwatch</a></div>
   </div>
-</div></section><section class="block exm" id="condition-watch"><div class="wrap two">
+</section><section class="wrap exm" id="condition-watch">
+  <div class="exm-img"><img src="assets/img/card-condition-watch.webp" alt="Part of the Condition Watch example: an evidence board with one card for each question about a condition, showing how strong its evidence is, beside the table of dated entries behind it." width="1400" height="933" loading="lazy"></div>
   <div>
-    <img src="assets/img/card-condition-watch.webp" alt="Part of the Condition Watch example: an evidence board with one card for each question about a condition, showing how strong its evidence is, beside the table of dated entries behind it." width="1400" height="933" loading="lazy">
-  </div>
-  <div>
-    <p class="eyebrow">Evidence comparison and claim checking <span class="chip">Interactive prototype, manual entry</span></p>
+    <p class="eyebrow">Evidence checking <span class="chip">Prototype, manual entry</span></p>
     <h2>Condition Watch</h2>
     <p class="job">How strong is the evidence for each question about a condition, and what is still missing?</p>
-    <dl class="facts"><div><dt>What the workflow does</dt><dd>From the condition you name, writes a set of questions and a source list. As findings are logged, it rates each question by written rules and builds an evidence board and a memo.</dd></div><div><dt>What it needs</dt><dd>A condition, and the findings, which a person enters.</dd></div><div><dt>What it produces</dt><dd>An evidence board, a source list and a memo.</dd></div><div><dt>Automated and manual</dt><dd>The rating, the board and the memo update automatically. Finding and entering the evidence is manual, because it reads no sources.</dd></div></dl>
-    <details class="more"><summary>Inputs and method</summary><div>Ratings follow written rules: strong, mixed, inference only, or nothing disclosed yet. The rules were run against boundary cases, and changing an entry was checked to update the board and the memo.</div></details><details class="more"><summary>Limits and status</summary><div>The search links open other sites, and what comes back has not been reviewed. Its example entries are invented. It is a prototype and not a verified medical review.</div></details>
+    <p>Writes a set of questions and a source list from the condition you name, then rates each question by written rules as findings are logged.</p>
+    <p class="small">A person finds the evidence and enters it, because the tool reads no sources.</p>
+    <details class="more"><summary>Inputs and output</summary><div>In: a condition, and findings entered by a person. Out: an evidence board, a source list and a memo.</div></details><details class="more"><summary>Method and limits</summary><div>Ratings are strong, mixed, inference only, or nothing disclosed yet, under written rules that were run against boundary cases. The search links open other sites, and what comes back has not been reviewed. Example entries are invented. It is not a verified medical review.</div></details>
     <div class="btns"><a class="btn" href="tools/condition-watch.html">Open Condition Watch</a></div>
   </div>
-</div></section><section class="block exm" id="guidance-tracker"><div class="wrap two">
+</section><section class="wrap exm rev" id="guidance-tracker">
+  <div class="exm-img"><img src="assets/img/card-guidance-tracker.webp" alt="Part of the Guidance Tracker example: a record by topic showing how many targets were met, above a table where each target has its result and an automatic score." width="1400" height="933" loading="lazy"></div>
   <div>
-    <img src="assets/img/card-guidance-tracker.webp" alt="Part of the Guidance Tracker example: a record by topic showing how many targets were met, above a table where each target has its result and an automatic score." width="1400" height="933" loading="lazy">
-  </div>
-  <div>
-    <p class="eyebrow">Tracking plans against outcomes <span class="chip">Interactive prototype, manual entry</span></p>
+    <p class="eyebrow">Tracking commitments <span class="chip">Prototype, manual entry</span></p>
     <h2>Guidance Tracker</h2>
     <p class="job">Did the company deliver what it said it would?</p>
-    <dl class="facts"><div><dt>What the workflow does</dt><dd>Scores each stated target against the reported result by written rules, builds a record by topic and shows what a full-year range implies for the rest of the year.</dd></div><div><dt>What it needs</dt><dd>Targets, dates and reported results, taken from real documents. A ledger can be imported and exported as a CSV file.</dd></div><div><dt>What it produces</dt><dd>A score for each target, a record by topic and a memo.</dd></div><div><dt>Automated and manual</dt><dd>Scoring is automatic. Entering targets and results is manual, and a person can overrule any score.</dd></div></dl>
-    <details class="more"><summary>Inputs and method</summary><div>Targets count as met, partly met, missed, pending or overdue under written tolerances. The rules were run against boundary values, and typing a result was checked to change its score, the record and the memo.</div></details><details class="more"><summary>Limits and status</summary><div>It checks no entry against a document, and its example figures are invented. It tracks stated targets, which can be financial guidance or commitments such as launches. It is not investment advice.</div></details>
+    <p>Scores each stated target against the reported result, builds a record by topic, and shows what a full-year range implies for the rest of the year.</p>
+    <p class="small">A person enters targets and results from real documents, and can overrule any score.</p>
+    <details class="more"><summary>Inputs and output</summary><div>In: targets, dates and reported results, which can also be imported as a CSV file. Out: a score for each target, a record by topic and a memo.</div></details><details class="more"><summary>Method and limits</summary><div>Targets count as met, partly met, missed, pending or overdue under written tolerances, tested at their boundaries. It checks no entry against a document, and its example figures are invented. It tracks stated targets, which can be financial guidance or commitments such as launches. It is not investment advice.</div></details>
     <div class="btns"><a class="btn" href="tools/guidance-tracker.html">Open Guidance Tracker</a></div>
   </div>
-</div></section>
+</section>
 <section class="section tint"><div class="wrap band">
   <div>
     <h2>Have a different job in mind?</h2>
-    <p>The jobs are configured for each customer, and the sources and numbers change. Choose from the list of jobs, or describe your own.</p>
+    <p>The jobs are configured for each customer. Choose from the list, or describe your own.</p>
   </div>
-  <div class="btns"><a class="btn" href="pricing.html#plan">Choose your jobs</a><a class="btn second" href="start-a-brief.html">Start a Brief</a></div>
+  <div class="btns"><a class="btn" href="pricing.html#plan">Build a plan</a><a class="btn second" href="start-a-brief.html">Start a Brief</a></div>
 </div></section>
 
 </main>

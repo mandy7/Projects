@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pricing | Decision Memo</title>
-<meta name="description" content="Build your intelligence plan: choose the jobs you want, answer a few scope questions, and send the plan with a brief for an estimate. No prices are published yet.">
+<meta name="description" content="Build your intelligence plan: choose the jobs you want, set the scope and see an indicative starting price before you send a brief.">
 <meta name="theme-color" content="#f6f3ec">
 <meta property="og:title" content="Pricing | Decision Memo">
-<meta property="og:description" content="Build your intelligence plan: choose the jobs you want, answer a few scope questions, and send the plan with a brief for an estimate. No prices are published yet.">
+<meta property="og:description" content="Build your intelligence plan: choose the jobs you want, set the scope and see an indicative starting price before you send a brief.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -21,60 +21,45 @@
 
 <section class="page-head"><div class="wrap">
   <h1>Build your intelligence plan</h1>
-  <p class="lead">Choose the jobs you want done, answer a few questions about scope, and send the plan with a brief. You get an estimate against a real scope. I do not publish prices yet, because they depend on scope and I would rather quote than guess.</p>
+  <div class="steps-inline"><span><i>1</i>Choose the jobs</span><span><i>2</i>Set the scope</span><span><i>3</i>See an indicative price and send the plan</span></div>
 </div></section>
 
-<section class="block" id="plan"><div class="wrap">
+<section class="wrap block" id="plan" style="padding-top:1.2rem">
   <noscript><p>The plan builder needs JavaScript. You can still <a href="start-a-brief.html">start a brief</a> and list the jobs you want in your own words.</p></noscript>
   <div class="planwrap">
     <div class="planmain">
-      <fieldset class="pstep"><legend><span class="num">1</span> Choose the jobs</legend>
-        <p class="hint">Pick any number. Jobs marked Example have a working page on the Examples page. The others are set up for each customer and have no public example yet.</p>
+      <fieldset class="pstep"><legend>Jobs</legend>
+        <p class="hint">Pick any number. The price shown is the monthly starting point for each job.</p>
         <div class="pjobs" id="jobs"></div>
       </fieldset>
-      <fieldset class="pstep" id="qs" hidden><legend><span class="num">2</span> A few questions about scope</legend>
-        <p class="hint">Only the questions that matter for your jobs. Skip any you cannot answer yet.</p>
-        <div id="qs-body"></div>
+      <fieldset class="pstep" id="qs" hidden><legend>Scope</legend>
+        <p class="hint">Only the questions your jobs need. Skip any you cannot answer yet.</p>
+        <div class="pqs" id="qs-body"></div>
       </fieldset>
-      <fieldset class="pstep"><legend><span class="num">3</span> How much human involvement</legend>
-        <p class="hint">The workflow does the repeatable work in the same way each run. Choose how much of a person you want around it.</p>
+      <fieldset class="pstep"><legend>People</legend>
+        <p class="hint">The workflow runs the same way each time. Choose how much of a person you want around it.</p>
         <div class="pjobs slim" id="human"></div>
       </fieldset>
     </div>
     <aside class="psum" aria-label="Your plan"><div class="psum-in">
       <h2>Your plan</h2>
       <div id="sum-body" aria-live="polite"></div>
-      <div class="ps-h">How the price will be built</div>
-      <table class="lines"><tbody>
-        <tr><th scope="row">One-time setup</th><td>Quoted after a brief</td></tr>
-        <tr><th scope="row">Recurring workflow fee</th><td>Quoted after a brief</td></tr>
-        <tr><th scope="row">Scope adjustments</th><td>Set by agreed limits</td></tr>
-        <tr><th scope="row">Optional human support</th><td>Quoted separately</td></tr>
-      </tbody></table>
-      <a class="btn" id="send" href="start-a-brief.html#brief" aria-disabled="true">Send this plan with a brief</a>
-      <p class="ps-note">Sending a plan is an enquiry. It does not commit you to anything.</p>
+      <a class="btn" id="send" href="start-a-brief.html#brief" aria-disabled="true">Send my plan</a>
+      <p class="ps-note">Sending a plan is an enquiry and commits you to nothing.</p>
     </div></aside>
   </div>
-</div></section>
+</section>
 
-<section class="block"><div class="wrap two">
-  <h2>What shapes the price</h2>
-  <div>
-    <ul id="cost-factors"></ul>
-    <p>Two things are kept apart. <b>Workflow execution</b> is a configured, repeatable job with defined sources, scope and outputs and agreed limits on usage. <b>Human involvement</b> is setup and the first check, review of exceptions, regular interpretation and advisory support. A plan that is mostly workflow does not include open-ended research, extensive manual review or bespoke consulting. Those are added on purpose, and priced as such.</p>
-  </div>
-</div></section>
-
-<section class="block"><div class="wrap">
-  <h2>Pricing questions</h2>
-  <div style="margin-top:1.2rem;max-width:46rem">
-<details class="faq"><summary>What does it cost?</summary><p>Work is priced as a one-time setup fee plus a recurring fee for running the workflow, with scope adjustments inside agreed limits and optional human support on top. I quote after the brief, because the cost depends on the sources, the quality of the data, how often it runs, the review you want and any integration. I start with the smallest useful job and build nothing large before the value is clear.</p></details>
-<details class="faq"><summary>Can I start with one job?</summary><p>Yes, and that is the usual way in. Choose one job, see whether it earns its place, and add others later. The list of jobs grows over time.</p></details>
+<section class="wrap block"><h2>Pricing questions</h2>
+  <div class="faqs" style="margin-top:1rem">
+<details class="faq"><summary>How is the price built?</summary><p>A one-time setup fee for each job, a monthly fee for running it, and optional human support on top. Each job&rsquo;s fee scales with the number of sources, the volume of documents, how often it runs, the output you want and how firm your rules are. The advisory rate is billed as used and is not in the monthly total.</p></details>
+<details class="faq"><summary>How firm is the estimate?</summary><p>It is a starting range, from 85% to 130% of a calculated figure, built from assumptions I have not yet tested against real delivery cost. The proposal that follows your brief depends on source coverage, how often it runs, data volume and the review you want, and it replaces the estimate.</p></details>
+<details class="faq"><summary>Can I start with one job?</summary><p>Yes, and that is the usual way in. Choose one job, see whether it earns its place, and add others later.</p></details>
 <details class="faq"><summary>How long does setup take?</summary><p>I confirm a timeline after scoping. It depends on how many sources are involved and how clean your data is.</p></details>
 <details class="faq"><summary>What error rate should I expect?</summary><p>It has not been measured. A pilot on a real job would measure what the workflow misses, what it gets wrong, and how much human review it needs.</p></details>
 <details class="faq"><summary>Do you run pilots?</summary><p>For selected jobs, a short pilot can show whether the approach works with real inputs. We agree the scope, the dates and the measures in advance. A pilot is offered selectively after the first conversation, and it is not a commitment to a free build.</p></details>
   </div>
-</div></section>
+</section>
 
 </main>
 <footer class="foot"><div class="wrap">

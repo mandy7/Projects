@@ -3,18 +3,18 @@
 Six pages and four tools. There is no build step and no server. Every file is plain HTML, CSS and JavaScript.
 
 ```
-index.html                  Home: hero, the demo (complete workflows or individual jobs), one call to action
-examples.html               Four examples at the same level of detail, with expandable method and limits
-how-it-works.html           Six steps, who is involved at each, where automation ends, FAQs
-pricing.html                Build your intelligence plan: choose jobs, scope questions, send to a brief
-why-this-approach.html      The case for repeatable, configured jobs with human judgement
+index.html                  Home: hero, the demo (full workflow or individual steps), one call to action
+examples.html               Four examples, alternating image and text, with expandable inputs and limits
+how-it-works.html           Six alternating visual steps, where automation ends, FAQs
+pricing.html                Build your intelligence plan: choose jobs, scope, indicative price, send to a brief
+why-this-approach.html      Three paths compared, then a short founder perspective
 start-a-brief.html          Short enquiry form, privacy, what happens next
 assets/brand.js             The product name, descriptor and owner, in one place
 assets/config.js            Form settings you fill in (form address, contact email)
 assets/site.css             Shared styles
 assets/site.js              Form handling, including a plan carried over from Pricing
 assets/demo.js              The home demo: 4 decisions and 9 individual jobs, across 3 industries
-assets/pricing.js           The plan builder: the job catalogue, the questions and the summary
+assets/pricing.js           The plan builder. All prices and multipliers live in PRICING at the top
 assets/img/                 Real screenshots of the tools
 tools/shiftwatch.html       Hotels: recorded research run
 tools/tipping-point.html    Budget split: interactive model, illustrative inputs. Hotels by default; ?case=pharma, telecom or food
@@ -43,11 +43,11 @@ tools/guidance-tracker.html Consumer goods: scored record by topic, manual data 
 
 ## The home page
 
-The headline is "Intelligence work, without building an analyst team." It makes no claim about cost or time saved. The primary button everywhere is Start a Brief, and the demo is the secondary route.
+The headline is "Do the intelligence work without building a team." It makes no claim about cost or time saved. The primary button everywhere is Start a Brief, and the demo is the secondary route.
 
 ### The demo
 
-`assets/demo.js` runs it. A toggle chooses between:
+`assets/demo.js` runs it. A toggle chooses between (on the page the tabs read Full workflow and Individual steps):
 
 - **Complete workflows**: pick a decision (budget, watch, price, rank). The analyst plays six steps and ends with the answer first (recommendation, trade-off, key uncertainty, next action) and the draft memo behind it.
 - **Individual jobs**: pick one job (scan and log sources, flag what is not disclosed, rate the evidence, run scenarios, find where returns stop, find what the answer depends on, compare price moves, rank options, draft the memo). Each plays one step and states what it does, needs and produces, where a person comes in, and its status. A finished job links to Pricing with that job preselected.
@@ -59,14 +59,19 @@ Industry (hotels, pharma, telecom) is a filter in both modes.
 - **Change the content.** The industries, inputs and events are in the `IND` object at the top of `demo.js`. The jobs are in `JOBS`.
 - **Tipping Point matches the demo.** The hotel, pharma and telecom cases on `tools/tipping-point.html` use the same inputs as the budget decision in the demo. If you change one, change the other.
 
-## The plan builder (Pricing)
+## The plan builder and its prices (Pricing)
 
-`assets/pricing.js` holds the catalogue of twelve jobs, the scope questions and the human-involvement options. To add a job, add an entry to `CATALOGUE`. To add a question, add it to `QUESTIONS` and list its id in the job's `ask`.
+`assets/pricing.js` holds the catalogue of twelve jobs, the scope questions, the human-involvement options and every number the calculator uses, in the `PRICING` object at the top. To add a job, add an entry to `CATALOGUE` and to `PRICING.jobs`. To add a question, add it to `QUESTIONS` and `PRICING.mult`, and list its id in the job's `ask`.
 
-- It publishes no prices. It shows the line items that a price will be built from (one-time setup, recurring workflow fee, scope adjustments, optional human support) and says each is quoted after a brief.
-- **Pricing assumptions still to validate before any figure is shown:** delivery cost per job, maintenance, usage and model costs, support time, and what the setup fee should cover. None is assumed here.
-- "Send this plan with a brief" opens `start-a-brief.html?plan=...`. The plan is carried in the address and added to the brief when it is sent.
+**The prices are placeholders that I proposed. They are not validated.** Change them before you rely on them.
+
+- Each job has a one-time setup fee and a monthly fee at the smallest scope. Scope answers multiply them: number of sources, number of documents, how often it runs, the output, how firm the inputs are and whether rules exist. A question left unanswered is priced as "Not sure yet", which is a middle estimate.
+- Human involvement adds to the monthly total: review of exceptions is 15% of the monthly fee (minimum $150), regular interpretation is 35% (minimum $400). Advisory support is shown as an hourly rate of $180 and is not added to the total. Setup and the first-run check are included.
+- The visitor sees a rounded figure for each job and a range for the totals, from 85% to 130% of the calculated figure. Currency, range and rounding are in `PRICING`.
+- The summary says that the figure is a starting estimate and that the proposal depends on source coverage, frequency, data volume and review. The FAQ on the Pricing page says the assumptions are untested.
+- "Send my plan" opens `start-a-brief.html?plan=...`. The plan, the scope answers and the indicative range are added to the brief when it is sent.
 - Preselect jobs with `pricing.html?jobs=model,evidence`.
+- **To validate before you rely on any figure:** delivery cost per job, maintenance, usage and model costs, support time, what the setup fee covers, and whether a currency other than dollars suits your first customers.
 
 ## Adding questions to the FAQs
 
@@ -103,6 +108,7 @@ A link ending in `?source=arjan` stores `arjan` with a brief. This tells you whi
 | Each individual job plays and shows its facts | A browser test ran all 9 jobs for all 3 industries. |
 | Changing an input changes the visible output in Condition Watch and Guidance Tracker | Browser tests that change a result, a status, an override or the condition. |
 | The plan builder carries a plan into the brief | A browser test chose jobs, answered questions, followed the link and sent the brief to a stand-in endpoint. |
+| The calculator prices a single job at its configured base values | A browser test set one job at the base scope and compared the result with the numbers in `PRICING`. |
 | No accuracy or time-saving figure is claimed | None appears on any page. |
 
 ## Not tested

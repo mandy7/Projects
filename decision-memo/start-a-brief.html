@@ -21,26 +21,24 @@
 
 <section class="page-head"><div class="wrap">
   <h1>Start a brief</h1>
-  <p class="lead">Describe one recurring job or question. The first step is a suitability check: I read the brief, then tell you whether a repeatable workflow looks like a fit and what a focused setup would involve. It is not an instant trial.</p>
+  <p class="lead">Describe one recurring job or question. I read each brief myself and reply to say whether a repeatable workflow looks like a fit.</p>
 </div></section>
 
-<section class="block" id="brief"><div class="wrap two">
+<section class="wrap block" id="brief" style="padding-top:1rem"><div class="briefwrap">
   <div>
     <div class="planbox" id="plan-box" hidden>
       <div class="ps-h">Your plan from the Pricing page</div>
       <pre id="plan-text"></pre>
-      <p class="ps-note">This goes with your brief. <button type="button" class="linkbtn" id="plan-drop">Do not send the plan</button></p>
+      <p class="small" style="margin:.3rem 0 0">This goes with your brief. <button type="button" class="linkbtn" id="plan-drop">Do not send the plan</button></p>
     </div>
     <form class="ask" id="ask" novalidate>
-      <label for="f-pain">What do you need investigated, monitored, analysed, checked or produced?</label>
-      <p class="hint">A few lines are enough. What question comes back, and what do you do about it today?</p>
+      <label for="f-pain" style="margin-top:0">What do you need investigated, monitored, analysed, checked or produced?</label>
       <textarea id="f-pain" name="pain" maxlength="1200" required></textarea>
 
       <label for="f-industry">Business or industry context <span class="opt">(optional)</span></label>
       <input type="text" id="f-industry" name="industry" maxlength="80" autocomplete="off">
 
       <label for="f-contact">Email or LinkedIn profile</label>
-      <p class="hint">So I can reply.</p>
       <input type="text" id="f-contact" name="contact" maxlength="200" autocomplete="email" required>
 
       <input type="hidden" id="f-source" name="source" value="">
@@ -51,26 +49,23 @@
       <div id="form-msg" role="status" aria-live="polite"></div>
     </form>
   </div>
-  <div>
+  <div class="sidecard">
     <h2>What happens next</h2>
     <ol class="next">
       <li>I read the brief myself.</li>
-      <li>I reply to say whether a repeatable workflow looks like a fit, and what a focused first setup would involve.</li>
+      <li>I reply to say whether a repeatable workflow looks like a fit and what a focused first setup would involve.</li>
       <li>If it is worth doing, we agree one narrow job and I quote against that scope.</li>
     </ol>
-    <p class="small">I do not promise an automated trial or a free build at this stage.</p>
+    <p class="small" style="margin:.6rem 0 0">This is a suitability check. It is not an instant trial or a free build.</p>
   </div>
 </div></section>
 
-<section class="block" id="privacy"><div class="wrap two">
+<section class="wrap block privacy" id="privacy">
   <h2>Privacy</h2>
-  <div>
-    <p>You can use every example without sharing contact details, and the examples never ask for an email address. What you type into them stays in your browser.</p>
-    <p>The site has no analytics scripts, and my host may keep standard server logs.</p>
-    <p>A brief sent through this form is held by the form service and in my email. If the link that brought you here carried a source tag, the tag is stored with your message. A plan you built on the Pricing page is sent only if you send it with the brief. I use your message to reply to you, I do not sell it, and I do not add you to a mailing list.</p>
-    <p id="mail-line"></p>
-  </div>
-</div></section>
+  <p>You can use every example without sharing contact details, and what you type into them stays in your browser. The site has no analytics scripts, and my host may keep standard server logs.</p>
+  <p>A brief sent through this form is held by the form service and in my email. If the link that brought you here carried a source tag, the tag is stored with your message. A plan you built on the Pricing page is sent only if you send it with the brief. I use your message to reply to you, I do not sell it, and I do not add you to a mailing list.</p>
+  <p id="mail-line"></p>
+</section>
 
 </main>
 <footer class="foot"><div class="wrap">

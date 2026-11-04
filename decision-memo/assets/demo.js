@@ -226,10 +226,14 @@
   };
   var CRITERIA = [{ name: 'Revenue upside', w: 0.35 }, { name: 'Speed to start', w: 0.25 }, { name: 'Cost to start', w: 0.20 }, { name: 'Risk', w: 0.20 }];
   var DEC = {
-    budget: { label: 'Split the budget', q: 'Where should the next rupee go?', tool: ['tools/tipping-point.html', 'Tipping Point'] },
-    watch: { label: 'Watch competitors and the market', q: 'What changed, and does it matter?' },
-    price: { label: 'Test a price change', q: 'Should we move our price?' },
-    rank: { label: 'Rank our options', q: 'What should we do first?' }
+    budget: { label: 'Split the budget', q: 'Where should the next rupee go?', tool: ['tools/tipping-point.html', 'Tipping Point'], tag: 'Illustrative model',
+      inputs: ['A low, typical and high value for each route\'s sales, margin and returns', 'Your current split of the budget'], outputs: ['A recommended split', 'The trade-off against your current plan', 'The assumption that matters most', 'A one-page memo'] },
+    watch: { label: 'Watch competitors and the market', q: 'What changed, and does it matter?', tag: 'Scripted example',
+      inputs: ['A list of public sources', 'Your own sales and web notes'], outputs: ['A dated event log', 'What is not disclosed', 'An evidence rating for each decision', 'A one-page memo'] },
+    price: { label: 'Test a price change', q: 'Should we move our price?', tag: 'Illustrative model',
+      inputs: ['Your price, volume and unit cost', 'A range for how customers respond to price'], outputs: ['Profit for five price moves', 'How often each move comes out best', 'What would change the answer', 'A one-page memo'] },
+    rank: { label: 'Rank our options', q: 'What should we do first?', tag: 'Illustrative model',
+      inputs: ['The options you are choosing between', 'The criteria and rough weights'], outputs: ['How often each option comes first', 'What would flip the order', 'A one-page memo'] }
   };
 
   /* ---------- small view helpers ---------- */
@@ -554,36 +558,36 @@
 
   /* Individual jobs: each plays one step of an end-to-end plan, with a plain statement of what it does. */
   var JOBS = {
-    scan: { label: 'Scan and log sources', small: 'Source scanning', dec: 'watch', step: 1, cat: 'monitor',
+    scan: { q: 'What are the sources saying, and when?', label: 'Scan and log sources', small: 'Source scanning', dec: 'watch', step: 1, cat: 'monitor',
       status: 'A scripted example on invented events. Nothing is fetched.',
       does: 'Reads a fixed list of sources and logs each item with a date, a source and a status.', needs: 'A list of public sources, and your own notes if you have them.', makes: 'A dated event log.', human: 'A person picks the sources and approves each flag.' },
-    gaps: { label: 'Flag what is not disclosed', small: 'Gaps and exceptions', dec: 'watch', step: 2, cat: 'evidence',
+    gaps: { q: 'What has nobody disclosed?', label: 'Flag what is not disclosed', small: 'Gaps and exceptions', dec: 'watch', step: 2, cat: 'evidence',
       status: 'A scripted example on invented events.',
       does: 'Marks each place where a source says nothing, so a gap stays visible and is never filled in.', needs: 'The event log, and the questions you care about.', makes: 'A list of gaps, each with a date and a source.', human: 'A person decides which gaps matter and whether to chase them.' },
-    rate: { label: 'Rate the evidence', small: 'Evidence comparison', dec: 'watch', step: 3, cat: 'evidence',
+    rate: { q: 'How strong is the evidence behind each decision?', label: 'Rate the evidence', small: 'Evidence comparison', dec: 'watch', step: 3, cat: 'evidence',
       status: 'A scripted example. The rating rules are written out and fixed.',
       does: 'Ties each event to a decision and rates how strong the evidence is behind it, by written rules.', needs: 'The event log and your list of decisions.', makes: 'An evidence board with one rating for each decision.', human: 'A reviewer can overrule any rating.' },
-    scen: { label: 'Run scenarios', small: 'Quantitative analysis', dec: 'budget', step: 2, cat: 'model',
+    scen: { q: 'What could happen to this budget?', label: 'Run scenarios', small: 'Quantitative analysis', dec: 'budget', step: 2, cat: 'model',
       status: 'An illustrative model on invented inputs, computed in your browser. It is not a forecast.',
       does: 'Draws 5,000 possible futures from ranges you set, and works out the best budget split in each.', needs: 'A low, typical and high value for each input.', makes: 'A spread of outcomes instead of one best guess.', human: 'A person supplies and challenges the inputs.' },
-    stop: { label: 'Find where returns stop', small: 'Decision modelling', dec: 'budget', step: 3, cat: 'model',
+    stop: { q: 'At what spend does each route stop paying back?', label: 'Find where returns stop', small: 'Decision modelling', dec: 'budget', step: 3, cat: 'model',
       status: 'An illustrative model on invented inputs. It is not a forecast.',
       does: 'Finds the spend at which each route stops paying back, with a range.', needs: 'The same ranges, for each route.', makes: 'A stopping point for each route.', human: 'A person judges whether the model is fair to the business.' },
-    hinge: { label: 'Find what the answer depends on', small: 'Pattern and sensitivity', dec: 'budget', step: 4, cat: 'model',
+    hinge: { q: 'Which assumption does the answer depend on?', label: 'Find what the answer depends on', small: 'Pattern and sensitivity', dec: 'budget', step: 4, cat: 'model',
       status: 'An illustrative model on invented inputs.',
       does: 'Moves each input to its low and high end and shows which one changes the answer most.', needs: 'The same ranges.', makes: 'A ranked list of assumptions to check first.', human: 'A person decides what evidence to collect.' },
-    price: { label: 'Compare price moves', small: 'Scenario analysis', dec: 'price', step: 3, cat: 'model',
+    price: { q: 'Which price move comes out best?', label: 'Compare price moves', small: 'Scenario analysis', dec: 'price', step: 3, cat: 'model',
       status: 'An illustrative model on invented inputs. This runs only in the demo.',
       does: 'Works out profit for five price moves across 5,000 scenarios and counts how often each is best.', needs: 'Your price, volume and cost, and a range for how customers respond.', makes: 'The share of scenarios in which each option wins.', human: 'A person judges the response to price, which is the least certain input.' },
-    rank: { label: 'Rank options under uncertainty', small: 'Option ranking', dec: 'rank', step: 3, cat: 'model',
+    rank: { q: 'Which option should come first?', label: 'Rank options under uncertainty', small: 'Option ranking', dec: 'rank', step: 3, cat: 'model',
       status: 'An illustrative model on invented scores. This runs only in the demo.',
       does: 'Scores each option on several criteria, lets the scores and weights vary, and counts how often each comes first.', needs: 'The options, the criteria and rough weights.', makes: 'How stable the ranking is.', human: 'A person owns the weights, because they express priorities.' },
-    memo: { label: 'Draft the decision memo', small: 'Synthesis and memo', dec: 'budget', step: 5, cat: 'memo',
+    memo: { q: 'What should the leadership team read?', label: 'Draft the decision memo', small: 'Synthesis and memo', dec: 'budget', step: 5, cat: 'memo',
       status: 'Built from the model results above. A person reviews it before it goes anywhere.',
       does: 'Turns the findings into one page: a recommendation, the trade-off, the key uncertainty and the next action.', needs: 'The analysis it summarises.', makes: 'A one-page memo, which can be downloaded.', human: 'A person reads, edits and approves it.' }
   };
   function jobFacts(J) {
-    var rows = [['What it does', J.does], ['What it needs', J.needs], ['What it produces', J.makes], ['Where a person comes in', J.human], ['Status', J.status]];
+    var rows = [['Evidence it uses', J.needs], ['What it does', J.does], ['What you get', J.makes], ['Where a person comes in', J.human]];
     return '<div class="v-job"><dl>' + rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') + '</dl></div>';
   }
 
@@ -597,7 +601,7 @@
     $('st-text').textContent = step.t;
   }
   function setProg(f) { $('st-bar').style.width = Math.round(Math.min(1, f) * 100) + '%'; }
-  function ctxLine() { return (sel.mode === 'jobs' ? JOBS[sel.job].label : DEC[sel.dec].q) + '  ·  ' + IND[sel.ind].label; }
+  function ctxLine() { var J = JOBS[sel.job], d = sel.mode === 'jobs' ? J.dec : sel.dec; return (sel.mode === 'jobs' ? J.q : DEC[sel.dec].q) + '  ·  ' + IND[sel.ind].label + '  ·  ' + DEC[d].tag; }
 
   async function run() {
     if (P.running) return;
@@ -631,7 +635,7 @@
   function finish(plan) {
     $('st-view').innerHTML = resHtml(plan.summary) + '<div class="v-memo full"><div class="vr-h">The draft memo behind it</div>' + memoHtml(plan.memo) + '</div>';
     $('stage').classList.add('done'); $('st-skip').hidden = true; $('st-prog').hidden = true;
-    $('st-count').textContent = 'Done'; $('st-name').textContent = 'The answer, then the memo behind it'; $('st-text').textContent = 'Everything here is illustrative. A person would review it before it went anywhere.';
+    $('st-count').textContent = 'Done'; $('st-name').textContent = 'The answer, then the memo behind it'; $('st-text').textContent = 'A person would review this before it went anywhere.';
     $('st-foot-done').hidden = false;
     var full = $('st-full'), go = $('st-go');
     if (sel.dec === 'budget') { full.href = 'tools/tipping-point.html?case=' + sel.ind; full.textContent = 'See the full example'; full.hidden = false; go.innerHTML = 'The full example is Tipping Point, where you can change every input.'; go.hidden = false; }
@@ -642,9 +646,9 @@
   function finishJob(J) {
     var v = $('st-view'); v.insertAdjacentHTML('beforeend', jobFacts(J));
     $('stage').classList.add('done'); $('st-skip').hidden = true; $('st-prog').hidden = true;
-    $('st-count').textContent = 'Done'; $('st-name').textContent = J.label; $('st-text').textContent = 'One job from a longer workflow. Everything here is illustrative.';
+    $('st-count').textContent = 'Done'; $('st-name').textContent = J.label; $('st-text').textContent = '';
     $('st-foot-job').hidden = false; $('st-add').href = 'pricing.html?job=' + J.cat + '#plan';
-    $('st-go').textContent = 'This is one job on its own. In an end-to-end workflow it runs alongside the others.'; $('st-go').hidden = false;
+    $('st-go').textContent = 'Building a set of jobs for a proposal? Include this one in your plan, add others, and see an indicative price on the Pricing page.'; $('st-go').hidden = false;
   }
   function skip() { if (P.running) P.skipping = true; }
   function lock(on) {
@@ -656,13 +660,20 @@
     a.href = url; a.download = 'decision-memo-' + sel.ind + '-' + sel.dec + '.md'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 800);
   }
   var planCache = {};
+  function flowHtml(q, ins, mids, outs, hint) {
+    var li = function (arr) { return arr.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join(''); };
+    return '<div class="v-flow"><p class="vf-q">' + esc(q) + '</p>' +
+      '<div class="vf-col"><div class="vf-h">Evidence in</div><ul>' + li(ins) + '</ul></div>' +
+      '<div class="vf-col"><div class="vf-h">What the workflow does</div><ol>' + li(mids) + '</ol></div>' +
+      '<div class="vf-col out"><div class="vf-h">What comes out</div><ul>' + li(outs) + '</ul></div>' +
+      '<p class="vf-hint">' + esc(hint) + '</p></div>';
+  }
   function idleHtml() {
-    if (sel.mode === 'jobs') { var J = JOBS[sel.job]; return '<div class="v-idle2 left"><p class="v-idle">Press the button to run this one job.</p>' + jobFacts(J) + '</div>'; }
+    if (sel.mode === 'jobs') { var J = JOBS[sel.job]; return flowHtml(J.q, [J.needs], [J.does], [J.makes], 'Press Run to watch this job. ' + J.human); }
     var pl = null;
     try { var k = sel.ind + '-' + sel.dec; if (!planCache[k]) planCache[k] = PLANNERS[sel.dec](sel.ind); pl = planCache[k]; } catch (e) { pl = null; }
-    var h = '<div class="v-idle2"><p class="v-idle">Press the button to run the analyst on this decision.</p>';
-    if (pl) h += '<div class="v-pre"><div class="v-pre-t">What the analyst will do, in about half a minute</div><ol class="v-steps">' + pl.steps.map(function (st) { return '<li>' + esc(st.n) + '</li>'; }).join('') + '</ol></div>';
-    return h + '</div>';
+    var D = DEC[sel.dec];
+    return flowHtml(D.q, D.inputs, pl ? pl.steps.map(function (st) { return st.n; }) : [], D.outputs, 'Press Run to watch it work, about half a minute. A person reviews the result before it goes anywhere.');
   }
   function showIdle() { if (!P.running && !$('stage').classList.contains('done')) $('st-view').innerHTML = idleHtml(); }
   function reset() {

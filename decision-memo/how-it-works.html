@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How It Works | Decision Memo</title>
-<meta name="description" content="The six steps from defining a job to reviewing its output, who is involved at each step, where automation ends and human judgement begins, and answers on sources, data and testing.">
+<meta name="description" content="Six steps from defining a job to reviewing its output, where automation ends and human judgement begins, and answers on sources, data and testing.">
 <meta name="theme-color" content="#f6f3ec">
 <meta property="og:title" content="How It Works | Decision Memo">
-<meta property="og:description" content="The six steps from defining a job to reviewing its output, who is involved at each step, where automation ends and human judgement begins, and answers on sources, data and testing.">
+<meta property="og:description" content="Six steps from defining a job to reviewing its output, where automation ends and human judgement begins, and answers on sources, data and testing.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -21,55 +21,42 @@
 
 <section class="page-head"><div class="wrap">
   <h1>How It Works</h1>
-  <p class="lead">You define a job once. A configured workflow runs it whenever you ask, and a person reviews what needs judgement. Six steps, with something you can inspect at the end of each.</p>
+  <p class="lead">You define a job once. A configured workflow runs it whenever you ask, and a person reviews what needs judgement.</p>
 </div></section>
-
-<section class="block"><div class="wrap">
-  <ol class="steps six flow">
-    <li><span class="num">1</span><strong>Define the job</strong><span class="out">A written brief: the question, the scope, the output and the rules that apply.</span></li>
-    <li><span class="num">2</span><strong>Provide the inputs</strong><span class="out">A list of sources, and the documents or numbers you supply.</span></li>
-    <li><span class="num">3</span><strong>Configure and test</strong><span class="out">A first run that you check against what you expected.</span></li>
-    <li><span class="num">4</span><strong>Run the workflow</strong><span class="out">A dated record of what was found, with a source on every item.</span></li>
-    <li><span class="num">5</span><strong>Review and deliver</strong><span class="out">Gaps and exceptions flagged, then a memo or update you can use.</span></li>
-    <li><span class="num">6</span><strong>Refine when needed</strong><span class="out">An adjusted job when your sources, rules or priorities change.</span></li>
-  </ol>
-  <div class="wrapx lanes-w"><table class="lanes">
-    <caption>Who is involved at each step</caption>
-    <thead><tr><th scope="col"><span class="sr">Role</span></th><th scope="col">1 Define</th><th scope="col">2 Inputs</th><th scope="col">3 Test</th><th scope="col">4 Run</th><th scope="col">5 Review</th><th scope="col">6 Refine</th></tr></thead>
-    <tbody><tr><th scope="row">You</th><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="gap" aria-label="not involved"></span></td><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="dot" aria-label="involved">&#9679;</span></td></tr><tr><th scope="row">The workflow</th><td><span class="gap" aria-label="not involved"></span></td><td><span class="gap" aria-label="not involved"></span></td><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="gap" aria-label="not involved"></span></td></tr><tr><th scope="row">A person at this service</th><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="gap" aria-label="not involved"></span></td><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="gap" aria-label="not involved"></span></td><td><span class="dot" aria-label="involved">&#9679;</span></td><td><span class="dot" aria-label="involved">&#9679;</span></td></tr></tbody>
-  </table></div>
-  <p class="caption">Runs happen on demand. The examples on this site show the steps working on illustrative data. They do not all perform every step, and none fetches sources for you.</p>
-</div></section>
-
-<section class="block"><div class="wrap two">
-  <h2>Where automation ends</h2>
-  <div>
-    <p>The workflow collects or receives the inputs, records each item with a date, a source and a status, applies written rules, runs the calculations and drafts the output. A gap is logged as a gap, and a conclusion that rests on inference is rated as inference, so it cannot pass for a disclosed fact.</p>
-    <p>A person sets the job up, checks the first run, looks at exceptions, and applies judgement to anything that carries consequences. You make the decision. Calculations and scoring use explicit code, so the rules can be inspected and repeated. The demo and the examples here call no language model.</p>
-    <dl class="facts">
-      <div><dt>Fixed</dt><dd>The steps, the status labels, a date and a source on every item, gaps logged and never filled, and no release without approval.</dd></div>
-      <div><dt>Set with you</dt><dd>The question, the sources, the rating rules, the output format, how often it runs, who reviews and where the result goes.</dd></div>
-    </dl>
-  </div>
-</div></section>
-
-<section class="block"><div class="wrap">
-  <h2>Questions about how it works</h2>
-  <div style="margin-top:1.2rem;max-width:46rem">
+<section class="wrap stp"><div><h2>Define the job</h2><p>Write down the question, the scope, the output you want and the rules that apply. Everything else follows from this brief.</p><div class="tags"><span class="chip">Question</span><span class="chip">Scope</span><span class="chip">Output</span><span class="chip">Rules</span></div></div><div class="stp-v"><div class="mock"><div class="mock-h">The brief for a job, as an example</div>
+ <div class="kv"><b>Question</b><span>What changed in the market this week, and does it matter for our decisions?</span></div>
+ <div class="kv"><b>Scope</b><span>Six public sources, three competitors</span></div>
+ <div class="kv"><b>Output</b><span>A one-page memo, dated, with a source on every line</span></div>
+ <div class="kv"><b>Rules</b><span>Show anything not disclosed. Rate evidence by the written rules.</span></div></div></div></section><section class="wrap stp rev"><div><h2>Provide the inputs</h2><p>Name the sources to watch, and send any documents or numbers you want included. Every item is marked as a public source or your own data.</p><div class="tags"><span class="chip">Public sources</span><span class="chip">Your documents</span><span class="chip">Your numbers</span></div></div><div class="stp-v"><div class="mock"><div class="mock-h">What goes in</div><div class="flow2">
+ <div class="col"><span class="mchip pub">Trade press</span><span class="mchip pub">Company releases</span><span class="mchip pub">Regulator notices</span><span class="mchip int">Your sales notes</span><span class="mchip int">Your price lists</span></div>
+ <div class="arrow"></div>
+ <div class="evbox"><b>One evidence set</b>Every item dated, with its source and whether it is public or yours.</div></div></div></div></section><section class="wrap stp"><div><h2>Configure and test</h2><p>The rules are written down, and the first run is checked against what you expected. Adjustments happen before anything reaches you.</p><div class="tags"><span class="chip">Written rules</span><span class="chip">First-run check</span></div></div><div class="stp-v"><div class="mock"><div class="mock-h">Rules written down before the first run</div>
+ <ul class="rules"><li>Rate the evidence <span>Strong, mixed, inference only, nothing disclosed</span></li><li>A gap <span>Logged, never filled in</span></li><li>Release <span>Only after a person approves</span></li></ul>
+ <div class="loop"><span class="mchip">First run</span><span class="sep"></span><span class="mchip">You check it</span><span class="sep"></span><span class="mchip">Adjust the rules</span><span class="sep"></span><span class="mchip">Ready</span></div></div></div></section><section class="wrap stp rev"><div><h2>Run the workflow</h2><p>It reads the inputs, records each item with a date, a source and a status, and shows a gap as a gap. Runs happen when you ask for them.</p><div class="tags"><span class="chip">On demand</span><span class="chip">Dated and sourced</span></div></div><div class="stp-v"><figure class="shot"><img src="assets/img/card-shiftwatch.webp" alt="The Shiftwatch event log: each market event has a date, a description, a status and a source." width="1400" height="933" loading="lazy"><figcaption>A recorded run. Each event has a date, a source and a status.</figcaption></figure></div></section><section class="wrap stp"><div><h2>Review and deliver</h2><p>A person checks the exceptions and anything with consequences. Then the result reaches you as a memo or an update, and you decide.</p><div class="tags"><span class="chip">Exceptions flagged</span><span class="chip">Memo or update</span></div></div><div class="stp-v"><figure class="shot"><img src="assets/img/card-tipping-point.webp" alt="The Tipping Point result: a recommended budget split with the trade-off, the key uncertainty and the next action." width="1400" height="933" loading="lazy"><figcaption>What reaches you: the answer, what it depends on and what to do next.</figcaption></figure></div></section><section class="wrap stp rev"><div><h2>Refine when needed</h2><p>When a source, a rule or a priority changes, the job is adjusted and checked again.</p><div class="tags"><span class="chip">Versioned rules</span><span class="chip">Re-tested</span></div></div><div class="stp-v"><div class="mock"><div class="mock-h">What changes when your priorities do (an example)</div><div class="diff">
+ <div class="add"><i>+</i><span>Regulator notices added as a source</span></div>
+ <div class="chg"><i>~</i><span>Evidence rated strong only with two independent sources</span></div>
+ <div class="del"><i>&minus;</i><span>A source that stopped publishing was dropped</span></div></div>
+ <p class="cap">The job is adjusted and checked again before the next run.</p></div></div></section><section class="wrap block" style="border-top:1px solid var(--rule)"><h2>Where automation ends</h2>
+  <p class="sub" style="margin-bottom:1rem">The workflow repeats the same steps every run. A person sets the job up and looks at what needs judgement.</p>
+  <div class="ends">
+   <div class="lane"><h3>The workflow<small>every run, the same way</small></h3><div class="steps-r"><span class="mchip">Collect the inputs</span><span class="sepx"></span><span class="mchip">Record with date and source</span><span class="sepx"></span><span class="mchip">Apply the written rules</span><span class="sepx"></span><span class="mchip">Run the calculations</span><span class="sepx"></span><span class="mchip">Draft the output</span></div></div>
+   <div class="lane p"><h3>A person<small>where judgement matters</small></h3><div class="steps-r"><span class="mchip">Sets up the job</span><span class="sepx"></span><span class="mchip">Checks the first run</span><span class="sepx"></span><span class="mchip">Reviews gaps and exceptions</span><span class="sepx"></span><span class="mchip">Interprets what matters</span><span class="sepx"></span><span class="mchip">You make the decision</span></div></div>
+  </div></section>
+<section class="wrap block"><h2>Questions</h2>
+  <div class="faqs" style="margin-top:1rem">
 <details class="faq"><summary>What do I need to provide?</summary><p>The job in a few sentences, the output you want, any rules that apply, and the documents or numbers involved. Setup takes a conversation or two and a first run that you check. After that, a run needs new inputs only where the job uses them.</p></details>
 <details class="faq"><summary>Which sources can it use?</summary><p>Public web sources that are selected with you, documents and spreadsheets you send, and numbers you enter. No connection to your internal systems has been built. If a job needs one, it is scoped and priced on its own, and I will say so before you commit.</p></details>
-<details class="faq"><summary>Can you use our internal documents and data?</summary><p>Yes, and every item shows which kind it is: public source, your data or assumption. We agree in writing what I receive, where it is processed and when it is deleted, before anything is shared. I ask for the least data that will do the job, which for sales or channel figures usually means monthly totals with no personal data.</p></details>
-<details class="faq"><summary>How is a job configured and tested?</summary><p>We write the job down, set the rules, and run it once. You check that run against what you expected. You can also ask for a back-test: give me a past period where you know what happened, and we count what the workflow missed and what it got wrong.</p></details>
+<details class="faq"><summary>Can you use our internal documents and data?</summary><p>Yes, and every item shows which kind it is. We agree in writing what I receive, where it is processed and when it is deleted, before anything is shared. I ask for the least data that will do the job, which for sales or channel figures usually means monthly totals with no personal data. I have no standard retention period yet, so we set one for each job.</p></details>
+<details class="faq"><summary>How is a job tested?</summary><p>You check the first run against what you expected. You can also ask for a back-test: give me a past period where you know what happened, and we count what the workflow missed and what it got wrong.</p></details>
 <details class="faq"><summary>Does it run on a schedule?</summary><p>Runs happen on demand. A regular rhythm, such as monthly, can be agreed, and I run it for you. There is no self-service scheduler and no live monitoring today.</p></details>
-<details class="faq"><summary>Where does a person step in?</summary><p>At setup, at the first run, when the workflow flags a gap or conflict, and wherever a result carries consequences. A named reviewer can accept, hold or overrule any result. You can add regular interpretation or advisory support, which is priced separately.</p></details>
-<details class="faq"><summary>What happens to my data?</summary><p>The demo and the examples run in your browser, and nothing you type into them is sent anywhere. A brief sent through the form is held by the form service and in my email, and is used only to reply. For a real engagement, what I receive, how it is handled and when it is deleted is agreed in writing. I have no standard retention period yet, so we set one for each job.</p></details>
+<details class="faq"><summary>What happens to what I type into the site?</summary><p>The demo and the examples run in your browser, and nothing you type into them is sent anywhere. A brief sent through the form is held by the form service and in my email, and is used only to reply.</p></details>
 <details class="faq"><summary>What if the evidence is thin or a source is unavailable?</summary><p>The workflow says so. A gap is logged with a date and shown in the output, and a question with weak evidence is rated that way: inference only, or nothing disclosed yet. A source that cannot be read is recorded as unavailable, and the output lists what could not be checked.</p></details>
-<details class="faq"><summary>How do I know it is not making things up?</summary><p>Every item carries a date and a source, scoring and rating rules are written out, and a reviewer approves each result. Where a live build uses a language model to read text, each quote it extracts is checked against the fetched text, and a failure goes to the reviewer. The examples here fetch nothing, so you cannot try that check on this site.</p></details>
+<details class="faq"><summary>How do I know it is not making things up?</summary><p>Every item carries a date and a source, the scoring and rating rules are written out, and a reviewer approves each result. Where a live build uses a language model to read text, each quote it extracts is checked against the fetched text, and a failure goes to the reviewer. The examples here fetch nothing, so you cannot try that check on this site.</p></details>
 <details class="faq"><summary>Does it learn from corrections?</summary><p>The workflows are designed so that a reviewer&rsquo;s corrections are logged and used to adjust the rules. The demo and the examples on this site do not learn. They run fixed rules on fixed examples.</p></details>
 <details class="faq"><summary>Does it replace our analyst?</summary><p>It covers gathering, dating, scoring, testing and drafting for a defined job. The reading of what matters, and the decision, stay with your team.</p></details>
-<details class="faq"><summary>How do I receive the results?</summary><p>As a PDF or an email, or by approving items by email, or by files I hand over for your own systems. I would start with the first option. Running inside your own AI tools is possible after your security review.</p></details>
+<details class="faq"><summary>How do I receive the results?</summary><p>As a PDF or an email, or by approving items by email, or by files I hand over for your own systems. Running inside your own AI tools is possible after your security review.</p></details>
   </div>
-</div></section>
+</section>
 
 </main>
 <footer class="foot"><div class="wrap">
