@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Examples | Decision Memo</title>
-<meta name="description" content="Shiftwatch for hotels, Tipping Point for telecom, Condition Watch for pharma and Guidance Tracker for consumer goods: what each replaces, what you get, and what is still done by a person.">
+<meta name="description" content="Tipping Point for budget splits, with Shiftwatch, Condition Watch and Guidance Tracker: what each replaces, what you get, what a person still does, and its current status.">
 <meta name="theme-color" content="#f6f3ec">
 <meta property="og:title" content="Examples | Decision Memo">
-<meta property="og:description" content="Shiftwatch for hotels, Tipping Point for telecom, Condition Watch for pharma and Guidance Tracker for consumer goods: what each replaces, what you get, and what is still done by a person.">
+<meta property="og:description" content="Tipping Point for budget splits, with Shiftwatch, Condition Watch and Guidance Tracker: what each replaces, what you get, what a person still does, and its current status.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -20,43 +20,61 @@
 <main id="main">
 
 <section class="page-head"><div class="wrap">
-  <h1>Four examples, four kinds of analyst work</h1>
-  <p class="lead">The demo on the home page runs four decisions across three industries. These four examples go further into one decision each. Open one, change the inputs and watch the output change. None of them asks for an email address.</p>
-  <p class="small" style="margin-top:.8rem">Two of the demo decisions, testing a price change and ranking options, run only in the demo for now.</p>
+  <h1>Examples of analysis made easier to repeat</h1>
+  <p class="lead">Four different problems. The same aim: make the evidence, assumptions and decision easier to inspect.</p>
+  <div class="wrapx" style="margin-top:1.8rem"><table class="plain ex-t">
+    <thead><tr><th>Example</th><th>Decision it supports</th><th>What it demonstrates</th></tr></thead>
+    <tbody>
+    <tr><td><a href="#tipping-point">Tipping Point</a></td><td>Where should the next rupee go?</td><td>Tests a budget split across three routes in 5,000 scenarios and shows where each stops paying back.</td></tr>
+    <tr><td><a href="#shiftwatch">Shiftwatch</a></td><td>What changed in the market, and does it matter?</td><td>A dated record of events, each with a source and a status, and a list of what is not disclosed.</td></tr>
+    <tr><td><a href="#condition-watch">Condition Watch</a></td><td>How strong is the evidence for each question about a condition?</td><td>An evidence board that rates each question and moves as you log findings.</td></tr>
+    <tr><td><a href="#guidance-tracker">Guidance Tracker</a></td><td>Did the company deliver what it said?</td><td>A score for each target against the reported result, and a record by topic.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small" style="margin-top:.4rem">The home page demo also tests a price change and ranks options. Those two run only in the demo for now. None of the examples asks for an email address.</p>
 </div></section>
-<section class="block example" id="shiftwatch"><div class="wrap two">
-  <div><img src="assets/img/card-shiftwatch.webp" alt="Part of the Shiftwatch example: a dated log of market events, each with a status such as disclosed or not disclosed, and a source." width="1400" height="933" loading="lazy"></div>
+<section class="block example flagship" id="tipping-point"><div class="wrap">
+  <p class="eyebrow">Flagship example &middot; Hotels</p>
+  <h2>Tipping Point: where should the next rupee go?</h2>
+  <p class="lead2">A hypothetical hotel chain has &#8377;100 crore to place across direct bookings, online travel agents and corporate sales. The model tests 5,000 versions of the future and returns a split, the trade-off, the assumption that matters most and what to check next.</p>
+  <figure class="big"><img src="assets/img/card-tipping-point.webp" alt="The Tipping Point result for a hypothetical hotel chain: a recommended split of the budget across three routes, with the trade-off, the key uncertainty and the next action." width="1400" height="933" loading="lazy"><figcaption>The result at the top of the Tipping Point page, on invented figures.</figcaption></figure>
+  <dl class="facts" style="margin-top:1.6rem">
+    <div><dt>What it replaces</dt><dd>A spreadsheet that holds one best guess per input, and the meeting where each person argues for a different guess.</dd></div>
+    <div><dt>What you get</dt><dd>A recommended split, the spend at which each route stops paying back under your assumptions, how often the split beats the current plan, and the one assumption the answer depends on most.</dd></div>
+    <div><dt>What still needs a person</dt><dd>Supplying the real numbers, judging whether the model is fair to the business, and making the call.</dd></div>
+    <div><dt>Current status</dt><dd>Interactive model with illustrative inputs, which you can replace with your own. Each route is modelled as an independent curve, so the result is the best split inside the model and not a forecast. Also set up for pharma and telecom cases.</dd></div>
+  </dl>
+  <div class="btns"><a class="btn" href="tools/tipping-point.html">Open Tipping Point</a><a class="btn second" href="contact.html">Discuss a similar decision</a></div>
+</div></section>
+<section class="block"><div class="wrap">
+  <h2>Supporting examples</h2>
+  <div class="sups"><article class="sup" id="shiftwatch">
+  <img src="assets/img/card-shiftwatch.webp" alt="Part of the Shiftwatch example: a dated log of market events, each with a status such as disclosed or not disclosed, and a source." width="1400" height="933" loading="lazy">
   <div>
     <p class="eyebrow">Hotels</p>
-    <h2>Shiftwatch: the weekly market scan, as a record</h2>
-    <dl class="facts" style="margin-top:1.2rem"><div><dt>Replaces</dt><dd>An analyst reads the trade press every week and notes what changed.</dd></div><div><dt>You get</dt><dd>A dated log of events, a list of what is not disclosed, and a memo that links each change to a decision.</dd></div><div><dt>A person still</dt><dd>Picks the sources and approves each flag.</dd></div><div><dt>Status</dt><dd>Recorded research run on public sources, checked on 29 October 2026. It does not fetch anything when you open it. A workflow version exists and has been tested end to end only against mock services.</dd></div></dl>
-    <a class="btn" href="tools/shiftwatch.html">Open Shiftwatch</a>
+    <h3>Shiftwatch: the weekly market scan, as a record</h3>
+    <dl class="facts"><div><dt>What it replaces</dt><dd>An analyst reads the trade press every week and notes what changed.</dd></div><div><dt>What you get</dt><dd>A dated log of events, a list of what is not disclosed, and a memo that links each change to a decision.</dd></div><div><dt>What still needs a person</dt><dd>Picks the sources and approves each flag.</dd></div><div><dt>Current status</dt><dd>Recorded research run on public sources, checked on 29 October 2026. It does not fetch anything when you open it. A workflow version exists and has been tested end to end only against mock services.</dd></div></dl>
+    <a class="btn second" href="tools/shiftwatch.html">Open Shiftwatch</a>
   </div>
-</div></section><section class="block example" id="tipping-point"><div class="wrap two">
-  <div><img src="assets/img/card-tipping-point.webp" alt="Part of the Tipping Point example: a scatter of 5,000 scenarios by best budget split, and three charts showing where each sales channel stops paying back." width="1400" height="933" loading="lazy"></div>
-  <div>
-    <p class="eyebrow">Telecom</p>
-    <h2>Tipping Point: the budget split, tested</h2>
-    <dl class="facts" style="margin-top:1.2rem"><div><dt>Replaces</dt><dd>A spreadsheet that holds one best guess per input.</dd></div><div><dt>You get</dt><dd>5,000 what-if cases across three sales channels, the spend at which each channel stops paying back under your assumptions, and the assumption the answer depends on most.</dd></div><div><dt>A person still</dt><dd>Supplies the real numbers, judges whether the model is fair to the business, and makes the call.</dd></div><div><dt>Status</dt><dd>Interactive model with illustrative inputs, which you can replace with your own. Each channel is modelled as an independent curve, so the result is the best split inside the model and not a forecast.</dd></div></dl>
-    <a class="btn" href="tools/tipping-point.html">Open Tipping Point</a>
-  </div>
-</div></section><section class="block example" id="condition-watch"><div class="wrap two">
-  <div><img src="assets/img/card-condition-watch.webp" alt="Part of the Condition Watch example: an evidence board with one card for each question about a condition, showing how strong its evidence is, beside the table of dated entries behind it." width="1400" height="933" loading="lazy"></div>
+</article><article class="sup" id="condition-watch">
+  <img src="assets/img/card-condition-watch.webp" alt="Part of the Condition Watch example: an evidence board with one card for each question about a condition, showing how strong its evidence is, beside the table of dated entries behind it." width="1400" height="933" loading="lazy">
   <div>
     <p class="eyebrow">Pharma</p>
-    <h2>Condition Watch: how strong is the evidence for each question</h2>
-    <dl class="facts" style="margin-top:1.2rem"><div><dt>Replaces</dt><dd>An analyst searches trial registries, regulators and company releases, and rebuilds the list whenever the scope changes.</dd></div><div><dt>You get</dt><dd>Questions and a source list written from the condition you name, an evidence board that rates each question and changes as you log findings, and a memo.</dd></div><div><dt>A person still</dt><dd>Reads the sources and enters what they find.</dd></div><div><dt>Status</dt><dd>Interactive prototype with manual evidence entry. It reads no sources, and its example entries are invented.</dd></div></dl>
-    <a class="btn" href="tools/condition-watch.html">Open Condition Watch</a>
+    <h3>Condition Watch: how strong is the evidence for each question</h3>
+    <dl class="facts"><div><dt>What it replaces</dt><dd>Searching trial registries, regulators and company releases by hand, and rebuilding the list whenever the scope changes.</dd></div><div><dt>What you get</dt><dd>Questions and a source list written from the condition you name, an evidence board that rates each question as you log findings, and a memo.</dd></div><div><dt>What still needs a person</dt><dd>Reads the sources and enters what they find.</dd></div><div><dt>Current status</dt><dd>Interactive prototype with manual evidence entry. It reads no sources, and its example entries are invented.</dd></div></dl>
+    <a class="btn second" href="tools/condition-watch.html">Open Condition Watch</a>
   </div>
-</div></section><section class="block example" id="guidance-tracker"><div class="wrap two">
-  <div><img src="assets/img/card-guidance-tracker.webp" alt="Part of the Guidance Tracker example: a record by topic showing how many targets were met, above a table where each target has its result and an automatic score." width="1400" height="933" loading="lazy"></div>
+</article><article class="sup" id="guidance-tracker">
+  <img src="assets/img/card-guidance-tracker.webp" alt="Part of the Guidance Tracker example: a record by topic showing how many targets were met, above a table where each target has its result and an automatic score." width="1400" height="933" loading="lazy">
   <div>
     <p class="eyebrow">Consumer goods</p>
-    <h2>Guidance Tracker: what was said against what was reported</h2>
-    <dl class="facts" style="margin-top:1.2rem"><div><dt>Replaces</dt><dd>Someone compares last year&rsquo;s targets with this year&rsquo;s results, when they remember to.</dd></div><div><dt>You get</dt><dd>A score for each target as soon as its result is entered, a record by topic that shows how reliable the company has been, and what a full-year range implies for the rest of the year.</dd></div><div><dt>A person still</dt><dd>Enters targets and results from real documents, and can overrule any score.</dd></div><div><dt>Status</dt><dd>Interactive prototype with manual data entry. It checks no entry against a document, and its example figures are invented. It tracks stated targets, which can be financial guidance or commitments such as launches. It is not investment advice.</dd></div></dl>
-    <a class="btn" href="tools/guidance-tracker.html">Open Guidance Tracker</a>
+    <h3>Guidance Tracker: what was said against what was reported</h3>
+    <dl class="facts"><div><dt>What it replaces</dt><dd>Comparing last year&rsquo;s targets with this year&rsquo;s results, when someone remembers to.</dd></div><div><dt>What you get</dt><dd>A score for each target as soon as its result is entered, a record by topic showing how reliable the company has been, and what a full-year range implies for the rest of the year.</dd></div><div><dt>What still needs a person</dt><dd>Enters targets and results from real documents, and can overrule any score.</dd></div><div><dt>Current status</dt><dd>Interactive prototype with manual data entry. It checks no entry against a document, and its example figures are invented. It tracks stated targets, which can be financial guidance or commitments such as launches. It is not investment advice.</dd></div></dl>
+    <a class="btn second" href="tools/guidance-tracker.html">Open Guidance Tracker</a>
   </div>
+</article></div>
 </div></section>
+
 <section class="section tint"><div class="wrap band">
   <div>
     <h2>If your sector is not here</h2>

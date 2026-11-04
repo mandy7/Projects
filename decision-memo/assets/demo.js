@@ -314,7 +314,7 @@
             names.map(function (n, i) { return '<div class="v-leg"><i style="background:' + COLORS[i] + '"></i>' + esc(n) + '</div>'; }).join('') + '</div></div>';
           cv = v.querySelector('canvas'); cnt = v.querySelector('#v-count'); cx = cv.getContext('2d');
           var W = cv.width, H = cv.height, ml = 46, mb = 40, mt = 12, mr = 14;
-          cx.fillStyle = '#fffdf8'; cx.fillRect(0, 0, W, H); cx.strokeStyle = '#d9d3c4'; cx.fillStyle = '#625e56'; cx.font = '12px sans-serif';
+          cx.fillStyle = '#fffdf8'; cx.fillRect(0, 0, W, H); cx.strokeStyle = '#d9d3c4'; cx.fillStyle = '#625e56'; cx.font = '14px sans-serif';
           [0, 25, 50, 75, 100].forEach(function (t) { var x = ml + t / 100 * (W - ml - mr), y = H - mb - t / 100 * (H - mt - mb); cx.beginPath(); cx.moveTo(x, mt); cx.lineTo(x, H - mb); cx.stroke(); cx.beginPath(); cx.moveTo(ml, y); cx.lineTo(W - mr, y); cx.stroke(); cx.textAlign = 'center'; cx.fillText(String(t), x, H - mb + 16); cx.textAlign = 'right'; cx.fillText(String(t), ml - 6, y + 4); });
           cx.textAlign = 'center'; cx.fillText(names[1] + ', ₹ crore', (ml + W - mr) / 2, H - 6);
           cx.save(); cx.translate(12, (mt + H - mb) / 2); cx.rotate(-Math.PI / 2); cx.fillText(names[0] + ', ₹ crore', 0, 0); cx.restore();
@@ -352,7 +352,12 @@
     addH(memo, 'Limits');
     addL(memo, ['Every input is illustrative. Each route is an independent curve, so this is the best split inside the model and not a forecast.']);
     steps.push(memoStep(memo));
-    return { steps: steps, memo: memo, engine: E };
+    var summary = {
+      rec: 'Place ' + cr(E.best[0]) + ' in ' + names[0] + ', ' + cr(E.best[1]) + ' in ' + names[1] + ' and ' + cr(E.best[2]) + ' in ' + names[2] + '.',
+      trade: 'Averages ' + cr(E.bestMean) + ' of contribution, against ' + cr(E.planMean) + ' for the current ' + cfg.plan.join(' / ') + ' plan. It beats the plan in ' + pc(E.beat) + ' of ' + N.toLocaleString('en-US') + ' scenarios.',
+      unc: 'The answer depends most on ' + names[hing[0].r].toLowerCase() + ': ' + KM[hing[0].k] + '. At the low or high end of its range, the best split moves by up to ' + f0(hing[0].dist) + ' points of the budget.',
+      next: 'The evidence that would settle it is ' + cfg.evidence + '. Replace the assumption with the real figure and rerun.' };
+    return { steps: steps, memo: memo, engine: E, summary: summary };
   }
 
   function tipChart(E, r, name, planAt) {
@@ -361,16 +366,16 @@
     function Y(v) { return mt + (1 - Math.min(v, YM) / YM) * (H - mt - mb); }
     var o = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Return on the next rupee for ' + esc(name) + '">';
     o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + (H - mb) + '" y2="' + (H - mb) + '" stroke="#625e56"/>';
-    [0, 1, 2].forEach(function (t) { o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="#e3ddcd"/><text x="' + (ml - 5) + '" y="' + (Y(t) + 4) + '" text-anchor="end" font-size="10" fill="#625e56">' + t + '</text>'; });
-    [0, 50, 100].forEach(function (t) { o += '<text x="' + X(t) + '" y="' + (H - mb + 14) + '" text-anchor="middle" font-size="10" fill="#625e56">' + t + '</text>'; });
+    [0, 1, 2].forEach(function (t) { o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="#e3ddcd"/><text x="' + (ml - 5) + '" y="' + (Y(t) + 4) + '" text-anchor="end" font-size="12" fill="#625e56">' + t + '</text>'; });
+    [0, 50, 100].forEach(function (t) { o += '<text x="' + X(t) + '" y="' + (H - mb + 14) + '" text-anchor="middle" font-size="12" fill="#625e56">' + t + '</text>'; });
     var d = 'M'; g.forEach(function (s, i) { d += (i ? 'L' : '') + X(s) + ' ' + Y(c.hi[i]); }); for (var i = g.length - 1; i >= 0; i--) d += 'L' + X(g[i]) + ' ' + Y(c.lo[i]);
     o += '<path d="' + d + 'Z" fill="' + col + '" opacity="0.16"/>';
     var ln = ''; g.forEach(function (s, i) { ln += (i ? 'L' : 'M') + X(s) + ' ' + Y(c.md[i]); });
     o += '<path d="' + ln + '" fill="none" stroke="' + col + '" stroke-width="2"/>';
     o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(1) + '" y2="' + Y(1) + '" stroke="#1c1b19" stroke-dasharray="4 3" stroke-width="1"/>';
     if (sp.p50 <= 100) o += '<line x1="' + X(sp.p50) + '" x2="' + X(sp.p50) + '" y1="' + mt + '" y2="' + (H - mb) + '" stroke="#1c1b19"/><circle cx="' + X(sp.p50) + '" cy="' + Y(1) + '" r="4" fill="' + col + '" stroke="#fffdf8" stroke-width="2"/>';
-    o += '<text x="' + ml + '" y="12" font-size="12" font-weight="600" fill="#1c1b19">' + esc(name) + '</text>';
-    o += '<text x="' + ml + '" y="' + (H - 4) + '" font-size="10.5" fill="#1c1b19">' + (sp.p50 <= 100 ? 'Stops paying near ₹' + f0(sp.p50) + ' crore' : 'Does not stop within the budget') + '</text></svg>';
+    o += '<text x="' + ml + '" y="12" font-size="14" font-weight="600" fill="#1c1b19">' + esc(name) + '</text>';
+    o += '<text x="' + ml + '" y="' + (H - 4) + '" font-size="12.5" fill="#1c1b19">' + (sp.p50 <= 100 ? 'Stops paying near ₹' + f0(sp.p50) + ' crore' : 'Does not stop within the budget') + '</text></svg>';
     return '<div class="v-ch">' + o + '</div>';
   }
 
@@ -400,15 +405,15 @@
       draw: function (v, p) {
         var W = 560, H = 310, ml = 56, mr = 20, mt = 38, mb = 50, lo = Math.min.apply(null, E.p10) * 0.97, hi = Math.max.apply(null, E.p90) * 1.03, k, o = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Expected profit for each price move">';
         function X(i) { return ml + (i + 0.5) / 5 * (W - ml - mr); } function Y(vv) { return mt + (1 - (vv - lo) / (hi - lo)) * (H - mt - mb); }
-        for (var t = 0; t <= 4; t++) { var val = lo + (hi - lo) * t / 4; o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(val) + '" y2="' + Y(val) + '" stroke="#e3ddcd"/><text x="' + (ml - 6) + '" y="' + (Y(val) + 4) + '" text-anchor="end" font-size="11" fill="#625e56">' + f0(val) + '</text>'; }
+        for (var t = 0; t <= 4; t++) { var val = lo + (hi - lo) * t / 4; o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(val) + '" y2="' + Y(val) + '" stroke="#e3ddcd"/><text x="' + (ml - 6) + '" y="' + (Y(val) + 4) + '" text-anchor="end" font-size="13" fill="#625e56">' + f0(val) + '</text>'; }
         var idx = Math.min(E.cp - 1, Math.max(0, Math.floor(p * E.cp) - 1)), showBand = p > 0.7;
         for (k = 0; k < 5; k++) {
-          o += '<text x="' + X(k) + '" y="' + (H - mb + 20) + '" text-anchor="middle" font-size="11.5" fill="#1c1b19">' + PRICE_LABEL[k] + '</text>';
+          o += '<text x="' + X(k) + '" y="' + (H - mb + 20) + '" text-anchor="middle" font-size="13" fill="#1c1b19">' + PRICE_LABEL[k] + '</text>';
           if (showBand) o += '<line x1="' + X(k) + '" x2="' + X(k) + '" y1="' + Y(E.p10[k]) + '" y2="' + Y(E.p90[k]) + '" stroke="#8c867b" stroke-width="3" opacity="' + Math.min(1, (p - .7) * 4) + '"/>';
           var rm = p <= 0.02 ? E.runMean[k][0] : E.runMean[k][idx];
           o += '<circle cx="' + X(k) + '" cy="' + Y(rm) + '" r="6" fill="' + (k === 2 ? '#625e56' : '#1c1b19') + '"/>';
         }
-        o += '<text x="' + ml + '" y="12" font-size="12" fill="#625e56">Expected profit, ₹ crore a year. The grey line spans the middle 80% of scenarios.</text></svg>';
+        o += '<text x="' + ml + '" y="12" font-size="14" fill="#625e56">Expected profit, ₹ crore a year. The grey line spans the middle 80% of scenarios.</text></svg>';
         v.innerHTML = '<div class="v-chart">' + o + '</div><div class="v-count">' + Math.max(1, Math.floor(p * N)).toLocaleString('en-US') + ' of ' + N.toLocaleString('en-US') + ' scenarios</div>';
       } });
     steps.push({ n: 'Compare the five options', t: 'How often does each price move turn out best?', d: 4200,
@@ -433,7 +438,12 @@
     addH(memo, 'Limits');
     addL(memo, ['Every input is illustrative. The model assumes a constant response to price and ignores brand and long-run effects, so it is a way to test a move and not a forecast.']);
     steps.push(memoStep(memo));
-    return { steps: steps, memo: memo, engine: E };
+    var summary = {
+      rec: (b === hold ? 'Hold the price.' : PRICE_LABEL[b] + '.'),
+      trade: b === hold ? 'Expected profit is ' + cr(E.mean[hold]) + ' a year, and no price move beats it on average. In the worst tenth of scenarios it still returns ' + cr(E.p10[hold]) + '.' : 'Expected profit is ' + cr(E.mean[b]) + ' a year, against ' + cr(E.mean[hold]) + ' if you hold. In the worst tenth of scenarios it returns ' + cr(E.p10[b]) + ', against ' + cr(E.p10[hold]) + ' for holding.',
+      unc: 'The answer is most sensitive to ' + E.hinge[0].label + (E.hinge[0].dist ? '. At its low or high end the best option changes.' : ', although the best option holds across its range.'),
+      next: 'The evidence that would settle it is ' + cfg.evidence + '. Replace the assumption with the real figure and rerun.' };
+    return { steps: steps, memo: memo, engine: E, summary: summary };
   }
 
   function planRank(ik) {
@@ -480,7 +490,13 @@
     addH(memo, 'Limits');
     addL(memo, ['Every score and weight is illustrative. A ranking summarises judgements. It does not remove them.']);
     steps.push(memoStep(memo));
-    return { steps: steps, memo: memo, engine: E };
+    var close = E.prob[top] - E.prob[second] < 0.2;
+    var summary = {
+      rec: 'Do ' + opts[top].name.toLowerCase() + ' first.',
+      trade: 'It ranks first in ' + pc(E.prob[top]) + ' of scenarios, ahead of ' + opts[second].name.toLowerCase() + ' at ' + pc(E.prob[second]) + '. ' + (close ? 'This is a close call, so treat the order as a judgement.' : 'The lead is clear under these weights.'),
+      unc: fl.length ? 'If the weight on ' + CRITERIA[fl[0].c].name.toLowerCase() + ' is ' + (fl[0].f === 0.5 ? 'halved' : 'raised by half') + ', ' + opts[fl[0].to].name.toLowerCase() + ' comes first.' : 'No single weight change of up to half flips the order.',
+      next: 'Agree the weights your leadership actually uses, and run a small test of the option that comes second.' };
+    return { steps: steps, memo: memo, engine: E, summary: summary };
   }
 
   function planWatch(ik) {
@@ -524,7 +540,14 @@
     addH(memo, 'Limits');
     addL(memo, ['The events are invented for this demo. A live engagement reads real sources on an agreed schedule, and a person reviews every item.']);
     steps.push(memoStep(memo));
-    return { steps: steps, memo: memo, ratings: ratings, events: ev };
+    var bestI = 0, worstI = 0; ratings.forEach(function (r, i) { if (r.n > ratings[bestI].n) bestI = i; if (r.n < ratings[worstI].n) worstI = i; });
+    var gaps = ev.filter(function (e) { return e.status === 'Not disclosed'; }), nxt = ev.filter(function (e) { return e.status === 'Scheduled'; });
+    var summary = {
+      rec: bestI === worstI ? 'No decision has strong evidence yet, so hold them all.' : 'Act on "' + W.decisions[bestI] + '" now. Hold "' + W.decisions[worstI] + '" until the gap closes.',
+      trade: 'Evidence for the first is ' + ratings[bestI].k.toLowerCase() + '. For the second it is ' + ratings[worstI].k.toLowerCase() + ', and ' + gaps.length + ' item' + (gaps.length === 1 ? ' is' : 's are') + ' not disclosed.',
+      unc: gaps.length ? gaps[0].text : 'Nothing is flagged as not disclosed.',
+      next: nxt.length ? 'Next date to watch: ' + nxt[0].date + '. ' + nxt[0].text : 'Keep watching the same sources.' };
+    return { steps: steps, memo: memo, ratings: ratings, events: ev, summary: summary };
   }
 
   var PLANNERS = { budget: planBudget, watch: planWatch, price: planPrice, rank: planRank };
@@ -539,7 +562,7 @@
     $('st-text').textContent = step.t;
   }
   function setProg(f) { $('st-bar').style.width = Math.round(Math.min(1, f) * 100) + '%'; }
-  function ctxLine() { return IND[sel.ind].label + '  ·  ' + DEC[sel.dec].label; }
+  function ctxLine() { return DEC[sel.dec].q + '  ·  ' + IND[sel.ind].label; }
 
   async function run() {
     if (P.running) return;
@@ -564,17 +587,20 @@
     } catch (e) { if (e !== 'stop') throw e; }
     finally { if (tok === P.tok) { P.running = false; lock(false); } }
   }
+  function resHtml(S) {
+    var items = [['Recommendation', S.rec, ' big'], ['Trade-off', S.trade, ''], ['Key uncertainty', S.unc, ''], ['Next action', S.next, '']];
+    return '<div class="v-res"><div class="vr-g">' + items.map(function (x) { return '<div><div class="vr-l">' + x[0] + '</div><p class="vr-p' + x[2] + '">' + esc(x[1]) + '</p></div>'; }).join('') + '</div></div>';
+  }
   function finish(plan) {
-    $('st-view').innerHTML = '<div class="v-memo full">' + memoHtml(plan.memo) + '</div>';
+    $('st-view').innerHTML = resHtml(plan.summary) + '<div class="v-memo full"><div class="vr-h">The draft memo behind it</div>' + memoHtml(plan.memo) + '</div>';
     $('stage').classList.add('done'); $('st-skip').hidden = true; $('st-prog').hidden = true;
-    $('st-count').textContent = 'Done'; $('st-name').textContent = 'The memo is ready'; $('st-text').textContent = 'Everything here is illustrative. A person would review it before it went anywhere.';
+    $('st-count').textContent = 'Done'; $('st-name').textContent = 'The answer, then the memo behind it'; $('st-text').textContent = 'Everything here is illustrative. A person would review it before it went anywhere.';
     $('st-foot-done').hidden = false;
-    var d = DEC[sel.dec], tool = d.tool || IND[sel.ind].tool;
-    if (sel.dec === 'budget') tool = DEC.budget.tool;
-    var go = $('st-go');
-    if (sel.dec === 'watch') { go.innerHTML = 'Go deeper with the full example: <a href="' + IND[sel.ind].tool[0] + '">' + IND[sel.ind].tool[1] + '</a>.'; go.hidden = false; }
-    else if (sel.dec === 'budget') { go.innerHTML = 'Go deeper with the full example: <a href="' + DEC.budget.tool[0] + '">' + DEC.budget.tool[1] + '</a>, where you can change every input.'; go.hidden = false; }
-    else { go.textContent = 'This decision runs only in the demo for now.'; go.hidden = false; }
+    var full = $('st-full'), go = $('st-go');
+    if (sel.dec === 'budget') { full.href = 'tools/tipping-point.html?case=' + sel.ind; full.textContent = 'See the full example'; full.hidden = false; go.innerHTML = 'The full example is Tipping Point, where you can change every input.'; go.hidden = false; }
+    else if (sel.dec === 'watch') { full.href = IND[sel.ind].tool[0]; full.textContent = 'See the full example'; full.hidden = false; go.innerHTML = 'The full example is ' + esc(IND[sel.ind].tool[1]) + '.'; go.hidden = false; }
+    else { full.hidden = true; go.textContent = 'This decision runs only in the demo for now.'; go.hidden = false; }
+    var v = $('st-view'); if (v.scrollTop) v.scrollTop = 0;
   }
   function skip() { if (P.running) P.skipping = true; }
   function lock(on) {
@@ -589,7 +615,7 @@
   function idleHtml() {
     var pl = null;
     try { var k = sel.ind + '-' + sel.dec; if (!planCache[k]) planCache[k] = PLANNERS[sel.dec](sel.ind); pl = planCache[k]; } catch (e) { pl = null; }
-    var h = '<div class="v-idle2"><p class="v-idle">Choose an industry and a decision, then press Run the analyst.</p>';
+    var h = '<div class="v-idle2"><p class="v-idle">Press the button to run the analyst on this decision.</p>';
     if (pl) h += '<div class="v-pre"><div class="v-pre-t">What the analyst will do, in about half a minute</div><ol class="v-steps">' + pl.steps.map(function (st) { return '<li>' + esc(st.n) + '</li>'; }).join('') + '</ol></div>';
     return h + '</div>';
   }

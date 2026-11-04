@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Decision Memo | Get the first pass of analyst work done for you</title>
-<meta name="description" content="Pick an industry and a decision, then watch an analyst workflow work on illustrative data. Track the market, split a budget, test a price or rank options, and get a decision-ready memo. A person reviews it.">
+<title>Decision Memo | Make recurring decisions easier to defend</title>
+<meta name="description" content="Pick a decision and watch an analyst workflow work on illustrative data. It ends with a recommendation, the evidence behind it and a next step, in a one-page memo that a person reviews.">
 <meta name="theme-color" content="#f6f3ec">
-<meta property="og:title" content="Decision Memo | Get the first pass of analyst work done for you">
-<meta property="og:description" content="Pick an industry and a decision, then watch an analyst workflow work on illustrative data. Track the market, split a budget, test a price or rank options, and get a decision-ready memo. A person reviews it.">
+<meta property="og:title" content="Decision Memo | Make recurring decisions easier to defend">
+<meta property="og:description" content="Pick a decision and watch an analyst workflow work on illustrative data. It ends with a recommendation, the evidence behind it and a next step, in a one-page memo that a person reviews.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -21,42 +21,44 @@
 
 <section class="hero"><div class="wrap"><div class="grid">
   <div>
-    <h1>Get the first pass of analyst work done for you. Keep the judgement in-house.</h1>
-    <p class="lead">I track market and competitor moves, organise the evidence, test your assumptions and turn the findings into a decision-ready memo. Start with one business question, and add more as your needs grow.</p>
+    <h1>Make the decisions your team keeps revisiting easier to defend.</h1>
+    <p class="lead">Many teams settle the same questions again each quarter: where to put the budget, whether to move a price, how to read a rival&rsquo;s move. I turn the evidence, assumptions and trade-offs into a short memo that states a recommendation, what it depends on and what to do next. Your team makes the call.</p>
     <div class="btns">
-      <a class="btn" href="#demo">Try the analyst</a>
+      <a class="btn" href="#demo">See the analyst at work</a>
       <a class="btn second" href="contact.html">Get a free audit</a>
     </div>
     <p class="note">Built by Mandhir Dua, competitive strategy and decision intelligence.</p>
   </div>
   <figure>
-    <img src="assets/img/hero-memo.webp" width="1400" height="1272" alt="A recommendation memo written by the analyst for a hypothetical company. It shows a recommended budget split, a table of where each sales channel stops paying back, and the start of the section on the assumption the answer depends on most.">
-    <figcaption>A memo from the demo, for a hypothetical company with invented figures.</figcaption>
+    <img src="assets/img/hero-memo.webp" width="1400" height="1272" alt="A recommendation memo for a hypothetical hotel chain. It shows a recommended split of a marketing budget, a table of where each booking route stops paying back, and the start of the section on the assumption the answer depends on most.">
+    <figcaption>A memo from the demo, for a hypothetical hotel chain with invented figures.</figcaption>
   </figure>
 </div></div></section>
 
 <section class="demo" id="demo"><div class="wrap">
-  <h2>Pick an industry and a decision, then watch the analyst work.</h2>
-  <p class="demo-sub">This runs in your browser on illustrative data. It shows the steps an analyst would take and what the memo looks like.</p>
+  <h2>Start with a decision. See what comes back.</h2>
+  <p class="demo-sub">Pick a decision your team faces. The analyst works through it on illustrative data and ends with a recommendation, the evidence behind it and a next step.</p>
   <div class="picker">
     <div>
-      <div class="pl" id="pl-ind">Industry</div>
-      <div class="seg2" role="group" aria-labelledby="pl-ind">
-        <button type="button" data-g="ind" data-v="hotels" aria-pressed="true">Hotels</button>
-        <button type="button" data-g="ind" data-v="pharma" aria-pressed="false">Pharma</button>
-        <button type="button" data-g="ind" data-v="telecom" aria-pressed="false">Telecom</button>
-      </div>
-    </div>
-    <div>
-      <div class="pl" id="pl-dec">Decision</div>
+      <div class="pl" id="pl-dec">The decision</div>
       <div class="seg2" role="group" aria-labelledby="pl-dec">
-        <button type="button" data-g="dec" data-v="budget" aria-pressed="true">Split the budget<small>Where should the next rupee go?</small></button>
-        <button type="button" data-g="dec" data-v="watch" aria-pressed="false">Watch the market<small>What changed, and does it matter?</small></button>
-        <button type="button" data-g="dec" data-v="price" aria-pressed="false">Test a price change<small>Should we move our price?</small></button>
-        <button type="button" data-g="dec" data-v="rank" aria-pressed="false">Rank our options<small>What should we do first?</small></button>
+        <button type="button" data-g="dec" data-v="budget" aria-pressed="true">Where should the next rupee go?<small>Split the budget</small></button>
+        <button type="button" data-g="dec" data-v="watch" aria-pressed="false">What changed, and does it matter?<small>Watch the market</small></button>
+        <button type="button" data-g="dec" data-v="price" aria-pressed="false">Should we move our price?<small>Test a price change</small></button>
+        <button type="button" data-g="dec" data-v="rank" aria-pressed="false">What should we do first?<small>Rank our options</small></button>
       </div>
     </div>
-    <button class="btn" id="run" type="button">Run the analyst</button>
+    <div class="pickrow">
+      <div>
+        <div class="pl" id="pl-ind">Show it for</div>
+        <div class="seg2 sm" role="group" aria-labelledby="pl-ind">
+          <button type="button" data-g="ind" data-v="hotels" aria-pressed="true">Hotels</button>
+          <button type="button" data-g="ind" data-v="pharma" aria-pressed="false">Pharma</button>
+          <button type="button" data-g="ind" data-v="telecom" aria-pressed="false">Telecom</button>
+        </div>
+      </div>
+      <button class="btn" id="run" type="button">Run the analyst</button>
+    </div>
   </div>
 
   <div class="stage" id="stage" aria-label="The analyst at work">
@@ -66,8 +68,8 @@
     <div class="st-foot">
       <div class="st-cap" aria-live="polite"><div class="st-count" id="st-count"></div><div class="st-name" id="st-name"></div><div class="st-text" id="st-text"></div></div>
       <div class="st-acts">
-        <button class="linkbtn" id="st-skip" type="button" hidden>Skip to the memo</button>
-        <span id="st-foot-done" hidden><button class="btn small" id="st-dl" type="button">Download the memo</button> <button class="btn second small" id="st-again" type="button">Try another decision</button></span>
+        <button class="linkbtn" id="st-skip" type="button" hidden>Skip to the answer</button>
+        <span id="st-foot-done" hidden><a class="btn small" id="st-talk" href="contact.html">Discuss a similar decision</a> <a class="btn second small" id="st-full" href="#">See the full example</a> <button class="linkbtn" id="st-dl" type="button">Download the memo</button> <button class="linkbtn" id="st-again" type="button">Try another decision</button></span>
       </div>
     </div>
     <p class="st-go" id="st-go" hidden></p>
@@ -76,10 +78,10 @@
 </div></section>
 
 <section class="section"><div class="wrap strip2">
-  <h2>An analyst does more than these four jobs.</h2>
+  <h2>The same method covers more than these four decisions.</h2>
   <div>
-    <p>A week of analyst work is mostly the same few jobs: tracking competitors and the market, reading filings and press, checking what companies said against what they delivered, testing prices and budgets, ranking options and building scenarios. Much of that is repeatable, so a workflow can do the first pass and a person can review it.</p>
-    <p>Four worked examples go further into how this looks in practice.</p>
+    <p>Teams that repeat a decision tend to spend their time on the same few tasks: tracking competitors and the market, reading filings and press, checking what a company said against what it delivered, testing prices and budgets, and ranking options. A workflow can gather and test the evidence so that your people spend their time on the judgement.</p>
+    <p>Four worked examples show how this looks in practice.</p>
     <div class="btns" style="margin-top:1.2rem"><a class="btn second" href="examples.html">See the four examples</a></div>
   </div>
 </div></section>
@@ -95,8 +97,8 @@
 
 <section class="section"><div class="wrap band">
   <div>
-    <h2>Try it on one of your own decisions</h2>
-    <p>Tell me about a decision your team keeps coming back to. I will look at it with you for free, and send you a one-page memo on what could be set up, what evidence it would need and what it would take.</p>
+    <h2>Bring me one recurring decision</h2>
+    <p>In a 45-minute conversation we identify the manual work involved, the evidence needed and whether a workflow could make the process more repeatable. Within a few days I send you a one-page memo with what I found. If there is a fit, I will outline a scoped pilot and how we would measure it.</p>
   </div>
   <div><a class="btn" href="contact.html">Get a free audit</a></div>
 </div></section>

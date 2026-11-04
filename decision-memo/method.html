@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How it works | Decision Memo</title>
-<meta name="description" content="The five-step pattern behind every example, how evidence is separated from inference, where models and rules come in, and what has and has not been tested.">
+<meta name="description" content="The five stages behind every example, what the workflow does, what a person does, and what has and has not been tested.">
 <meta name="theme-color" content="#f6f3ec">
 <meta property="og:title" content="How it works | Decision Memo">
-<meta property="og:description" content="The five-step pattern behind every example, how evidence is separated from inference, where models and rules come in, and what has and has not been tested.">
+<meta property="og:description" content="The five stages behind every example, what the workflow does, what a person does, and what has and has not been tested.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -21,77 +21,52 @@
 
 <section class="page-head"><div class="wrap">
   <h1>How a memo gets made</h1>
-  <p class="lead">Every example follows the same pattern, and each one states which steps it performs today.</p>
+  <p class="lead">Every example follows the same five stages, and each stage ends with something you can inspect.</p>
 </div></section>
 
 <section class="block"><div class="wrap">
-  <ol class="steps five">
-    <li><span class="num">1</span><strong>Sources and numbers</strong><span class="d">A fixed list of sources, or numbers you supply.</span></li>
-    <li><span class="num">2</span><strong>Record</strong><span class="d">Each item gets a date, a source and a status.</span></li>
-    <li><span class="num">3</span><strong>Written rules</strong><span class="d">Scores, ratings and rankings come from rules shown before any result.</span></li>
-    <li><span class="num">4</span><strong>Review</strong><span class="d">A named person approves, holds or overrules each result.</span></li>
-    <li><span class="num">5</span><strong>Memo</strong><span class="d">One page, with a source on every line.</span></li>
+  <ol class="steps five flow">
+    <li><span class="num">1</span><strong>Sources and numbers</strong><span class="out">A source list and a table of inputs, each marked public, yours or assumed.</span></li>
+    <li><span class="num">2</span><strong>Record</strong><span class="out">A dated log with one line per item, its source and its status.</span></li>
+    <li><span class="num">3</span><strong>Written rules</strong><span class="out">Scores, ratings and rankings that follow rules shown before any result.</span></li>
+    <li><span class="num">4</span><strong>Review</strong><span class="out">A named person&rsquo;s decision on each result: accept, hold or overrule.</span></li>
+    <li><span class="num">5</span><strong>Memo</strong><span class="out">One page with a recommendation, the trade-off, the key uncertainty and the next action.</span></li>
   </ol>
-  <p class="caption">This is a design pattern. The four examples on this site do not all perform every step, and none of them fetches sources for you.</p>
+  <p class="caption">This is the design pattern. The examples on this site do not all perform every stage, and none of them fetches sources for you.</p>
 </div></section>
 
 <section class="block"><div class="wrap two">
-  <h2>Evidence, inference and gaps</h2>
+  <h2>What the workflow does</h2>
   <div>
-    <p>Every item is stored with a date, a source and one of six statuses: disclosed, stated by the company, opinion, inference, not disclosed or scheduled.</p>
-    <p>A gap is logged as a gap, and nothing fills it in. A conclusion that rests on inference is rated as inference, so it cannot pass for a disclosed fact.</p>
+    <p>It collects or receives the inputs, records each item with a date, a source and a status, applies written rules, runs the calculations and drafts the memo. A gap is logged as a gap, and a conclusion that rests on inference is rated as inference, so it cannot pass for a disclosed fact.</p>
+    <p>Calculations and scoring use explicit code, so the rules can be inspected and repeated. Where a live build uses a language model to read text, its role is stated and each quote it extracts is checked against the fetched text. The demo and the examples here call no language model.</p>
   </div>
 </div></section>
 
 <section class="block"><div class="wrap two">
-  <h2>Where rules and models come in</h2>
+  <h2>What the person does</h2>
   <div>
-    <p>Where a workflow uses a language model to interpret text, the model&rsquo;s role is stated. Calculations and rule-based scoring use explicit code. That makes the rules inspectable and repeatable. It does not guarantee that the inputs, assumptions or conclusions are correct.</p>
-    <p>The demo and the four examples on this site do not call a language model when you use them.</p>
+    <p>A person chooses the sources and the decisions to track, supplies the real numbers, approves, holds or overrules each result, and makes the decision.</p>
+    <dl class="facts">
+      <div><dt>Fixed</dt><dd>The stages, the status labels, a date and a source on every item, gaps logged and never filled, and no release without approval.</dd></div>
+      <div><dt>Set with you</dt><dd>The topic, the sources, the rating rules, the memo format, the schedule, who reviews and where the memo goes.</dd></div>
+    </dl>
   </div>
-</div></section>
-
-<section class="block"><div class="wrap two">
-  <h2>Fixed, and set with you</h2>
-  <dl class="facts">
-    <div><dt>Fixed</dt><dd>The steps, the status labels, a source and a date on every item, gaps logged and never filled, and no release without approval.</dd></div>
-    <div><dt>Set with you</dt><dd>The topic, the sources, the decisions to track, the rating rules, the memo format, the schedule, who reviews, and where the memo goes.</dd></div>
-    <div><dt>Changes each run</dt><dd>The pages read, the events, the gaps, the ratings and the memo.</dd></div>
-    <div><dt>Kept between runs</dt><dd>The ledger, the decision history and the review log. A live engagement keeps these. The examples do not.</dd></div>
-  </dl>
-</div></section>
-
-<section class="block"><div class="wrap two">
-  <h2>How you can check the work</h2>
-  <ul>
-    <li>Every item carries a date and a source, and a gap is shown as a gap.</li>
-    <li>In a live build, each quote a model extracts is checked against the fetched text, and a failure goes to the reviewer. The examples here fetch nothing, so this is a design requirement that you cannot try on this site.</li>
-    <li>The scoring and rating rules are written on the page, and a reviewer can overrule any result.</li>
-    <li>You can ask for a back-test. Give me a past period where you know what happened, and we count what the workflow missed and what it got wrong.</li>
-  </ul>
 </div></section>
 
 <section class="block"><div class="wrap">
   <h2>What has been tested</h2>
+  <p class="lead2">Four kinds of thing sit on this site, and they have been checked in different ways.</p>
   <div class="wrapx" style="margin-top:1rem"><table class="plain">
-    <thead><tr><th>Example</th><th>Checked</th><th>Not checked</th></tr></thead>
+    <thead><tr><th>Kind</th><th>Where</th><th>Checked</th><th>Not checked</th></tr></thead>
     <tbody>
-    <tr><td>Shiftwatch</td><td>The replay runs end to end in a browser, in both review modes, and the memo downloads.</td><td>The workflow version has not run on live sites or a live model service. Accuracy is not measured.</td></tr>
-    <tr><td>Tipping Point</td><td>A rerun gives identical results. The allocation and stopping points match an independent calculation. Impossible ranges are rejected.</td><td>The model has not been compared with real outcomes, and it treats each channel as independent.</td></tr>
-    <tr><td>Condition Watch</td><td>The rating rules were run against edge cases. Changing the ledger or the condition was checked to update the evidence board, the memo and the source list.</td><td>The search links open the sites, and what they return has not been reviewed. Nothing is read from any source.</td></tr>
-    <tr><td>Guidance Tracker</td><td>The scoring rules were run against boundary values. Typing a result was checked to change its score, the record by topic and the memo. A ledger round-trips through CSV.</td><td>Entries have not been compared with real company documents.</td></tr>
+    <tr><td>Recorded research</td><td>Shiftwatch</td><td>The replay runs end to end in a browser, in both review modes, and the memo downloads.</td><td>The workflow version has not run on live sites or a live model service. Accuracy is not measured.</td></tr>
+    <tr><td>Browser models</td><td>Tipping Point, and the budget, price and ranking runs in the home demo</td><td>A rerun gives identical results. Allocation, stopping points and averages match an independent calculation. Impossible ranges are rejected.</td><td>The models have not been compared with real outcomes, and each route is treated as independent.</td></tr>
+    <tr><td>Manual-entry prototypes</td><td>Condition Watch, Guidance Tracker</td><td>Rating and scoring rules were run against boundary values. Changing an entry was checked to update the board, the score, the record and the memo.</td><td>Entries have not been compared with real documents. The search links in Condition Watch open other sites, and what they return has not been reviewed.</td></tr>
+    <tr><td>Whole-page tests</td><td>Every example and the home demo</td><td>A browser test recorded no network requests from any tool during a full run, and all twelve demo combinations of industry and decision produce a clean memo.</td><td>Browsers other than Chromium, real phones, and print or PDF output.</td></tr>
     </tbody>
   </table></div>
-</div></section>
-
-<section class="block"><div class="wrap two">
-  <h2>Limits</h2>
-  <ul>
-    <li>A record is only as good as what goes into it. The examples do not check an entry against the world.</li>
-    <li>The models are simple on purpose, and each example lists what it leaves out.</li>
-    <li>I make no claim about accuracy or time saved. A trial on your own decision would measure both.</li>
-    <li>None of this is investment, legal or medical advice.</li>
-  </ul>
+  <p class="caption">I make no claim about accuracy or time saved. A pilot on your own decision would measure both. None of this is investment, legal or medical advice.</p>
 </div></section>
 
 </main>
