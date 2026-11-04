@@ -3,11 +3,11 @@
 Six pages and four tools. There is no build step and no server. Every file is plain HTML, CSS and JavaScript.
 
 ```
-index.html                  Home: hero, the demo (full workflow or individual steps), one call to action
+index.html                  Home: headline, a worked example as a four-step visual, the demo, one call to action
 examples.html               Four examples, alternating image and text, with expandable inputs and limits
-how-it-works.html           Six alternating visual steps, where automation ends, FAQs
+how-it-works.html           Five alternating visual steps and FAQs
 pricing.html                Build your intelligence plan: choose jobs, scope, indicative price, send to a brief
-why-this-approach.html      Three paths compared, then a short founder perspective
+why-this-approach.html      A year-of-effort picture, a three-way comparison, a short founder perspective
 start-a-brief.html          Short enquiry form, privacy, what happens next
 assets/brand.js             The product name, descriptor and owner, in one place
 assets/config.js            Form settings you fill in (form address, contact email)
@@ -61,17 +61,22 @@ Industry (hotels, pharma, telecom) is a filter in both modes.
 
 ## The plan builder and its prices (Pricing)
 
-`assets/pricing.js` holds the catalogue of twelve jobs, the scope questions, the human-involvement options and every number the calculator uses, in the `PRICING` object at the top. To add a job, add an entry to `CATALOGUE` and to `PRICING.jobs`. To add a question, add it to `QUESTIONS` and `PRICING.mult`, and list its id in the job's `ask`.
+`assets/pricing.js` holds the catalogue of twelve jobs and the whole commercial model in the `PRICING` object at the top. **It is an indicative model. Every number is a proposed starting assumption that has not been checked against real delivery cost.** Change them there, and the page, the summary, the tests and the plan sent with a brief all follow.
 
-**The prices are placeholders that I proposed. They are not validated.** Change them before you rely on them.
+**The model**
+- A **service base fee** of $2,400 a year, charged once the plan has one job. It stands for hosting, the shared source list and reporting structure, and support.
+- Each job adds a **yearly recurring fee** at the standard scope (monthly runs, standard volume), from $600 to $1,500. All twelve jobs add up to $11,900.
+- **Setup is one-time.** A shared onboarding fee of $1,200, charged once, plus a configuration fee of $250 to $800 for each job. It is never charged monthly. A new setup or a material reconfiguration is charged again at half the job's setup fee (`reconfigurePct`).
+- **Frequency** scales the yearly fees: quarterly 0.55, monthly 1 (standard), fortnightly 1.6, weekly 2.8. **Volume** scales them too: standard 1, larger 1.35 (up to about 30 sources and 200 documents for each job).
+- **Analyst fees are separate**: $120 a delivery for exception review, $350 a delivery for an interpretation note, and $180 an hour for advice as used. They are shown in their own block and never count against the ceiling.
+- The page shows **ongoing annual cost** (recurring only) and **first-year cost** (setup plus recurring). With analyst fees chosen, it also shows the totals including them.
 
-- Each job has a one-time setup fee and a monthly fee at the smallest scope. Scope answers multiply them: number of sources, number of documents, how often it runs, the output, how firm the inputs are and whether rules exist. A question left unanswered is priced as "Not sure yet", which is a middle estimate.
-- Human involvement adds to the monthly total: review of exceptions is 15% of the monthly fee (minimum $150), regular interpretation is 35% (minimum $400). Advisory support is shown as an hourly rate of $180 and is not added to the total. Setup and the first-run check are included.
-- The visitor sees a rounded figure for each job and a range for the totals, from 85% to 130% of the calculated figure. Currency, range and rounding are in `PRICING`.
-- The summary says that the figure is a starting estimate and that the proposal depends on source coverage, frequency, data volume and review. The FAQ on the Pricing page says the assumptions are untested.
-- "Send my plan" opens `start-a-brief.html?plan=...`. The plan, the scope answers and the indicative range are added to the brief when it is sent.
-- Preselect jobs with `pricing.html?jobs=model,evidence`.
-- **To validate before you rely on any figure:** delivery cost per job, maintenance, usage and model costs, support time, what the setup fee covers, and whether a currency other than dollars suits your first customers.
+**The ceiling.** The yearly recurring workflow cost must stay below $20,000. With every job at the standard scope it is $14,300, and at larger volume it is $18,490. Quarterly and monthly runs with standard or larger volume are the standard options. Fortnightly and weekly are marked `standard: false`, can take a plan past the ceiling, and the page says they are outside the standard package.
+
+**Validate before you rely on any figure:** delivery cost per job (compute, source access, upkeep, support time), what the base fee and onboarding should cover, whether larger volume belongs inside the standard package, the analyst rates, and whether dollars suit your first customers.
+
+- "Send my plan" opens `start-a-brief.html?plan=...`. The plan, the options and the cost assumptions are added to the brief when it is sent.
+- Preselect jobs with `pricing.html?jobs=model,evidence`, and a frequency with `&runs=quarterly`.
 
 ## Adding questions to the FAQs
 
@@ -108,7 +113,9 @@ A link ending in `?source=arjan` stores `arjan` with a brief. This tells you whi
 | Each individual job plays and shows its facts | A browser test ran all 9 jobs for all 3 industries. |
 | Changing an input changes the visible output in Condition Watch and Guidance Tracker | Browser tests that change a result, a status, an override or the condition. |
 | The plan builder carries a plan into the brief | A browser test chose jobs, answered questions, followed the link and sent the brief to a stand-in endpoint. |
-| The calculator prices a single job at its configured base values | A browser test set one job at the base scope and compared the result with the numbers in `PRICING`. |
+| Every plan at the standard options stays below $20,000 a year in recurring workflow cost | A browser test enumerated all 16,384 combinations (4,096 subsets of the 12 jobs, quarterly or monthly, standard or larger volume). The highest was $18,490. |
+| The line items reconcile | The same test checked, for every combination, that annual = base + jobs, setup = onboarding + job setups, and first year = setup + annual. |
+| Setup is charged once | The same test showed that setup does not change with how often the plan runs. |
 | No accuracy or time-saving figure is claimed | None appears on any page. |
 
 ## Not tested
