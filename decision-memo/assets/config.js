@@ -1,17 +1,13 @@
-/* Site settings. Fill these in before you rely on the contact form. See README.md.
-   The easiest way to fill in the Google Form block is the form-setup.html helper. */
+/* Site settings. See README.md.
+   googleForm.action is the form's address with "viewform" changed to "formResponse".
+   googleForm.entries are the field numbers Google gives each question. */
 window.SITE = {
-  /* Option 1: a Google Form. Leave these empty if you use option 2.
-     action  is the form's address with "viewform" changed to "formResponse".
-     entries are the field numbers Google gives each question, for example "entry.123456789". */
   googleForm: {
-    action: "",
-    entries: { pain: "", industry: "", contact: "", source: "" }
+    action: "https://docs.google.com/forms/d/e/1FAIpQLScsn4qf_8wpqFQNbDM-r48XAteGrnp0KsFyBCnvM1tmUT46Bw/formResponse",
+    entries: { pain: "entry.719865794", industry: "entry.198675700", contact: "entry.829357577", source: "" }
   },
-  /* Option 2: a form service that accepts a plain form post and replies with JSON,
-     for example https://formspree.io/f/xxxxxxxx. Leave empty if you use option 1. */
+  /* Not used while the Google Form above is set. */
   formEndpoint: "",
-  /* The address shown on the contact page for questions and deletion requests.
-     Leave empty to show a plain sentence instead. */
+  /* The address shown for questions and deletion requests. Empty shows a plain sentence instead. */
   contactEmail: ""
 };
