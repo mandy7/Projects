@@ -1,0 +1,65 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../decision-memo/assets/site.css">
+<style>
+html,body{margin:0;background:#fff;width:1280px}
+#vtop{position:fixed;left:0;right:0;top:0;height:60px;background:#fff;border-bottom:1px solid #d9dde3;display:flex;justify-content:space-between;align-items:center;padding:0 36px;z-index:20}
+#vtop b{font-size:19px;font-weight:700;letter-spacing:-.02em;color:#0b1f3a}#vtop span{font-size:14px;color:#56627a}
+#vwrap{padding:76px 36px 60px}
+#vwrap .stage{margin-top:0}
+.st-acts{display:none!important}
+.stage.on:not(.done){height:610px}
+#intro{position:fixed;inset:0;background:#fff;z-index:30;display:grid;place-items:center;padding:60px 120px}
+#intro .l{font-size:18px;font-weight:600;color:#25686e;margin-bottom:18px}
+#intro .q{font-size:56px;font-weight:600;letter-spacing:-.035em;line-height:1.1;color:#0b1f3a;min-height:130px}
+#intro .s{font-size:22px;color:#56627a;margin-top:22px}
+#dim{position:fixed;inset:0;background:rgba(11,31,58,.6);z-index:40;display:grid;place-items:center;opacity:0}
+#pc{width:760px;background:#fff;padding:40px 48px;text-align:center;border:1px solid #d9dde3}
+#pi{display:flex;gap:10px;justify-content:center;margin-bottom:14px}#pi i{width:16px;height:48px;background:#c2561d;display:block}
+#pt{font-size:42px;font-weight:600;letter-spacing:-.03em;color:#0b1f3a}
+#ps{font-size:20px;color:#56627a;margin:12px auto 26px;max-width:600px;line-height:1.4}
+#bt{display:flex;gap:14px;justify-content:center;position:relative}
+.bn{font-size:20px;font-weight:600;padding:13px 32px;border:1.5px solid #b9c1cd;color:#0b1f3a;background:#fff}
+.bn.ok{border-color:#2f7f86;color:#25686e}.bn.ok.hit{background:#2f7f86;color:#fff}
+#cur{position:absolute;width:28px;height:28px;opacity:0}
+#okm{font-size:24px;font-weight:600;color:#25686e;margin-top:18px;opacity:0}
+#endc{position:fixed;inset:0;background:#0b1f3a;z-index:50;display:grid;place-items:center;opacity:0;text-align:center}
+#endc div{font-size:56px;font-weight:600;letter-spacing:-.035em;line-height:1.15;color:#fff}#endc em{font-style:normal;color:#8fd0d4}
+</style></head><body>
+<div id="vtop"><b>Second Analyst</b><span>An example job on invented figures</span></div>
+<div id="vwrap"><div id="demo">
+<div class="stage" id="stage"><div class="st-top"><span id="st-ctx"></span><span class="st-key"><span><i class="pm pub"></i>Public source</span><span><i class="pm int"></i>Your data</span><span><i class="pm asm"></i>Assumption</span></span></div>
+<div class="st-view" id="st-view"></div><div class="st-prog" id="st-prog" hidden><span id="st-bar"></span></div>
+<div class="st-foot"><div class="st-cap"><div class="st-count" id="st-count"></div><div class="st-name" id="st-name"></div><div class="st-text" id="st-text"></div></div><div class="st-acts"><button id="st-skip" hidden></button><span id="st-foot-done" hidden><a id="st-talk" href="#">x</a><button id="run" hidden></button><button id="st-dl"></button><button id="st-again"></button></span><span id="st-foot-job" hidden><a id="st-add"></a><button id="st-again2"></button></span><a id="st-full" hidden></a></div></div><p id="st-go" hidden></p></div>
+<div class="chips" style="display:none"><button data-g="ind" data-v="hotels"></button><button data-g="dec" data-v="budget"></button></div></div></div>
+<div id="intro"><div><div class="l" id="il">The question</div><div class="q" id="iq"></div><div class="s">A hotel chain asks this every quarter. The job is already set up.</div></div></div>
+<div id="dim"><div id="pc"><div id="pi"><i></i><i></i></div><div id="pt">Paused for human approval</div><div id="ps">The workflow stops here. Nothing is released until a person decides.</div><div id="bt"><span class="bn ok" id="bok">Approve</span><span class="bn">Hold</span><span class="bn">Change</span><svg id="cur" viewBox="0 0 24 24"><path d="M5 3l14 8-6 2 3 7-3 1-3-7-5 4z" fill="#0b1f3a" stroke="#fff" stroke-width="1.5"/></svg></div><div id="okm">Approved by a person</div></div></div>
+<div id="endc"><div>The workflow did the <em>repeating</em>.<br>A person made the call.</div></div>
+<script src="demo-video.js"></script>
+<script>
+(function(){
+ var Q='Where should we spend our marketing budget?', T0=performance.now(), LOG=[], doneAt=null, pauseAt=null, startRun=7000;
+ function el(i){return document.getElementById(i)}
+ function clamp(x){return Math.max(0,Math.min(1,x))} function pr(t,a,b){return clamp((t-a)/(b-a))} function ease(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2}
+ var lastCount='';
+ function tick(){
+  var t=performance.now()-T0;
+  // intro: type the question, hold, then fade
+  el('iq').textContent=Q.slice(0,Math.floor(Q.length*ease(pr(t,600,3800))));
+  el('intro').style.opacity=1-pr(t,startRun-700,startRun); el('intro').style.pointerEvents='none'; if(t>startRun) el('intro').style.display='none';
+  // pause overlay
+  if(pauseAt!==null){ var u=t-pauseAt;
+   el('dim').style.opacity=Math.min(pr(u,0,500),1-pr(u,10700,11300));
+   var bok=el('bok'),cur=el('cur'),cp=ease(pr(u,3800,7200)); cur.style.opacity=u>3600&&u<11000?1:0;
+   var bx=bok.offsetLeft+bok.offsetWidth/2-6,by=bok.offsetTop+bok.offsetHeight/2-4; cur.style.left=(bx+180*(1-cp))+'px'; cur.style.top=(by+110*(1-cp))+'px';
+   bok.className='bn ok'+(u>7500?' hit':''); el('okm').style.opacity=pr(u,7700,8300); el('pi').style.transform='scale('+(1+0.06*Math.sin(u/200))+')';
+  }
+  // result: hold, scroll through the memo, end card
+  if(doneAt!==null){ var d=t-doneAt, H=document.documentElement.scrollHeight-720;
+   window.scrollTo(0, Math.max(0,H)*ease(pr(d,3500,12500)));
+   el('endc').style.opacity=pr(d,15500,16400); }
+  var c=el('st-count').textContent+'|'+el('st-name').textContent; if(c!==lastCount){ lastCount=c; LOG.push([Math.round(t),c]); }
+  window.__vlog=LOG; window.__vt=t;
+ }
+ window.__beforeFinish=function(){ return new Promise(function(res){ pauseAt=performance.now()-T0; window.__pauseAt=pauseAt; setTimeout(function(){ res(); doneAt=performance.now()-T0+0; window.__doneAt=doneAt; },11500); }); };
+ window.__go=function(){ T0=performance.now(); setInterval(tick,16); setTimeout(function(){ window.__demo.choose('ind','hotels'); window.__demo.choose('dec','budget'); window.__demo.run(); },startRun); };
+})();
+</script></body></html>

@@ -224,15 +224,54 @@
         chain: ['A new entrant undercuts our prices in three circles.', 'Customers port out, and rivals match the price.', 'Dealers push whichever operator pays most, so our incentives rise or we lose shelf space.'] },
       tool: ['tools/guidance-tracker.html', 'Guidance Tracker'] }
   };
+
+  /* Two more jobs: choosing a market to enter, and benchmarking against rivals. Illustrative, like the rest. */
+  IND.hotels.market = { options: [
+    { name: 'Tier-2 leisure cities', scores: [[5, 6.5, 8], [5, 6, 7.5], [4, 5.5, 7], [4, 5.5, 7]] },
+    { name: 'Business hubs', scores: [[6, 7.5, 9], [4, 5, 6.5], [3, 4.5, 6], [5, 6, 7.5]] },
+    { name: 'Pilgrimage towns', scores: [[4, 5.5, 7], [6, 7, 8.5], [5, 6.5, 8], [5, 6.5, 8]] },
+    { name: 'Airport corridors', scores: [[5, 6, 7.5], [4, 5, 6.5], [3, 4, 5.5], [5, 6, 7]] }] };
+  IND.pharma.market = { options: [
+    { name: 'Tier-2 city hospitals', scores: [[5, 6.5, 8], [5, 6, 7.5], [4, 5.5, 7], [5, 6, 7.5]] },
+    { name: 'Private clinics', scores: [[4, 5.5, 7], [6, 7, 8.5], [6, 7, 8], [5, 6.5, 8]] },
+    { name: 'Government tenders', scores: [[6, 7.5, 9], [2, 3.5, 5], [3, 4, 5.5], [3, 4.5, 6]] },
+    { name: 'A neighbouring export market', scores: [[5, 6, 8], [2, 3, 4.5], [2, 3, 4.5], [3, 4, 5.5]] }] };
+  IND.telecom.market = { options: [
+    { name: 'Rural districts', scores: [[5, 6, 7.5], [4, 5, 6.5], [3, 4.5, 6], [5, 6.5, 8]] },
+    { name: 'Enterprise campuses', scores: [[6, 7.5, 9], [5, 6, 7.5], [4, 5.5, 7], [5, 6.5, 8]] },
+    { name: 'Tourist corridors', scores: [[4, 5.5, 7], [6, 7, 8.5], [5, 6, 7.5], [4, 5.5, 7]] },
+    { name: 'A neighbouring state', scores: [[6, 7, 8.5], [3, 4, 5.5], [2, 3.5, 5], [3, 4.5, 6]] }] };
+  IND.hotels.knock.market = ['Entering a new city sets a rate level that is hard to move later.', 'Local agents may take the first bookings before direct channels are built.'];
+  IND.pharma.knock.market = ['A first launch sets the price that regulators and rivals will point to elsewhere.', 'A thin field force in a new market can leave the first prescribers unsupported.'];
+  IND.telecom.knock.market = ['A new market starts a price comparison with the incumbent there.', 'Dealer incentives needed to win the first customers may reset what dealers expect elsewhere.'];
+  IND.hotels.bench = { rivals: ['Rival A', 'Rival B', 'Rival C'], metrics: [
+    { n: 'Direct booking share', u: '%', us: 31, r: [38, 27, null], hi: 1, src: 'Rival results releases' },
+    { n: 'Average daily rate', u: '', us: 7500, r: [7100, 6900, 7200], hi: 1, src: 'Rate shopping, public listings' },
+    { n: 'Guest review score', u: ' of 5', us: 4.3, r: [4.5, 4.1, 4.2], hi: 1, src: 'Public review sites' },
+    { n: 'Listings on AI assistants', u: '%', us: 12, r: [22, 9, 15], hi: 1, src: 'Public listings' }] };
+  IND.pharma.bench = { rivals: ['Rival A', 'Rival B', 'Rival C'], metrics: [
+    { n: 'Share of prescriptions in the segment', u: '%', us: 18, r: [24, 15, 9], hi: 1, src: 'Prescription audit summaries' },
+    { n: 'Price per pack', u: '', us: 420, r: [455, 440, 430], hi: 0, src: 'Public price lists' },
+    { n: 'Clinicians reached', u: '%', us: 62, r: [70, 55, null], hi: 1, src: 'Company statements' },
+    { n: 'Trials in this indication', u: '', us: 2, r: [3, 1, 1], hi: 1, src: 'Trial registries' }] };
+  IND.telecom.bench = { rivals: ['Rival A', 'Rival B', 'Rival C'], metrics: [
+    { n: 'Monthly revenue per user', u: '', us: 183, r: [191, 167, 175], hi: 1, src: 'Quarterly results' },
+    { n: 'Monthly churn', u: '%', us: 2.1, r: [1.8, 2.6, 2.3], hi: 0, src: 'Quarterly results' },
+    { n: '5G coverage of target circles', u: '%', us: 64, r: [78, null, 60], hi: 1, src: 'Regulator filings' },
+    { n: 'Retail outlets', u: ' thousand', us: 41, r: [38, 29, 35], hi: 1, src: 'Company statements' }] };
   var CRITERIA = [{ name: 'Revenue upside', w: 0.35 }, { name: 'Speed to start', w: 0.25 }, { name: 'Cost to start', w: 0.20 }, { name: 'Risk', w: 0.20 }];
   var DEC = {
-    budget: { label: 'Split the budget', q: 'Where should the next rupee go?', tool: ['tools/tipping-point.html', 'Tipping Point'], tag: 'Illustrative model',
+    budget: { label: 'Split the budget', q: 'Where should we spend our marketing budget?', tool: ['tools/tipping-point.html', 'Tipping Point'], tag: 'Illustrative model',
       inputs: ['A low, typical and high value for each route\'s sales, margin and returns', 'Your current split of the budget'], outputs: ['A recommended split', 'The trade-off against your current plan', 'The assumption that matters most', 'A one-page memo'] },
-    watch: { label: 'Watch competitors and the market', q: 'What changed, and does it matter?', tag: 'Scripted example',
+    watch: { label: 'Watch competitors and the market', q: 'What are my competitors doing, and does it matter?', tag: 'Scripted example',
       inputs: ['A list of public sources', 'Your own sales and web notes'], outputs: ['A dated event log', 'What is not disclosed', 'An evidence rating for each decision', 'A one-page memo'] },
-    price: { label: 'Test a price change', q: 'Should we move our price?', tag: 'Illustrative model',
+    price: { label: 'Test a price change', q: 'Should we change our price?', tag: 'Illustrative model',
       inputs: ['Your price, volume and unit cost', 'A range for how customers respond to price'], outputs: ['Profit for five price moves', 'How often each move comes out best', 'What would change the answer', 'A one-page memo'] },
-    rank: { label: 'Rank our options', q: 'What should we do first?', tag: 'Illustrative model',
+    market: { label: 'Size up a new market', q: 'Which new market should we enter first?', tag: 'Illustrative model',
+      inputs: ['The markets you are choosing between', 'The criteria and rough weights'], outputs: ['How often each market comes first', 'What would flip the order', 'A one-page memo'] },
+    bench: { label: 'Benchmark against rivals', q: 'Where do we lead our rivals, and where do we trail?', tag: 'Scripted example',
+      inputs: ['The rivals and the measures you care about', 'Public sources, and your own figures'], outputs: ['A sourced comparison table', 'Where figures are missing', 'Where you lead and where you trail', 'A one-page memo'] },
+    rank: { label: 'Rank our options', q: 'Which go-to-market priority should come first?', tag: 'Illustrative model',
       inputs: ['The options you are choosing between', 'The criteria and rough weights'], outputs: ['How often each option comes first', 'What would flip the order', 'A one-page memo'] }
   };
 
@@ -241,9 +280,9 @@
   var PM_TEXT = { pub: 'Public source', int: 'Your data', asm: 'Assumption' };
   function rangeBar(lo, mo, hi, mn, mx, p) {
     var W = 120, X = function (v) { return 4 + (v - mn) / (mx - mn) * (W - 8); };
-    return '<svg class="rb" viewBox="0 0 ' + W + ' 12" aria-hidden="true"><line x1="4" x2="' + (W - 4) + '" y1="6" y2="6" stroke="#d9d3c4"/><rect x="' + X(lo) + '" y="3" width="' + Math.max(2, (X(hi) - X(lo)) * p) + '" height="6" fill="#cfc8b6"/><circle cx="' + (X(lo) + (X(mo) - X(lo)) * p) + '" cy="6" r="3.2" fill="#1c1b19" opacity="' + p + '"/></svg>';
+    return '<svg class="rb" viewBox="0 0 ' + W + ' 12" aria-hidden="true"><line x1="4" x2="' + (W - 4) + '" y1="6" y2="6" stroke="#d9dde3"/><rect x="' + X(lo) + '" y="3" width="' + Math.max(2, (X(hi) - X(lo)) * p) + '" height="6" fill="#cfd6e3"/><circle cx="' + (X(lo) + (X(mo) - X(lo)) * p) + '" cy="6" r="3.2" fill="#0b1f3a" opacity="' + p + '"/></svg>';
   }
-  var COLORS = ['#2b6cb0', '#c2571a', '#1a8a6e'];
+  var COLORS = ['#0b1f3a', '#2f7f86', '#9aa6b8'];
 
   /* ---------- memo helpers ---------- */
   function memoShell(title, meta) { return { title: title, meta: meta, blocks: [] }; }
@@ -318,7 +357,7 @@
             names.map(function (n, i) { return '<div class="v-leg"><i style="background:' + COLORS[i] + '"></i>' + esc(n) + '</div>'; }).join('') + '</div></div>';
           cv = v.querySelector('canvas'); cnt = v.querySelector('#v-count'); cx = cv.getContext('2d');
           var W = cv.width, H = cv.height, ml = 46, mb = 40, mt = 12, mr = 14;
-          cx.fillStyle = '#fffdf8'; cx.fillRect(0, 0, W, H); cx.strokeStyle = '#d9d3c4'; cx.fillStyle = '#625e56'; cx.font = '14px sans-serif';
+          cx.fillStyle = '#ffffff'; cx.fillRect(0, 0, W, H); cx.strokeStyle = '#d9dde3'; cx.fillStyle = '#56627a'; cx.font = '14px sans-serif';
           [0, 25, 50, 75, 100].forEach(function (t) { var x = ml + t / 100 * (W - ml - mr), y = H - mb - t / 100 * (H - mt - mb); cx.beginPath(); cx.moveTo(x, mt); cx.lineTo(x, H - mb); cx.stroke(); cx.beginPath(); cx.moveTo(ml, y); cx.lineTo(W - mr, y); cx.stroke(); cx.textAlign = 'center'; cx.fillText(String(t), x, H - mb + 16); cx.textAlign = 'right'; cx.fillText(String(t), ml - 6, y + 4); });
           cx.textAlign = 'center'; cx.fillText(names[1] + ', ₹ crore', (ml + W - mr) / 2, H - 6);
           cx.save(); cx.translate(12, (mt + H - mb) / 2); cx.rotate(-Math.PI / 2); cx.fillText(names[0] + ', ₹ crore', 0, 0); cx.restore();
@@ -369,17 +408,17 @@
     function X(s) { return ml + s / 100 * (W - ml - mr); }
     function Y(v) { return mt + (1 - Math.min(v, YM) / YM) * (H - mt - mb); }
     var o = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Return on the next rupee for ' + esc(name) + '">';
-    o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + (H - mb) + '" y2="' + (H - mb) + '" stroke="#625e56"/>';
-    [0, 1, 2].forEach(function (t) { o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="#e3ddcd"/><text x="' + (ml - 5) + '" y="' + (Y(t) + 4) + '" text-anchor="end" font-size="12" fill="#625e56">' + t + '</text>'; });
-    [0, 50, 100].forEach(function (t) { o += '<text x="' + X(t) + '" y="' + (H - mb + 14) + '" text-anchor="middle" font-size="12" fill="#625e56">' + t + '</text>'; });
+    o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + (H - mb) + '" y2="' + (H - mb) + '" stroke="#56627a"/>';
+    [0, 1, 2].forEach(function (t) { o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="#e3e6ea"/><text x="' + (ml - 5) + '" y="' + (Y(t) + 4) + '" text-anchor="end" font-size="12" fill="#56627a">' + t + '</text>'; });
+    [0, 50, 100].forEach(function (t) { o += '<text x="' + X(t) + '" y="' + (H - mb + 14) + '" text-anchor="middle" font-size="12" fill="#56627a">' + t + '</text>'; });
     var d = 'M'; g.forEach(function (s, i) { d += (i ? 'L' : '') + X(s) + ' ' + Y(c.hi[i]); }); for (var i = g.length - 1; i >= 0; i--) d += 'L' + X(g[i]) + ' ' + Y(c.lo[i]);
     o += '<path d="' + d + 'Z" fill="' + col + '" opacity="0.16"/>';
     var ln = ''; g.forEach(function (s, i) { ln += (i ? 'L' : 'M') + X(s) + ' ' + Y(c.md[i]); });
     o += '<path d="' + ln + '" fill="none" stroke="' + col + '" stroke-width="2"/>';
-    o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(1) + '" y2="' + Y(1) + '" stroke="#1c1b19" stroke-dasharray="4 3" stroke-width="1"/>';
-    if (sp.p50 <= 100) o += '<line x1="' + X(sp.p50) + '" x2="' + X(sp.p50) + '" y1="' + mt + '" y2="' + (H - mb) + '" stroke="#1c1b19"/><circle cx="' + X(sp.p50) + '" cy="' + Y(1) + '" r="4" fill="' + col + '" stroke="#fffdf8" stroke-width="2"/>';
-    o += '<text x="' + ml + '" y="12" font-size="14" font-weight="600" fill="#1c1b19">' + esc(name) + '</text>';
-    o += '<text x="' + ml + '" y="' + (H - 4) + '" font-size="12.5" fill="#1c1b19">' + (sp.p50 <= 100 ? 'Stops paying near ₹' + f0(sp.p50) + ' crore' : 'Does not stop within the budget') + '</text></svg>';
+    o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(1) + '" y2="' + Y(1) + '" stroke="#0b1f3a" stroke-dasharray="4 3" stroke-width="1"/>';
+    if (sp.p50 <= 100) o += '<line x1="' + X(sp.p50) + '" x2="' + X(sp.p50) + '" y1="' + mt + '" y2="' + (H - mb) + '" stroke="#0b1f3a"/><circle cx="' + X(sp.p50) + '" cy="' + Y(1) + '" r="4" fill="' + col + '" stroke="#ffffff" stroke-width="2"/>';
+    o += '<text x="' + ml + '" y="12" font-size="14" font-weight="600" fill="#0b1f3a">' + esc(name) + '</text>';
+    o += '<text x="' + ml + '" y="' + (H - 4) + '" font-size="12.5" fill="#0b1f3a">' + (sp.p50 <= 100 ? 'Stops paying near ₹' + f0(sp.p50) + ' crore' : 'Does not stop within the budget') + '</text></svg>';
     return '<div class="v-ch">' + o + '</div>';
   }
 
@@ -409,15 +448,15 @@
       draw: function (v, p) {
         var W = 560, H = 310, ml = 56, mr = 20, mt = 38, mb = 50, lo = Math.min.apply(null, E.p10) * 0.97, hi = Math.max.apply(null, E.p90) * 1.03, k, o = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Expected profit for each price move">';
         function X(i) { return ml + (i + 0.5) / 5 * (W - ml - mr); } function Y(vv) { return mt + (1 - (vv - lo) / (hi - lo)) * (H - mt - mb); }
-        for (var t = 0; t <= 4; t++) { var val = lo + (hi - lo) * t / 4; o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(val) + '" y2="' + Y(val) + '" stroke="#e3ddcd"/><text x="' + (ml - 6) + '" y="' + (Y(val) + 4) + '" text-anchor="end" font-size="13" fill="#625e56">' + f0(val) + '</text>'; }
+        for (var t = 0; t <= 4; t++) { var val = lo + (hi - lo) * t / 4; o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(val) + '" y2="' + Y(val) + '" stroke="#e3e6ea"/><text x="' + (ml - 6) + '" y="' + (Y(val) + 4) + '" text-anchor="end" font-size="13" fill="#56627a">' + f0(val) + '</text>'; }
         var idx = Math.min(E.cp - 1, Math.max(0, Math.floor(p * E.cp) - 1)), showBand = p > 0.7;
         for (k = 0; k < 5; k++) {
-          o += '<text x="' + X(k) + '" y="' + (H - mb + 20) + '" text-anchor="middle" font-size="13" fill="#1c1b19">' + PRICE_LABEL[k] + '</text>';
+          o += '<text x="' + X(k) + '" y="' + (H - mb + 20) + '" text-anchor="middle" font-size="13" fill="#0b1f3a">' + PRICE_LABEL[k] + '</text>';
           if (showBand) o += '<line x1="' + X(k) + '" x2="' + X(k) + '" y1="' + Y(E.p10[k]) + '" y2="' + Y(E.p90[k]) + '" stroke="#8c867b" stroke-width="3" opacity="' + Math.min(1, (p - .7) * 4) + '"/>';
           var rm = p <= 0.02 ? E.runMean[k][0] : E.runMean[k][idx];
-          o += '<circle cx="' + X(k) + '" cy="' + Y(rm) + '" r="6" fill="' + (k === 2 ? '#625e56' : '#1c1b19') + '"/>';
+          o += '<circle cx="' + X(k) + '" cy="' + Y(rm) + '" r="6" fill="' + (k === 2 ? '#56627a' : '#0b1f3a') + '"/>';
         }
-        o += '<text x="' + ml + '" y="12" font-size="14" fill="#625e56">Expected profit, ₹ crore a year. The grey line spans the middle 80% of scenarios.</text></svg>';
+        o += '<text x="' + ml + '" y="12" font-size="14" fill="#56627a">Expected profit, ₹ crore a year. The grey line spans the middle 80% of scenarios.</text></svg>';
         v.innerHTML = '<div class="v-chart">' + o + '</div><div class="v-count">' + Math.max(1, Math.floor(p * N)).toLocaleString('en-US') + ' of ' + N.toLocaleString('en-US') + ' scenarios</div>';
       } });
     steps.push({ n: 'Compare the five options', t: 'How often does each price move turn out best?', d: 4200,
@@ -501,7 +540,105 @@
       unc: fl.length ? 'If the weight on ' + CRITERIA[fl[0].c].name.toLowerCase() + ' is ' + (fl[0].f === 0.5 ? 'halved' : 'raised by half') + ', ' + opts[fl[0].to].name.toLowerCase() + ' comes first.' : 'No single weight change of up to half flips the order.',
       next: 'Agree the weights your leadership actually uses, and run a small test of the option that comes second.' };
     return { steps: steps, memo: memo, engine: E, summary: summary };
+  }  function planMarket(ik) {
+    var I = IND[ik], cfg = { options: I.market.options, criteria: CRITERIA }, E = rankEngine(cfg), N = E.N, opts = cfg.options;
+    function grid(withRange, p) {
+      var h = '<div class="v-table"><table><thead><tr><th>Option</th>' + CRITERIA.map(function (c) { return '<th>' + pm('int') + esc(c.name) + ' (' + f0(c.w * 100) + '%)</th>'; }).join('') + '</tr></thead><tbody>';
+      opts.forEach(function (o) { h += '<tr><td><b>' + esc(o.name) + '</b></td>' + o.scores.map(function (s) { return '<td>' + pm('asm') + (withRange ? s[0] + ' / <b>' + s[1] + '</b> / ' + s[2] + rangeBar(s[0], s[1], s[2], 0, 10, Math.min(1, p * 1.4)) : '<b>' + s[1] + '</b>') + '</td>'; }).join('') + '</tr>'; });
+      return h + '</tbody></table></div>';
+    }
+    var steps = [];
+    steps.push({ n: 'List the options and what matters', t: 'Score each option from 1 to 10 on four criteria, and weigh the criteria.', d: 4300, draw: function (v, p, first) { if (first) v.innerHTML = '<p class="v-title">' + esc(I.co) + ' has four markets to choose between. A higher score is better on every criterion.</p>' + grid(false, 1); } });
+    steps.push({ n: 'Allow for uncertainty', t: 'Scores and weights are judgements, so each becomes a range.', d: 3800, draw: function (v, p) { v.innerHTML = '<p class="v-title">Scores are shown as low / typical / high. Weights can move by about 30%.</p>' + grid(true, p); } });
+    steps.push({ n: 'Run 5,000 scenarios', t: 'In each one, draw the scores and weights and see which option comes first.', d: 5400,
+      draw: function (v, p) {
+        var idx = Math.min(E.checkpoints.length - 1, Math.max(0, Math.floor(p * E.checkpoints.length) - 1)), cur = E.checkpoints[idx];
+        var items = opts.map(function (o, k) { return { l: esc(o.name), v: cur[k], t: pc(cur[k]) + ' first' }; });
+        v.innerHTML = '<p class="v-title">How often each option ranks first, so far.</p>' + hingeBars(items, 1) + '<div class="v-count">' + Math.max(1, Math.floor(p * N)).toLocaleString('en-US') + ' of ' + N.toLocaleString('en-US') + ' scenarios</div>';
+      } });
+    steps.push({ n: 'See how stable the ranking is', t: 'A clear winner comes first in most scenarios. A close call does not.', d: 4200,
+      draw: function (v, p) {
+        var items = E.order.map(function (k) { return { l: esc(opts[k].name), v: E.prob[k] * Math.min(1, p * 1.3), t: pc(E.prob[k]) + ' first, average score ' + f1(E.avg[k]) }; });
+        v.innerHTML = '<p class="v-title">Final order, from first to last.</p>' + hingeBars(items, E.prob[E.order[0]]);
+      } });
+    steps.push({ n: 'Find what would flip the order', t: 'Halve or raise each weight by half and see whether a different option comes first.', d: 4400,
+      draw: function (v, p) {
+        var h = '<p class="v-title">Does a different option come first when one weight changes?</p><div class="v-table"><table><thead><tr><th>Weight</th><th>Halved</th><th>Raised by half</th></tr></thead><tbody>';
+        CRITERIA.forEach(function (c, ci) { var a = E.flips.filter(function (x) { return x.c === ci && x.f === 0.5; })[0], b = E.flips.filter(function (x) { return x.c === ci && x.f === 1.5; })[0];
+          var cell = function (x) { return x.flip ? '<b>' + esc(opts[x.to].name) + ' comes first</b>' : 'No change'; };
+          h += '<tr><td>' + pm('int') + esc(c.name) + '</td><td>' + (p > 0.3 ? cell(a) : '') + '</td><td>' + (p > 0.55 ? cell(b) : '') + '</td></tr>'; });
+        v.innerHTML = h + '</tbody></table></div>';
+      } });
+    var top = E.order[0], second = E.order[1];
+    var memo = memoShell('Which new market should we enter first? Draft memo', I.co + '. Illustrative scores and weights, nothing here describes a real company. ' + N.toLocaleString('en-US') + ' scenarios, fixed seed.');
+    addH(memo, 'Recommendation');
+    addP(memo, 'Enter ' + opts[top].name.toLowerCase() + ' first. It ranks first in ' + pc(E.prob[top]) + ' of scenarios, ahead of ' + opts[second].name.toLowerCase() + ' at ' + pc(E.prob[second]) + '. ' + (E.prob[top] - E.prob[second] < 0.2 ? 'This is a close call, so treat the order as a judgement and not a verdict.' : 'The lead is clear under these weights.'));
+    addH(memo, 'What would flip the order');
+    var fl = E.flips.filter(function (x) { return x.flip; });
+    if (fl.length) addL(memo, fl.map(function (x) { return 'If the weight on ' + CRITERIA[x.c].name.toLowerCase() + ' is ' + (x.f === 0.5 ? 'halved' : 'raised by half') + ', ' + opts[x.to].name.toLowerCase() + ' comes first.'; }));
+    else addP(memo, 'No single weight change of up to half flips the order.');
+    addH(memo, 'Evidence to collect');
+    addP(memo, 'The weights your leadership actually uses, and a small test in the market that comes second.');
+    addH(memo, 'Knock-on effects to test');
+    addL(memo, I.knock.market);
+    addH(memo, 'Limits');
+    addL(memo, ['Every score and weight is illustrative. A ranking summarises judgements. It does not remove them.']);
+    steps.push(memoStep(memo));
+    var close = E.prob[top] - E.prob[second] < 0.2;
+    var summary = {
+      rec: 'Enter ' + opts[top].name.toLowerCase() + ' first.',
+      trade: 'It ranks first in ' + pc(E.prob[top]) + ' of scenarios, ahead of ' + opts[second].name.toLowerCase() + ' at ' + pc(E.prob[second]) + '. ' + (close ? 'This is a close call, so treat the order as a judgement.' : 'The lead is clear under these weights.'),
+      unc: fl.length ? 'If the weight on ' + CRITERIA[fl[0].c].name.toLowerCase() + ' is ' + (fl[0].f === 0.5 ? 'halved' : 'raised by half') + ', ' + opts[fl[0].to].name.toLowerCase() + ' comes first.' : 'No single weight change of up to half flips the order.',
+      next: 'Agree the weights your leadership actually uses, and run a small test in the market that comes second.' };
+    return { steps: steps, memo: memo, engine: E, summary: summary };
   }
+  function planBench(ik) {
+    var I = IND[ik], B = I.bench, M = B.metrics, names = ['Us'].concat(B.rivals);
+    function lc1(t) { return t.charAt(0).toLowerCase() + t.slice(1); }
+    function fmt(m, v) { return v === null ? 'Not disclosed' : (m.u === '' && v >= 1000 ? v.toLocaleString('en-US') : String(v)) + m.u; }
+    var rows = M.map(function (m) {
+      var best = null; m.r.forEach(function (v, k) { if (v !== null && (best === null || (m.hi ? v > m.r[best] : v < m.r[best]))) best = k; });
+      var ratio = m.hi ? m.us / m.r[best] : m.r[best] / m.us;
+      return { m: m, best: best, ratio: ratio, ahead: ratio >= 1 };
+    });
+    function table(n, gaps) {
+      var h = '<div class="v-table"><table><thead><tr><th>Measure</th>' + names.map(function (x) { return '<th>' + esc(x) + '</th>'; }).join('') + '<th>Source</th></tr></thead><tbody>';
+      M.slice(0, n).forEach(function (m) {
+        h += '<tr><td><b>' + esc(m.n) + '</b></td><td>' + pm('int') + esc(fmt(m, m.us)) + '</td>' + m.r.map(function (v) { return '<td' + (v === null && gaps ? ' class="gapc"' : '') + '>' + pm('pub') + esc(fmt(m, v)) + '</td>'; }).join('') + '<td class="v-src1">' + esc(m.src) + '</td></tr>';
+      });
+      return h + '</tbody></table></div>';
+    }
+    var steps = [];
+    steps.push({ n: 'Choose the rivals and the measures', t: 'Three rivals and four measures that matter for the decision.', d: 3800, draw: function (v, p, first) {
+      if (first) v.innerHTML = '<p class="v-title">' + esc(I.co) + ' compares itself with three rivals on four measures.</p><div class="v-table"><table><thead><tr><th>Measure</th><th>Where the figure comes from</th></tr></thead><tbody>' + M.map(function (m) { return '<tr><td><b>' + esc(m.n) + '</b></td><td>' + pm('pub') + esc(m.src) + '</td></tr>'; }).join('') + '</tbody></table></div>'; } });
+    steps.push({ n: 'Collect each figure, with a source', t: 'Every figure gets a source. Your own figures are marked as yours.', d: 4800, draw: function (v, p) {
+      var n = Math.max(1, Math.ceil(p * M.length)); v.innerHTML = '<p class="v-title">Figures collected so far.</p>' + table(n, false); } });
+    steps.push({ n: 'Flag what is missing', t: 'A figure nobody has published stays a gap, and is not guessed.', d: 3600, draw: function (v, p) {
+      var g = M.reduce(function (a, m) { return a + m.r.filter(function (x) { return x === null; }).length; }, 0);
+      v.innerHTML = '<p class="v-title">' + g + ' figure' + (g === 1 ? ' is' : 's are') + ' not disclosed.</p>' + table(M.length, p > 0.3); } });
+    steps.push({ n: 'Compare us with the best rival', t: 'For each measure, how close are we to the best rival?', d: 4600, draw: function (v, p) {
+      var items = rows.map(function (r) { return { l: esc(r.m.n), v: Math.min(1.3, r.ratio) * Math.min(1, p * 1.3), t: r.ahead ? 'Ahead of ' + esc(B.rivals[r.best]) : Math.round(r.ratio * 100) + '% of ' + esc(B.rivals[r.best]) }; });
+      v.innerHTML = '<p class="v-title">Our position against the best rival on each measure. A full bar is level.</p>' + hingeBars(items, 1.3); } });
+    var behind = rows.filter(function (r) { return !r.ahead; }).sort(function (a, b) { return a.ratio - b.ratio; }), ahead = rows.filter(function (r) { return r.ahead; });
+    var gaps = []; M.forEach(function (m) { m.r.forEach(function (x, k) { if (x === null) gaps.push(B.rivals[k] + ' has not disclosed ' + lc1(m.n)); }); });
+    var memo = memoShell('Where do we lead our rivals? Draft memo', I.co + '. A scripted example: every figure is invented and each source is marked as an example.');
+    addH(memo, 'Where we stand');
+    addP(memo, 'We lead on ' + ahead.length + ' of ' + M.length + ' measures' + (ahead.length ? ' (' + ahead.map(function (r) { return lc1(r.m.n); }).join(', ') + ')' : '') + ' and trail on ' + behind.length + '.');
+    addH(memo, 'Biggest gap');
+    addP(memo, behind.length ? behind[0].m.n + ': we are at ' + Math.round(behind[0].ratio * 100) + '% of ' + B.rivals[behind[0].best] + '. This is the first gap to look at.' : 'We are level or ahead on every measure with a published figure.');
+    addH(memo, 'Not disclosed');
+    addL(memo, gaps.length ? gaps : ['Nothing is missing.']);
+    addH(memo, 'Limits');
+    addL(memo, ['The figures are invented for this demo. A live engagement reads real sources on an agreed schedule, and a person reviews every item.']);
+    steps.push(memoStep(memo));
+    var summary = {
+      rec: behind.length ? 'Look at ' + lc1(behind[0].m.n) + ' first.' : 'Protect the lead on ' + lc1(rows[0].m.n) + '.',
+      trade: 'We lead on ' + ahead.length + ' of ' + M.length + ' measures and trail on ' + behind.length + '.',
+      unc: gaps.length ? gaps[0] + '.' : 'Every rival has published every figure.',
+      next: 'Collect the missing figures, and check the biggest gap against your own data.' };
+    return { steps: steps, memo: memo, summary: summary };
+  }
+
 
   function planWatch(ik) {
     var I = IND[ik], W = I.watch, ev = W.events.map(function (e) { return { date: e[0], text: e[1], status: e[2], kind: e[3], src: e[4], dec: e[5], cls: e[6] }; });
@@ -554,7 +691,7 @@
     return { steps: steps, memo: memo, ratings: ratings, events: ev, summary: summary };
   }
 
-  var PLANNERS = { budget: planBudget, watch: planWatch, price: planPrice, rank: planRank };
+  var PLANNERS = { budget: planBudget, watch: planWatch, price: planPrice, rank: planRank, market: planMarket, bench: planBench };
 
   /* Individual jobs: each plays one step of an end-to-end plan, with a plain statement of what it does. */
   var JOBS = {
@@ -592,7 +729,7 @@
   }
 
   /* ---------- player ---------- */
-  var sel = { ind: 'hotels', dec: 'budget', mode: 'e2e', job: 'scen' }, P = { tok: 0, running: false, skipping: false, last: null };
+  var sel = { ind: 'hotels', indSet: false, dec: 'budget', mode: 'e2e', job: 'scen' }, P = { tok: 0, running: false, skipping: false, last: null };
   function sleep(ms, tok) { return new Promise(function (res, rej) { setTimeout(function () { tok === P.tok ? res() : rej('stop'); }, ms); }); }
 
   function setCap(i, total, step) {
@@ -637,10 +774,7 @@
     $('stage').classList.add('done'); $('st-skip').hidden = true; $('st-prog').hidden = true;
     $('st-count').textContent = 'Done'; $('st-name').textContent = 'The answer, then the memo behind it'; $('st-text').textContent = 'A person would review this before it went anywhere.';
     $('st-foot-done').hidden = false;
-    var full = $('st-full'), go = $('st-go');
-    if (sel.dec === 'budget') { full.href = 'tools/tipping-point.html?case=' + sel.ind; full.textContent = 'See the full example'; full.hidden = false; go.innerHTML = 'The full example is Tipping Point, where you can change every input.'; go.hidden = false; }
-    else if (sel.dec === 'watch') { full.href = IND[sel.ind].tool[0]; full.textContent = 'See the full example'; full.hidden = false; go.innerHTML = 'The full example is ' + esc(IND[sel.ind].tool[1]) + '.'; go.hidden = false; }
-    else { full.hidden = true; go.textContent = 'This decision runs only in the demo for now.'; go.hidden = false; }
+    if ($('st-full')) $('st-full').hidden = true; if ($('st-go')) $('st-go').hidden = true; if ($('run')) { $('run').hidden = false; }
     var v = $('st-view'); if (v.scrollTop) v.scrollTop = 0;
   }
   function finishJob(J) {
@@ -652,7 +786,7 @@
   }
   function skip() { if (P.running) P.skipping = true; }
   function lock(on) {
-    Array.prototype.forEach.call(document.querySelectorAll('.picker button'), function (b) { b.disabled = on; });
+    /* the pills stay active: choosing again restarts the run */
   }
   function download() {
     if (!P.last) return;
@@ -673,37 +807,45 @@
     var pl = null;
     try { var k = sel.ind + '-' + sel.dec; if (!planCache[k]) planCache[k] = PLANNERS[sel.dec](sel.ind); pl = planCache[k]; } catch (e) { pl = null; }
     var D = DEC[sel.dec];
-    return flowHtml(D.q, D.inputs, pl ? pl.steps.map(function (st) { return st.n; }) : [], D.outputs, 'Press Run to watch it work, about half a minute. A person reviews the result before it goes anywhere.');
+    return flowHtml(D.q, D.inputs, pl ? pl.steps.map(function (st) { return st.n; }) : [], D.outputs, (sel.indSet ? 'Running now, about half a minute. ' : 'Choose an industry above and it runs, in about half a minute. ') + 'A person reviews the result before it goes anywhere.');
   }
   function showIdle() { if (!P.running && !$('stage').classList.contains('done')) $('st-view').innerHTML = idleHtml(); }
   function reset() {
     P.tok++; P.running = false; lock(false);
-    $('stage').classList.remove('on', 'done'); $('st-view').innerHTML = idleHtml();
+    $('stage').classList.remove('on', 'done'); $('st-view').innerHTML = idleHtml(); if ($('run')) $('run').hidden = true;
     $('st-count').textContent = ''; $('st-name').textContent = ''; $('st-text').textContent = ''; setProg(0); $('st-foot-done').hidden = true; $('st-foot-job').hidden = true; $('st-skip').hidden = true; $('st-go').hidden = true;
   }
 
   /* ---------- wiring ---------- */
   function choose(group, val) {
-    sel[group] = val;
+    sel[group] = val; if (group === 'ind') sel.indSet = true;
     if (group === 'mode') { var pk = document.querySelector('.picker'); if (pk) { pk.setAttribute('data-mode', val); } if ($('stage') && !P.running) reset(); }
     Array.prototype.forEach.call(document.querySelectorAll('[data-g="' + group + '"]'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === val ? 'true' : 'false'); });
     if ($('st-view')) showIdle();
   }
+  function restart() { if (P.running) { P.tok++; P.running = false; } $('stage').classList.remove('done'); run(); }
   function init() {
     if (!$('demo')) return;
-    Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function (b) { b.addEventListener('click', function () { choose(b.getAttribute('data-g'), b.getAttribute('data-v')); }); });
-    $('run').addEventListener('click', run); $('st-skip').addEventListener('click', skip); $('st-dl').addEventListener('click', download);
-    var again = function () { reset(); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function (b) { b.addEventListener('click', function () {
+      var g = b.getAttribute('data-g'); choose(g, b.getAttribute('data-v'));
+      if (g === 'ind' || (g === 'dec' && sel.indSet)) restart();
+    }); });
+    if ($('run')) $('run').addEventListener('click', restart);
+    $('st-skip').addEventListener('click', skip); $('st-dl').addEventListener('click', download);
+    var again = function () { reset(); sel.indSet = false; Array.prototype.forEach.call(document.querySelectorAll('[data-g="ind"]'), function (b) { b.setAttribute('aria-pressed', 'false'); }); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     $('st-again').addEventListener('click', again); if ($('st-again2')) $('st-again2').addEventListener('click', again);
+    var auto = false;
     try {
       var q = new URLSearchParams(window.location.search), i = q.get('industry'), d = q.get('decision'), j = q.get('job'), md = q.get('mode');
       if (md === 'jobs' || md === 'e2e') choose('mode', md);
-      if (i && IND[i]) choose('ind', i); if (d && DEC[d]) choose('dec', d); if (j && JOBS[j]) { choose('mode', 'jobs'); choose('job', j); }
-      if (q.get('run') === '1') setTimeout(run, 300);
+      if (i && IND[i]) { choose('ind', i); } if (d && DEC[d]) choose('dec', d); if (j && JOBS[j]) { choose('mode', 'jobs'); choose('job', j); }
+      if (q.get('run') === '1') auto = true;
     } catch (e) {}
-    reset(); choose('ind', sel.ind); choose('dec', sel.dec); choose('job', sel.job); choose('mode', sel.mode);
+    reset(); choose('dec', sel.dec); choose('job', sel.job); choose('mode', sel.mode);
+    if (sel.indSet) choose('ind', sel.ind); else Array.prototype.forEach.call(document.querySelectorAll('[data-g="ind"]'), function (b) { b.setAttribute('aria-pressed', 'false'); });
+    if (auto) setTimeout(run, 300);
   }
-  window.__demo = { JOBS: JOBS, run: run, skip: skip, choose: choose, sel: sel, state: P, IND: IND, DEC: DEC, plan: function (ik, dk) { return PLANNERS[dk](ik); },
+  window.__demo = { restart: restart, JOBS: JOBS, run: run, skip: skip, choose: choose, sel: sel, state: P, IND: IND, DEC: DEC, plan: function (ik, dk) { return PLANNERS[dk](ik); },
     engines: { budget: budgetEngine, price: priceEngine, rank: rankEngine, priceProfit: priceProfit, rate: rate }, memoMd: memoMd, PRICE_OPTS: PRICE_OPTS, CRITERIA: CRITERIA };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

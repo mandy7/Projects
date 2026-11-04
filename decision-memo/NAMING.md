@@ -1,5 +1,7 @@
 # Naming notes (not part of the site; do not upload)
 
+**Chosen working name: Second Analyst.** It is still unchecked for domain and trademark, and "analyst" invites comparison with a human analyst, so the site makes no claim that it matches one. The earlier options are kept below.
+
 Nothing below has been checked for domain, trademark or existing use. Search for each candidate yourself, or ask a trademark adviser, before you buy a domain or print anything.
 
 ## The working name, "Decision Memo"

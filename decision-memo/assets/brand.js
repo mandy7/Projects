@@ -4,9 +4,9 @@
    value of STATIC_NAME below) so the two agree. See README.md. */
 (function () {
   'use strict';
-  var STATIC_NAME = 'Decision Memo';           // the name written into the HTML files
+  var STATIC_NAME = 'Second Analyst';           // the name written into the HTML files
   window.BRAND = {
-    name: 'Decision Memo',                      // working name, not final
+    name: 'Second Analyst',                        // the product name
     descriptor: 'Repeatable intelligence work, with human judgement',
     owner: 'Mandhir Dua'
   };

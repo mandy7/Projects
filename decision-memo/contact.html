@@ -3,54 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact | Decision Memo</title>
+<title>Contact | Second Analyst</title>
 <meta name="description" content="Tell me about a decision, or a job you would like to automate. I read each message myself and reply.">
-<meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="Contact | Decision Memo">
+<meta name="theme-color" content="#0b1f3a">
+<meta property="og:title" content="Contact | Second Analyst">
 <meta property="og:description" content="Tell me about a decision, or a job you would like to automate. I read each message myself and reply.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232457d6'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='white' stroke-width='2.6'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b1f3a'/%3E%3Cpath d='M9 23l7-14 7 14' fill='none' stroke='white' stroke-width='2.6' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='20' r='2' fill='%232f7f86'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to the content</a>
 <header class="mast"><div class="wrap">
-  <a class="word" href="index.html" aria-label="Home"><span data-brand="name">Decision Memo</span></a>
-  <nav class="nav" aria-label="Main"><a href="how-it-works.html">How It Works</a><a href="try-it-yourself.html">Try It Yourself</a><a href="pricing.html">Pricing</a><a href="contact.html" class="btn" aria-current="page">Contact</a></nav>
+  <a class="word" href="index.html" aria-label="Home"><span data-brand="name">Second Analyst</span></a>
+  <nav class="nav" aria-label="Main"><a href="how-it-works.html">How it works</a><a href="try-it-yourself.html">Try it</a><a href="pricing.html">Pricing</a><a href="contact.html" aria-current="page">Contact</a></nav>
 </div></header>
 <main id="main">
 
-<section class="wrap"><div class="contactbox" id="brief">
-  <h1>Contact</h1>
-  <p class="lead" style="font-size:1.1rem">Tell me about a decision, or a job you would like to automate.</p>
-  <div class="planbox" id="plan-box" hidden>
-    <div class="ps-h">Your plan from the Pricing page</div>
-    <pre id="plan-text"></pre>
-    <p class="small" style="margin:.3rem 0 0">This goes with your message. <button type="button" class="linkbtn" id="plan-drop">Do not send the plan</button></p>
-  </div>
-  <form class="ask" id="ask" novalidate>
-    <label for="f-pain" style="margin-top:1.4rem">What would you like to talk about?</label>
-    <textarea id="f-pain" name="pain" maxlength="1200" required></textarea>
-
-    <label for="f-industry">Your business or industry <span class="opt">(optional)</span></label>
-    <input type="text" id="f-industry" name="industry" maxlength="80" autocomplete="off">
-
-    <label for="f-contact">Email or LinkedIn profile</label>
-    <input type="text" id="f-contact" name="contact" maxlength="200" autocomplete="email" required>
-
-    <input type="hidden" id="f-source" name="source" value="">
-    <div class="trap" aria-hidden="true"><label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
-
-    <button class="btn" type="submit" id="send">Send</button>
-    <p class="consent">I use this only to reply. <a href="how-it-works.html#data">How your data is handled</a></p>
-    <div id="form-msg" role="status" aria-live="polite"></div>
-  </form>
-</div></section>
+<section><div class="wrap"><div class="cbx" id="brief"><h1>Contact</h1><p style="font-size:18px;color:#35445f;margin-top:14px">Tell me about a decision, or a job you would like to automate.</p>
+<div class="planbox" id="plan-box" hidden><div class="ps-h">Your plan from the Pricing page</div><pre id="plan-text"></pre><p class="small" style="margin:.3rem 0 0">This goes with your message. <button type="button" class="linkbtn" id="plan-drop">Do not send the plan</button></p></div>
+<form id="ask" novalidate>
+<label for="f-pain">What would you like to talk about?</label><textarea id="f-pain" name="pain" maxlength="1200" required></textarea>
+<label for="f-industry">Your business or industry <span>(optional)</span></label><input type="text" id="f-industry" name="industry" maxlength="80" autocomplete="off">
+<label for="f-contact">Email or LinkedIn profile</label><input type="text" id="f-contact" name="contact" maxlength="200" autocomplete="email" required>
+<input type="hidden" id="f-source" name="source" value="">
+<div class="trap" aria-hidden="true"><label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
+<button class="btn" type="submit" id="send">Send</button>
+<p class="sm">I use this only to reply. <a href="how-it-works.html#data" style="color:var(--teal-d)">How your data is handled</a></p>
+<div id="form-msg" role="status" aria-live="polite"></div>
+</form></div></div></section>
 
 </main>
-<footer class="foot"><div class="wrap">
-  <p><b data-brand="name">Decision Memo</b>: <span data-brand="descriptor">Repeatable intelligence work, with human judgement</span>. By Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor. All examples use hypothetical companies and invented figures. Nothing here is investment, legal or medical advice.</p>
-  <p><a href="how-it-works.html#data">How your data is handled</a></p>
-</div></footer>
+<footer class="foot"><div class="wrap"><div class="l"><span class="word" style="font-size:15px" data-brand="name">Second Analyst</span></div><div class="l"><a href="how-it-works.html">How it works</a><a href="try-it-yourself.html">Try it</a><a href="pricing.html">Pricing</a><a href="contact.html">Contact</a></div></div></footer>
 <script src="assets/brand.js"></script>
 <script src="assets/config.js"></script>
 <script src="assets/site.js"></script>
