@@ -3,43 +3,48 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Decision Memo | Make recurring decisions easier to defend</title>
-<meta name="description" content="Pick a decision and watch an analyst workflow work on illustrative data. It ends with a recommendation, the evidence behind it and a next step, in a one-page memo that a person reviews.">
+<title>Decision Memo | Intelligence work, without building an analyst team</title>
+<meta name="description" content="Choose the jobs you need, such as research, document analysis, evidence checks and decision modelling. A configured workflow does the repeatable work and a person reviews it. Try a live demo.">
 <meta name="theme-color" content="#f6f3ec">
-<meta property="og:title" content="Decision Memo | Make recurring decisions easier to defend">
-<meta property="og:description" content="Pick a decision and watch an analyst workflow work on illustrative data. It ends with a recommendation, the evidence behind it and a next step, in a one-page memo that a person reviews.">
+<meta property="og:title" content="Decision Memo | Intelligence work, without building an analyst team">
+<meta property="og:description" content="Choose the jobs you need, such as research, document analysis, evidence checks and decision modelling. A configured workflow does the repeatable work and a person reviews it. Try a live demo.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to the content</a>
 <header class="mast"><div class="wrap">
-  <a class="word" href="index.html">Decision Memo</a>
-  <nav class="nav" aria-label="Main"><a href="examples.html">Examples</a><a href="method.html">How it works</a><a href="working-together.html">Working together</a><a href="contact.html" class="btn">Free audit</a></nav>
+  <a class="word" href="index.html" aria-label="Home"><span data-brand="name">Decision Memo</span></a>
+  <nav class="nav" aria-label="Main"><a href="examples.html">Examples</a><a href="how-it-works.html">How It Works</a><a href="pricing.html">Pricing</a><a href="why-this-approach.html">Why This Approach</a><a href="start-a-brief.html" class="btn">Start a Brief</a></nav>
 </div></header>
 <main id="main">
 
 <section class="hero"><div class="wrap"><div class="grid">
   <div>
-    <h1>Make the decisions your team keeps revisiting easier to defend.</h1>
-    <p class="lead">Many teams settle the same questions again each quarter: where to put the budget, whether to move a price, how to read a rival&rsquo;s move. I turn the evidence, assumptions and trade-offs into a short memo that states a recommendation, what it depends on and what to do next. Your team makes the call.</p>
+    <h1>Intelligence work, without building an analyst team.</h1>
+    <p class="lead">Choose the jobs you need: researching a market, analysing documents, checking evidence, tracking commitments, modelling a decision. A configured workflow does the repeatable work. A person reviews it where judgement matters.</p>
+    <p class="who">For teams that answer the same kind of question again and again.</p>
     <div class="btns">
-      <a class="btn" href="#demo">See the analyst at work</a>
-      <a class="btn second" href="contact.html">Get a free audit</a>
+      <a class="btn" href="start-a-brief.html">Start a Brief</a>
+      <a class="btn second" href="#demo">Try the demo</a>
     </div>
-    <p class="note">Built by Mandhir Dua, competitive strategy and decision intelligence.</p>
+    <p class="note">The first step is a short suitability check. You describe one recurring job, and I tell you whether a repeatable workflow fits and what setting it up would involve.</p>
   </div>
   <figure>
-    <img src="assets/img/hero-memo.webp" width="1400" height="1272" alt="A recommendation memo for a hypothetical hotel chain. It shows a recommended split of a marketing budget, a table of where each booking route stops paying back, and the start of the section on the assumption the answer depends on most.">
-    <figcaption>A memo from the demo, for a hypothetical hotel chain with invented figures.</figcaption>
+    <img src="assets/img/hero-memo.webp" width="1400" height="1272" alt="A decision memo produced by the demo for a hypothetical hotel chain. It shows a recommended split of a marketing budget, a table of where each booking route stops paying back, and the start of the section on the assumption the answer depends on most.">
+    <figcaption>One kind of output: a decision memo from the demo, on invented figures.</figcaption>
   </figure>
 </div></div></section>
 
 <section class="demo" id="demo"><div class="wrap">
-  <h2>Start with a decision. See what comes back.</h2>
-  <p class="demo-sub">Pick a decision your team faces. The analyst works through it on illustrative data and ends with a recommendation, the evidence behind it and a next step.</p>
-  <div class="picker">
-    <div>
+  <h2>See a job run</h2>
+  <p class="demo-sub">Watch a complete example, or look at one job at a time. Every input is illustrative, and nothing is fetched or sent anywhere.</p>
+  <div class="picker" data-mode="e2e">
+    <div class="modebar" role="group" aria-label="How to explore the demo">
+      <button type="button" data-g="mode" data-v="e2e" aria-pressed="true">Complete workflows</button>
+      <button type="button" data-g="mode" data-v="jobs" aria-pressed="false">Individual jobs</button>
+    </div>
+    <div class="pk pk-e">
       <div class="pl" id="pl-dec">The decision</div>
       <div class="seg2" role="group" aria-labelledby="pl-dec">
         <button type="button" data-g="dec" data-v="budget" aria-pressed="true">Where should the next rupee go?<small>Split the budget</small></button>
@@ -47,6 +52,10 @@
         <button type="button" data-g="dec" data-v="price" aria-pressed="false">Should we move our price?<small>Test a price change</small></button>
         <button type="button" data-g="dec" data-v="rank" aria-pressed="false">What should we do first?<small>Rank our options</small></button>
       </div>
+    </div>
+    <div class="pk pk-j">
+      <div class="pl" id="pl-job">The job</div>
+      <div class="seg2 jobs" role="group" aria-labelledby="pl-job"><button type="button" data-g="job" data-v="scan" aria-pressed="false">Scan and log sources<small>Source scanning</small></button><button type="button" data-g="job" data-v="gaps" aria-pressed="false">Flag what is not disclosed<small>Gaps and exceptions</small></button><button type="button" data-g="job" data-v="rate" aria-pressed="false">Rate the evidence<small>Evidence comparison</small></button><button type="button" data-g="job" data-v="scen" aria-pressed="true">Run scenarios<small>Quantitative analysis</small></button><button type="button" data-g="job" data-v="stop" aria-pressed="false">Find where returns stop<small>Decision modelling</small></button><button type="button" data-g="job" data-v="hinge" aria-pressed="false">Find what the answer depends on<small>Pattern and sensitivity</small></button><button type="button" data-g="job" data-v="price" aria-pressed="false">Compare price moves<small>Scenario analysis</small></button><button type="button" data-g="job" data-v="rank" aria-pressed="false">Rank options under uncertainty<small>Option ranking</small></button><button type="button" data-g="job" data-v="memo" aria-pressed="false">Draft the decision memo<small>Synthesis and memo</small></button></div>
     </div>
     <div class="pickrow">
       <div>
@@ -57,11 +66,11 @@
           <button type="button" data-g="ind" data-v="telecom" aria-pressed="false">Telecom</button>
         </div>
       </div>
-      <button class="btn" id="run" type="button">Run the analyst</button>
+      <button class="btn" id="run" type="button">Run it</button>
     </div>
   </div>
 
-  <div class="stage" id="stage" aria-label="The analyst at work">
+  <div class="stage" id="stage" aria-label="The workflow running">
     <div class="st-top"><span id="st-ctx"></span><span class="st-key"><span><i class="pm pub"></i>Public source</span><span><i class="pm int"></i>Your data</span><span><i class="pm asm"></i>Assumption</span></span></div>
     <div class="st-view" id="st-view"></div>
     <div class="st-prog" id="st-prog" hidden><span id="st-bar"></span></div>
@@ -69,45 +78,29 @@
       <div class="st-cap" aria-live="polite"><div class="st-count" id="st-count"></div><div class="st-name" id="st-name"></div><div class="st-text" id="st-text"></div></div>
       <div class="st-acts">
         <button class="linkbtn" id="st-skip" type="button" hidden>Skip to the answer</button>
-        <span id="st-foot-done" hidden><a class="btn small" id="st-talk" href="contact.html">Discuss a similar decision</a> <a class="btn second small" id="st-full" href="#">See the full example</a> <button class="linkbtn" id="st-dl" type="button">Download the memo</button> <button class="linkbtn" id="st-again" type="button">Try another decision</button></span>
+        <span id="st-foot-done" hidden><a class="btn small" id="st-talk" href="start-a-brief.html">Start a Brief</a> <a class="btn second small" id="st-full" href="#">See the full example</a> <button class="linkbtn" id="st-dl" type="button">Download the memo</button> <button class="linkbtn" id="st-again" type="button">Try another</button></span>
+        <span id="st-foot-job" hidden><a class="btn small" id="st-add" href="pricing.html#plan">Add this job to a plan</a> <button class="linkbtn" id="st-again2" type="button">Try another job</button></span>
       </div>
     </div>
     <p class="st-go" id="st-go" hidden></p>
   </div>
-  <p class="demo-note">The marks show where an input comes from: a public source, your own data, or an assumption. In this demo every input is illustrative, and nothing is fetched or sent anywhere.</p>
-</div></section>
-
-<section class="section"><div class="wrap strip2">
-  <h2>The same method covers more than these four decisions.</h2>
-  <div>
-    <p>Teams that repeat a decision tend to spend their time on the same few tasks: tracking competitors and the market, reading filings and press, checking what a company said against what it delivered, testing prices and budgets, and ranking options. A workflow can gather and test the evidence so that your people spend their time on the judgement.</p>
-    <p>Four worked examples show how this looks in practice.</p>
-    <div class="btns" style="margin-top:1.2rem"><a class="btn second" href="examples.html">See the four examples</a></div>
-  </div>
-</div></section>
-
-<section class="section tint note-sec"><div class="wrap strip2">
-  <h2>How I think about a decision</h2>
-  <div>
-    <p>I am Mandhir Dua, an independent competitive strategy advisor with a background in travel marketplaces. I help teams out of analysis paralysis. The evidence usually exists, but it sits in separate places, and the patterns that matter are hidden between them.</p>
-    <p>My work is to pull those signals together, check that the sources are credible, and trace what a move leads to at the second and third order. I look at a decision through its trade-offs, its volatility and the options it keeps open: what we would lose, what would break it, which assumptions it rests on, and how to defend it. A fixed checklist gives a generic result, so I build workflows that connect signals across sources and test many possible futures, and I design them to take in a reviewer&rsquo;s corrections.</p>
-    <p>What I would not automate is the judgement about people: how strong or fragile a relationship is, what it costs to damage, and what only comes from being in the room.</p>
-  </div>
+  <p class="demo-note">The marks show where an input comes from: a public source, your own data, or an assumption. The watch examples are scripted on invented events. The models are illustrations and not forecasts.</p>
 </div></section>
 
 <section class="section"><div class="wrap band">
   <div>
-    <h2>Bring me one recurring decision</h2>
-    <p>In a 45-minute conversation we identify the manual work involved, the evidence needed and whether a workflow could make the process more repeatable. Within a few days I send you a one-page memo with what I found. If there is a fit, I will outline a scoped pilot and how we would measure it.</p>
+    <h2>Describe one recurring job</h2>
+    <p>Tell me what you need investigated, monitored, analysed, checked or produced. I will say whether a repeatable workflow looks like a fit and what a focused setup would involve. You can also <a href="pricing.html#plan">choose the jobs you want</a> first and send them with the brief.</p>
   </div>
-  <div><a class="btn" href="contact.html">Get a free audit</a></div>
+  <div><a class="btn" href="start-a-brief.html">Start a Brief</a></div>
 </div></section>
 
 </main>
 <footer class="foot"><div class="wrap">
-  <p>Decision Memo, by Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor. All examples use hypothetical companies and invented figures. Nothing here is investment, legal or medical advice.</p>
-  <p><a href="contact.html#privacy">Privacy</a></p>
+  <p><b data-brand="name">Decision Memo</b>: <span data-brand="descriptor">Repeatable intelligence work, with human judgement</span>. By Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor. All examples use hypothetical companies and invented figures. Nothing here is investment, legal or medical advice.</p>
+  <p><a href="start-a-brief.html#privacy">Privacy</a></p>
 </div></footer>
+<script src="assets/brand.js"></script>
 <script src="assets/demo.js"></script>
 </body>
 </html>

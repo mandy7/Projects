@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start a Brief | Decision Memo</title>
+<meta name="description" content="Describe one recurring job or question. I read each brief myself and reply to say whether a repeatable workflow looks like a fit and what a focused setup would involve.">
+<meta name="theme-color" content="#f6f3ec">
+<meta property="og:title" content="Start a Brief | Decision Memo">
+<meta property="og:description" content="Describe one recurring job or question. I read each brief myself and reply to say whether a repeatable workflow looks like a fit and what a focused setup would involve.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the content</a>
+<header class="mast"><div class="wrap">
+  <a class="word" href="index.html" aria-label="Home"><span data-brand="name">Decision Memo</span></a>
+  <nav class="nav" aria-label="Main"><a href="examples.html">Examples</a><a href="how-it-works.html">How It Works</a><a href="pricing.html">Pricing</a><a href="why-this-approach.html">Why This Approach</a><a href="start-a-brief.html" class="btn" aria-current="page">Start a Brief</a></nav>
+</div></header>
+<main id="main">
+
+<section class="page-head"><div class="wrap">
+  <h1>Start a brief</h1>
+  <p class="lead">Describe one recurring job or question. The first step is a suitability check: I read the brief, then tell you whether a repeatable workflow looks like a fit and what a focused setup would involve. It is not an instant trial.</p>
+</div></section>
+
+<section class="block" id="brief"><div class="wrap two">
+  <div>
+    <div class="planbox" id="plan-box" hidden>
+      <div class="ps-h">Your plan from the Pricing page</div>
+      <pre id="plan-text"></pre>
+      <p class="ps-note">This goes with your brief. <button type="button" class="linkbtn" id="plan-drop">Do not send the plan</button></p>
+    </div>
+    <form class="ask" id="ask" novalidate>
+      <label for="f-pain">What do you need investigated, monitored, analysed, checked or produced?</label>
+      <p class="hint">A few lines are enough. What question comes back, and what do you do about it today?</p>
+      <textarea id="f-pain" name="pain" maxlength="1200" required></textarea>
+
+      <label for="f-industry">Business or industry context <span class="opt">(optional)</span></label>
+      <input type="text" id="f-industry" name="industry" maxlength="80" autocomplete="off">
+
+      <label for="f-contact">Email or LinkedIn profile</label>
+      <p class="hint">So I can reply.</p>
+      <input type="text" id="f-contact" name="contact" maxlength="200" autocomplete="email" required>
+
+      <input type="hidden" id="f-source" name="source" value="">
+      <div class="trap" aria-hidden="true"><label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
+
+      <p class="consent">By sending this you agree that I may contact you about it. <a href="#privacy">What I do with it</a>.</p>
+      <button class="btn" type="submit" id="send">Send the brief</button>
+      <div id="form-msg" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+  <div>
+    <h2>What happens next</h2>
+    <ol class="next">
+      <li>I read the brief myself.</li>
+      <li>I reply to say whether a repeatable workflow looks like a fit, and what a focused first setup would involve.</li>
+      <li>If it is worth doing, we agree one narrow job and I quote against that scope.</li>
+    </ol>
+    <p class="small">I do not promise an automated trial or a free build at this stage.</p>
+  </div>
+</div></section>
+
+<section class="block" id="privacy"><div class="wrap two">
+  <h2>Privacy</h2>
+  <div>
+    <p>You can use every example without sharing contact details, and the examples never ask for an email address. What you type into them stays in your browser.</p>
+    <p>The site has no analytics scripts, and my host may keep standard server logs.</p>
+    <p>A brief sent through this form is held by the form service and in my email. If the link that brought you here carried a source tag, the tag is stored with your message. A plan you built on the Pricing page is sent only if you send it with the brief. I use your message to reply to you, I do not sell it, and I do not add you to a mailing list.</p>
+    <p id="mail-line"></p>
+  </div>
+</div></section>
+
+</main>
+<footer class="foot"><div class="wrap">
+  <p><b data-brand="name">Decision Memo</b>: <span data-brand="descriptor">Repeatable intelligence work, with human judgement</span>. By Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor. All examples use hypothetical companies and invented figures. Nothing here is investment, legal or medical advice.</p>
+  <p><a href="start-a-brief.html#privacy">Privacy</a></p>
+</div></footer>
+<script src="assets/brand.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

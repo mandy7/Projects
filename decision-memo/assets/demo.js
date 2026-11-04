@@ -552,38 +552,75 @@
 
   var PLANNERS = { budget: planBudget, watch: planWatch, price: planPrice, rank: planRank };
 
+  /* Individual jobs: each plays one step of an end-to-end plan, with a plain statement of what it does. */
+  var JOBS = {
+    scan: { label: 'Scan and log sources', small: 'Source scanning', dec: 'watch', step: 1, cat: 'monitor',
+      status: 'A scripted example on invented events. Nothing is fetched.',
+      does: 'Reads a fixed list of sources and logs each item with a date, a source and a status.', needs: 'A list of public sources, and your own notes if you have them.', makes: 'A dated event log.', human: 'A person picks the sources and approves each flag.' },
+    gaps: { label: 'Flag what is not disclosed', small: 'Gaps and exceptions', dec: 'watch', step: 2, cat: 'evidence',
+      status: 'A scripted example on invented events.',
+      does: 'Marks each place where a source says nothing, so a gap stays visible and is never filled in.', needs: 'The event log, and the questions you care about.', makes: 'A list of gaps, each with a date and a source.', human: 'A person decides which gaps matter and whether to chase them.' },
+    rate: { label: 'Rate the evidence', small: 'Evidence comparison', dec: 'watch', step: 3, cat: 'evidence',
+      status: 'A scripted example. The rating rules are written out and fixed.',
+      does: 'Ties each event to a decision and rates how strong the evidence is behind it, by written rules.', needs: 'The event log and your list of decisions.', makes: 'An evidence board with one rating for each decision.', human: 'A reviewer can overrule any rating.' },
+    scen: { label: 'Run scenarios', small: 'Quantitative analysis', dec: 'budget', step: 2, cat: 'model',
+      status: 'An illustrative model on invented inputs, computed in your browser. It is not a forecast.',
+      does: 'Draws 5,000 possible futures from ranges you set, and works out the best budget split in each.', needs: 'A low, typical and high value for each input.', makes: 'A spread of outcomes instead of one best guess.', human: 'A person supplies and challenges the inputs.' },
+    stop: { label: 'Find where returns stop', small: 'Decision modelling', dec: 'budget', step: 3, cat: 'model',
+      status: 'An illustrative model on invented inputs. It is not a forecast.',
+      does: 'Finds the spend at which each route stops paying back, with a range.', needs: 'The same ranges, for each route.', makes: 'A stopping point for each route.', human: 'A person judges whether the model is fair to the business.' },
+    hinge: { label: 'Find what the answer depends on', small: 'Pattern and sensitivity', dec: 'budget', step: 4, cat: 'model',
+      status: 'An illustrative model on invented inputs.',
+      does: 'Moves each input to its low and high end and shows which one changes the answer most.', needs: 'The same ranges.', makes: 'A ranked list of assumptions to check first.', human: 'A person decides what evidence to collect.' },
+    price: { label: 'Compare price moves', small: 'Scenario analysis', dec: 'price', step: 3, cat: 'model',
+      status: 'An illustrative model on invented inputs. This runs only in the demo.',
+      does: 'Works out profit for five price moves across 5,000 scenarios and counts how often each is best.', needs: 'Your price, volume and cost, and a range for how customers respond.', makes: 'The share of scenarios in which each option wins.', human: 'A person judges the response to price, which is the least certain input.' },
+    rank: { label: 'Rank options under uncertainty', small: 'Option ranking', dec: 'rank', step: 3, cat: 'model',
+      status: 'An illustrative model on invented scores. This runs only in the demo.',
+      does: 'Scores each option on several criteria, lets the scores and weights vary, and counts how often each comes first.', needs: 'The options, the criteria and rough weights.', makes: 'How stable the ranking is.', human: 'A person owns the weights, because they express priorities.' },
+    memo: { label: 'Draft the decision memo', small: 'Synthesis and memo', dec: 'budget', step: 5, cat: 'memo',
+      status: 'Built from the model results above. A person reviews it before it goes anywhere.',
+      does: 'Turns the findings into one page: a recommendation, the trade-off, the key uncertainty and the next action.', needs: 'The analysis it summarises.', makes: 'A one-page memo, which can be downloaded.', human: 'A person reads, edits and approves it.' }
+  };
+  function jobFacts(J) {
+    var rows = [['What it does', J.does], ['What it needs', J.needs], ['What it produces', J.makes], ['Where a person comes in', J.human], ['Status', J.status]];
+    return '<div class="v-job"><dl>' + rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') + '</dl></div>';
+  }
+
   /* ---------- player ---------- */
-  var sel = { ind: 'hotels', dec: 'budget' }, P = { tok: 0, running: false, skipping: false, last: null };
+  var sel = { ind: 'hotels', dec: 'budget', mode: 'e2e', job: 'scen' }, P = { tok: 0, running: false, skipping: false, last: null };
   function sleep(ms, tok) { return new Promise(function (res, rej) { setTimeout(function () { tok === P.tok ? res() : rej('stop'); }, ms); }); }
 
   function setCap(i, total, step) {
-    $('st-count').textContent = 'Step ' + (i + 1) + ' of ' + total;
+    $('st-count').textContent = sel.mode === 'jobs' ? 'One job' : 'Step ' + (i + 1) + ' of ' + total;
     $('st-name').textContent = step.n;
     $('st-text').textContent = step.t;
   }
   function setProg(f) { $('st-bar').style.width = Math.round(Math.min(1, f) * 100) + '%'; }
-  function ctxLine() { return DEC[sel.dec].q + '  ·  ' + IND[sel.ind].label; }
+  function ctxLine() { return (sel.mode === 'jobs' ? JOBS[sel.job].label : DEC[sel.dec].q) + '  ·  ' + IND[sel.ind].label; }
 
   async function run() {
     if (P.running) return;
     var tok = ++P.tok; P.running = true; P.skipping = false;
-    var plan = PLANNERS[sel.dec](sel.ind); P.last = plan;
+    var jobs = sel.mode === 'jobs', J = jobs ? JOBS[sel.job] : null;
+    var plan = PLANNERS[J ? J.dec : sel.dec](sel.ind); P.last = jobs ? null : plan;
+    var steps = jobs ? [plan.steps[J.step]] : plan.steps;
     lock(true); $('st-ctx').textContent = ctxLine(); $('stage').classList.add('on'); $('stage').classList.remove('done');
-    var view = $('st-view'); view.innerHTML = ''; $('st-foot-done').hidden = true; $('st-skip').hidden = false; $('st-go').hidden = true; $('st-prog').hidden = false;
+    var view = $('st-view'); view.innerHTML = ''; $('st-foot-done').hidden = true; $('st-foot-job').hidden = true; $('st-skip').hidden = false; $('st-go').hidden = true; $('st-prog').hidden = false;
     try {
-      for (var i = 0; i < plan.steps.length; i++) {
-        var step = plan.steps[i]; setCap(i, plan.steps.length, step);
+      for (var i = 0; i < steps.length; i++) {
+        var step = steps[i]; setCap(i, steps.length, step);
         var total = P.skipping ? 0 : (REDUCED ? Math.min(step.d, 1500) : step.d) / SPEED, t0 = performance.now();
         step.draw(view, P.skipping ? 1 : 0, true);
         while (!P.skipping) {
           await sleep(Math.min(50, Math.max(1, total)), tok);
           var p = Math.min(1, (performance.now() - t0) / Math.max(1, total));
-          step.draw(view, REDUCED ? 1 : p, false); setProg((i + p) / plan.steps.length);
+          step.draw(view, REDUCED ? 1 : p, false); setProg((i + p) / steps.length);
           if (p >= 1) break;
         }
         if (P.skipping) { step.draw(view, 1, false); }
       }
-      setProg(1); finish(plan);
+      setProg(1); if (jobs) finishJob(J); else finish(plan);
     } catch (e) { if (e !== 'stop') throw e; }
     finally { if (tok === P.tok) { P.running = false; lock(false); } }
   }
@@ -602,6 +639,13 @@
     else { full.hidden = true; go.textContent = 'This decision runs only in the demo for now.'; go.hidden = false; }
     var v = $('st-view'); if (v.scrollTop) v.scrollTop = 0;
   }
+  function finishJob(J) {
+    var v = $('st-view'); v.insertAdjacentHTML('beforeend', jobFacts(J));
+    $('stage').classList.add('done'); $('st-skip').hidden = true; $('st-prog').hidden = true;
+    $('st-count').textContent = 'Done'; $('st-name').textContent = J.label; $('st-text').textContent = 'One job from a longer workflow. Everything here is illustrative.';
+    $('st-foot-job').hidden = false; $('st-add').href = 'pricing.html?job=' + J.cat + '#plan';
+    $('st-go').textContent = 'This is one job on its own. In an end-to-end workflow it runs alongside the others.'; $('st-go').hidden = false;
+  }
   function skip() { if (P.running) P.skipping = true; }
   function lock(on) {
     Array.prototype.forEach.call(document.querySelectorAll('.picker button'), function (b) { b.disabled = on; });
@@ -613,6 +657,7 @@
   }
   var planCache = {};
   function idleHtml() {
+    if (sel.mode === 'jobs') { var J = JOBS[sel.job]; return '<div class="v-idle2 left"><p class="v-idle">Press the button to run this one job.</p>' + jobFacts(J) + '</div>'; }
     var pl = null;
     try { var k = sel.ind + '-' + sel.dec; if (!planCache[k]) planCache[k] = PLANNERS[sel.dec](sel.ind); pl = planCache[k]; } catch (e) { pl = null; }
     var h = '<div class="v-idle2"><p class="v-idle">Press the button to run the analyst on this decision.</p>';
@@ -623,12 +668,13 @@
   function reset() {
     P.tok++; P.running = false; lock(false);
     $('stage').classList.remove('on', 'done'); $('st-view').innerHTML = idleHtml();
-    $('st-count').textContent = ''; $('st-name').textContent = ''; $('st-text').textContent = ''; setProg(0); $('st-foot-done').hidden = true; $('st-skip').hidden = true; $('st-go').hidden = true;
+    $('st-count').textContent = ''; $('st-name').textContent = ''; $('st-text').textContent = ''; setProg(0); $('st-foot-done').hidden = true; $('st-foot-job').hidden = true; $('st-skip').hidden = true; $('st-go').hidden = true;
   }
 
   /* ---------- wiring ---------- */
   function choose(group, val) {
     sel[group] = val;
+    if (group === 'mode') { var pk = document.querySelector('.picker'); if (pk) { pk.setAttribute('data-mode', val); } if ($('stage') && !P.running) reset(); }
     Array.prototype.forEach.call(document.querySelectorAll('[data-g="' + group + '"]'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === val ? 'true' : 'false'); });
     if ($('st-view')) showIdle();
   }
@@ -636,15 +682,17 @@
     if (!$('demo')) return;
     Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function (b) { b.addEventListener('click', function () { choose(b.getAttribute('data-g'), b.getAttribute('data-v')); }); });
     $('run').addEventListener('click', run); $('st-skip').addEventListener('click', skip); $('st-dl').addEventListener('click', download);
-    $('st-again').addEventListener('click', function () { reset(); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    var again = function () { reset(); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    $('st-again').addEventListener('click', again); if ($('st-again2')) $('st-again2').addEventListener('click', again);
     try {
-      var q = new URLSearchParams(window.location.search), i = q.get('industry'), d = q.get('decision');
-      if (i && IND[i]) choose('ind', i); if (d && DEC[d]) choose('dec', d);
+      var q = new URLSearchParams(window.location.search), i = q.get('industry'), d = q.get('decision'), j = q.get('job'), md = q.get('mode');
+      if (md === 'jobs' || md === 'e2e') choose('mode', md);
+      if (i && IND[i]) choose('ind', i); if (d && DEC[d]) choose('dec', d); if (j && JOBS[j]) { choose('mode', 'jobs'); choose('job', j); }
       if (q.get('run') === '1') setTimeout(run, 300);
     } catch (e) {}
-    reset(); choose('ind', sel.ind); choose('dec', sel.dec);
+    reset(); choose('ind', sel.ind); choose('dec', sel.dec); choose('job', sel.job); choose('mode', sel.mode);
   }
-  window.__demo = { run: run, skip: skip, choose: choose, sel: sel, state: P, IND: IND, DEC: DEC, plan: function (ik, dk) { return PLANNERS[dk](ik); },
+  window.__demo = { JOBS: JOBS, run: run, skip: skip, choose: choose, sel: sel, state: P, IND: IND, DEC: DEC, plan: function (ik, dk) { return PLANNERS[dk](ik); },
     engines: { budget: budgetEngine, price: priceEngine, rank: rankEngine, priceProfit: priceProfit, rate: rate }, memoMd: memoMd, PRICE_OPTS: PRICE_OPTS, CRITERIA: CRITERIA };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
