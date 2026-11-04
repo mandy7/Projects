@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Decision Memo | An analyst for the work your team repeats every week</title>
-<meta name="description" content="Four working examples of an analyst workflow for hotels, telecom, pharma and consumer goods. Each ends in a one-page memo that a person reviews. Try them with no sign-up.">
+<title>Decision Memo | Get the first pass of analyst work done for you</title>
+<meta name="description" content="Pick an industry and a decision, then watch an analyst workflow work on illustrative data. Track the market, split a budget, test a price or rank options, and get a decision-ready memo. A person reviews it.">
 <meta name="theme-color" content="#f6f3ec">
-<meta property="og:title" content="Decision Memo | An analyst for the work your team repeats every week">
-<meta property="og:description" content="Four working examples of an analyst workflow for hotels, telecom, pharma and consumer goods. Each ends in a one-page memo that a person reviews. Try them with no sign-up.">
+<meta property="og:title" content="Decision Memo | Get the first pass of analyst work done for you">
+<meta property="og:description" content="Pick an industry and a decision, then watch an analyst workflow work on illustrative data. Track the market, split a budget, test a price or rank options, and get a decision-ready memo. A person reviews it.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -21,85 +21,79 @@
 
 <section class="hero"><div class="wrap"><div class="grid">
   <div>
-    <h1>An analyst for the work your team repeats every week.</h1>
-    <p class="lead">It reads the sources, runs the numbers and writes a one-page memo with every source shown. A person on your team reviews it before it goes anywhere.</p>
+    <h1>Get the first pass of analyst work done for you. Keep the judgement in-house.</h1>
+    <p class="lead">I track market and competitor moves, organise the evidence, test your assumptions and turn the findings into a decision-ready memo. Start with one business question, and add more as your needs grow.</p>
     <div class="btns">
-      <a class="btn" href="examples.html">Try the four examples</a>
+      <a class="btn" href="#demo">Try the analyst</a>
       <a class="btn second" href="contact.html">Get a free audit</a>
     </div>
-    <p class="note">You can open the examples without signing up or giving an email address.</p>
+    <p class="note">Built by Mandhir Dua, competitive strategy and decision intelligence.</p>
   </div>
   <figure>
-    <img src="assets/img/hero-memo.webp" width="1400" height="1272" alt="A recommendation memo written by the Tipping Point example. It shows a recommended budget split, a table of where each sales channel stops paying back, and the start of the section on the assumption the answer depends on most.">
-    <figcaption>A memo written by the Tipping Point example, for a hypothetical company with invented figures.</figcaption>
+    <img src="assets/img/hero-memo.webp" width="1400" height="1272" alt="A recommendation memo written by the analyst for a hypothetical company. It shows a recommended budget split, a table of where each sales channel stops paying back, and the start of the section on the assumption the answer depends on most.">
+    <figcaption>A memo from the demo, for a hypothetical company with invented figures.</figcaption>
   </figure>
 </div></div></section>
 
-<section class="section tint" id="examples"><div class="wrap">
-  <div class="section-head">
-    <h2>Four examples you can open now</h2>
-    <p>Each one does a job that is usually done by hand. They use hypothetical companies and invented figures, and each card says what the example is and what it does not do.</p>
+<section class="demo" id="demo"><div class="wrap">
+  <h2>Pick an industry and a decision, then watch the analyst work.</h2>
+  <p class="demo-sub">This runs in your browser on illustrative data. It shows the steps an analyst would take and what the memo looks like.</p>
+  <div class="picker">
+    <div>
+      <div class="pl" id="pl-ind">Industry</div>
+      <div class="seg2" role="group" aria-labelledby="pl-ind">
+        <button type="button" data-g="ind" data-v="hotels" aria-pressed="true">Hotels</button>
+        <button type="button" data-g="ind" data-v="pharma" aria-pressed="false">Pharma</button>
+        <button type="button" data-g="ind" data-v="telecom" aria-pressed="false">Telecom</button>
+      </div>
+    </div>
+    <div>
+      <div class="pl" id="pl-dec">Decision</div>
+      <div class="seg2" role="group" aria-labelledby="pl-dec">
+        <button type="button" data-g="dec" data-v="budget" aria-pressed="true">Split the budget<small>Where should the next rupee go?</small></button>
+        <button type="button" data-g="dec" data-v="watch" aria-pressed="false">Watch the market<small>What changed, and does it matter?</small></button>
+        <button type="button" data-g="dec" data-v="price" aria-pressed="false">Test a price change<small>Should we move our price?</small></button>
+        <button type="button" data-g="dec" data-v="rank" aria-pressed="false">Rank our options<small>What should we do first?</small></button>
+      </div>
+    </div>
+    <button class="btn" id="run" type="button">Run the analyst</button>
   </div>
-  <div class="cards">
-<article class="card">
-  <img src="assets/img/card-shiftwatch.webp" alt="Part of the Shiftwatch example: a dated log of market events, each with a status such as disclosed or not disclosed, and a source." width="1400" height="933" loading="lazy">
-  <div class="body">
-    <p class="sector">Hotels</p>
-    <h3>Shiftwatch</h3>
-    <p class="job">Turns a market scan into a dated, decision-focused record.</p>
-    <dl><dt>You can try</dt><dd>Watch a recorded run log each event with its source, and name what is not disclosed.</dd><dt>Keep in mind</dt><dd>It is a recording. It does not fetch anything when you open it.</dd></dl>
-    <p class="status">Recorded research run</p>
-    <a class="btn second" href="tools/shiftwatch.html">Open Shiftwatch</a>
+
+  <div class="stage" id="stage" aria-label="The analyst at work">
+    <div class="st-top"><span id="st-ctx"></span><span class="st-key"><span><i class="pm pub"></i>Public source</span><span><i class="pm int"></i>Your data</span><span><i class="pm asm"></i>Assumption</span></span></div>
+    <div class="st-view" id="st-view"></div>
+    <div class="st-prog" id="st-prog" hidden><span id="st-bar"></span></div>
+    <div class="st-foot">
+      <div class="st-cap" aria-live="polite"><div class="st-count" id="st-count"></div><div class="st-name" id="st-name"></div><div class="st-text" id="st-text"></div></div>
+      <div class="st-acts">
+        <button class="linkbtn" id="st-skip" type="button" hidden>Skip to the memo</button>
+        <span id="st-foot-done" hidden><button class="btn small" id="st-dl" type="button">Download the memo</button> <button class="btn second small" id="st-again" type="button">Try another decision</button></span>
+      </div>
+    </div>
+    <p class="st-go" id="st-go" hidden></p>
   </div>
-</article><article class="card">
-  <img src="assets/img/card-tipping-point.webp" alt="Part of the Tipping Point example: a scatter of 5,000 scenarios by best budget split, and three charts showing where each sales channel stops paying back." width="1400" height="933" loading="lazy">
-  <div class="body">
-    <p class="sector">Telecom</p>
-    <h3>Tipping Point</h3>
-    <p class="job">Tests how returns change as you shift budget across sales channels.</p>
-    <dl><dt>You can try</dt><dd>Run 5,000 what-if cases, then enter your own numbers.</dd><dt>Keep in mind</dt><dd>It explores your assumptions. It does not predict real results.</dd></dl>
-    <p class="status">Interactive model &middot; illustrative inputs</p>
-    <a class="btn second" href="tools/tipping-point.html">Open Tipping Point</a>
-  </div>
-</article><article class="card">
-  <img src="assets/img/card-condition-watch.webp" alt="Part of the Condition Watch example: an evidence board with one card for each question about a condition, showing how strong its evidence is, beside the table of dated entries behind it." width="1400" height="933" loading="lazy">
-  <div class="body">
-    <p class="sector">Pharma</p>
-    <h3>Condition Watch</h3>
-    <p class="job">Shows how strong the evidence is behind each question about a condition.</p>
-    <dl><dt>You can try</dt><dd>Press Watch it work, then add an entry yourself and see the rating move.</dd><dt>Keep in mind</dt><dd>It reads no sources. You find the evidence and enter it.</dd></dl>
-    <p class="status">Interactive prototype &middot; manual evidence entry</p>
-    <a class="btn second" href="tools/condition-watch.html">Open Condition Watch</a>
-  </div>
-</article><article class="card">
-  <img src="assets/img/card-guidance-tracker.webp" alt="Part of the Guidance Tracker example: a record by topic showing how many targets were met, above a table where each target has its result and an automatic score." width="1400" height="933" loading="lazy">
-  <div class="body">
-    <p class="sector">Consumer goods</p>
-    <h3>Guidance Tracker</h3>
-    <p class="job">Scores what a company said it would deliver against what it reported.</p>
-    <dl><dt>You can try</dt><dd>Press Watch it work, then type a different result and see the score and the record change.</dd><dt>Keep in mind</dt><dd>It checks no entry against a document.</dd></dl>
-    <p class="status">Interactive prototype &middot; manual data entry</p>
-    <a class="btn second" href="tools/guidance-tracker.html">Open Guidance Tracker</a>
-  </div>
-</article>
+  <p class="demo-note">The marks show where an input comes from: a public source, your own data, or an assumption. In this demo every input is illustrative, and nothing is fetched or sent anywhere.</p>
+</div></section>
+
+<section class="section"><div class="wrap strip2">
+  <h2>An analyst does more than these four jobs.</h2>
+  <div>
+    <p>A week of analyst work is mostly the same few jobs: tracking competitors and the market, reading filings and press, checking what companies said against what they delivered, testing prices and budgets, ranking options and building scenarios. Much of that is repeatable, so a workflow can do the first pass and a person can review it.</p>
+    <p>Four worked examples go further into how this looks in practice.</p>
+    <div class="btns" style="margin-top:1.2rem"><a class="btn second" href="examples.html">See the four examples</a></div>
   </div>
 </div></section>
 
-<section class="section"><div class="wrap">
-  <div class="section-head">
-    <h2>How a memo is made</h2>
+<section class="section tint note-sec"><div class="wrap strip2">
+  <h2>How I think about a decision</h2>
+  <div>
+    <p>I am Mandhir Dua, an independent competitive strategy advisor with a background in travel marketplaces. I help teams out of analysis paralysis. The evidence usually exists, but it sits in separate places, and the patterns that matter are hidden between them.</p>
+    <p>My work is to pull those signals together, check that the sources are credible, and trace what a move leads to at the second and third order. I look at a decision through its trade-offs, its volatility and the options it keeps open: what we would lose, what would break it, which assumptions it rests on, and how to defend it. A fixed checklist gives a generic result, so I build workflows that connect signals across sources and test many possible futures, and I design them to take in a reviewer&rsquo;s corrections.</p>
+    <p>What I would not automate is the judgement about people: how strong or fragile a relationship is, what it costs to damage, and what only comes from being in the room.</p>
   </div>
-  <ol class="steps">
-    <li><span class="num">1</span><strong>Sources and numbers</strong><span class="d">A fixed list of sources, or numbers you supply.</span></li>
-    <li><span class="num">2</span><strong>Written rules</strong><span class="d">Scores, ratings and rankings come from rules shown in advance.</span></li>
-    <li><span class="num">3</span><strong>Your review</strong><span class="d">A named person approves, holds or overrules each result.</span></li>
-    <li><span class="num">4</span><strong>One-page memo</strong><span class="d">Every line shows where it came from.</span></li>
-  </ol>
-  <p class="caption">Nothing is released until a person approves it. This is the pattern I build to, and each example states which steps it performs today.</p>
-  <div class="btns"><a class="btn second" href="method.html">How it works</a></div>
 </div></section>
 
-<section class="section tint"><div class="wrap band">
+<section class="section"><div class="wrap band">
   <div>
     <h2>Try it on one of your own decisions</h2>
     <p>Tell me about a decision your team keeps coming back to. I will look at it with you for free, and send you a one-page memo on what could be set up, what evidence it would need and what it would take.</p>
@@ -112,6 +106,6 @@
   <p>Decision Memo, by Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor. All examples use hypothetical companies and invented figures. Nothing here is investment, legal or medical advice.</p>
   <p><a href="contact.html#privacy">Privacy</a></p>
 </div></footer>
-
+<script src="assets/demo.js"></script>
 </body>
 </html>

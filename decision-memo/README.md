@@ -3,14 +3,15 @@
 Five pages and four tools. There is no build step and no server. Every file is plain HTML, CSS and JavaScript.
 
 ```
-index.html                  Home
+index.html                  Home: hero, the demo, the wider jobs, my approach, the audit
 examples.html               The four examples, one block each
 method.html                 How a memo gets made, what was tested, limits
-working-together.html       Free audit, pilots, pricing, where it runs, data
+working-together.html       Free audit and the common questions (add yours here)
 contact.html                Three-field form, about, privacy
 assets/site.css             Shared styles
 assets/config.js            Settings you fill in (form address, contact email)
 assets/site.js              Form handling
+assets/demo.js              The home page demo: 3 industries by 4 decisions
 assets/img/                 Real screenshots of the tools, used on the cards
 tools/shiftwatch.html       Hotels: recorded research run
 tools/tipping-point.html    Telecom: interactive model, illustrative inputs
@@ -34,6 +35,24 @@ tools/guidance-tracker.html Consumer goods: live scores and record by topic, man
 
 The home page headline is "An analyst for the work your team repeats every week." It is the `h1` in `index.html`. Another option that was suggested is "Turn recurring analysis into clearer decisions." It is more abstract, so test both on a few people if you can.
 
+## The home page demo
+
+`assets/demo.js` runs the demo. Visitors pick an industry (hotels, pharma, telecom) and a decision (split the budget, watch the market, test a price change, rank options). The analyst then plays six steps of about four seconds each, and finishes with a draft memo.
+
+- **What is computed, and what is scripted.** Budget, price and ranking are real calculations in the browser, on illustrative inputs. The watch decision is a scripted example. Every input is labelled as a public source, your own data, or an assumption, and all of it is illustrative.
+- **Share or test a combination.** Add parameters to the home address, for example `?industry=pharma&decision=rank&run=1`. Add `&speed=10` to play it ten times faster.
+- **Change the content.** The industries, inputs, events and knock-on sentences are in the `IND` object at the top of `demo.js`. The four decisions are `budget`, `watch`, `price` and `rank`.
+- **Honest limits.** Price and ranking exist only in the demo, not as full tools. Budget and watch also have deeper examples under `tools/`.
+
+## Adding questions to the FAQ
+
+Open `working-together.html` and copy one of the `<details class="faq">` blocks. Change the question inside `<summary>` and the answer inside `<p>`. Put the new block among the others, and commit. Keep answers short, and keep claims to what has been measured.
+
+## Claims to keep checking
+
+- The headline makes no claim about cost or time saved. Add one only after a pilot has measured it.
+- "Learns from corrections" appears as a design intention in the founder note and the FAQ. The demo and the examples do not learn.
+
 ## Deploy
 
 1. Create a new private GitHub repository for the site and upload the contents of this folder, so that `index.html` sits at the top level.
@@ -53,6 +72,7 @@ A link ending in `?source=arjan` stores `arjan` with a form message. This tells 
 | What you type into the examples stays in your browser | A browser test recorded no network requests from any tool during a full run. |
 | Tipping Point reruns give identical results, and its arithmetic is right | Two runs matched. Its allocation, stopping points and averages were recomputed independently and agreed. |
 | Scoring and rating rules behave at their boundaries | Boundary tests for Guidance Tracker and Condition Watch. |
+| The demo's budget, price and ranking results are right | Recomputed independently: the budget split matches an exhaustive search and the Tipping Point example, price results match the closed-form profit and recompute exactly from the draws, and ranking counts and flip tests agree. All 12 industry and decision combinations run to a clean memo. |
 | Changing an input changes the visible output in Condition Watch and Guidance Tracker | Browser tests that change a result, a status, an override or the condition, and check the score, the board, the memo and the plain-language note of what moved. |
 | No accuracy or time-saving figure is claimed | None appears on any page. |
 
