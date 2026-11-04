@@ -4,44 +4,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pricing | Decision Memo</title>
-<meta name="description" content="Build your intelligence plan: choose the jobs you want, set how often they run and see the yearly and first-year cost before you send a brief.">
-<meta name="theme-color" content="#f6f3ec">
+<meta name="description" content="Build your intelligence plan: a flat setup fee, a yearly fee for each job, and optional analyst fees billed separately.">
+<meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Pricing | Decision Memo">
-<meta property="og:description" content="Build your intelligence plan: choose the jobs you want, set how often they run and see the yearly and first-year cost before you send a brief.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231c1b19'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='%23f6f3ec' stroke-width='2.6'/%3E%3C/svg%3E">
+<meta property="og:description" content="Build your intelligence plan: a flat setup fee, a yearly fee for each job, and optional analyst fees billed separately.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232457d6'/%3E%3Cpath d='M10 23V9h5.5a7 7 0 0 1 0 14z' fill='none' stroke='white' stroke-width='2.6'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to the content</a>
 <header class="mast"><div class="wrap">
   <a class="word" href="index.html" aria-label="Home"><span data-brand="name">Decision Memo</span></a>
-  <nav class="nav" aria-label="Main"><a href="examples.html">Examples</a><a href="how-it-works.html">How It Works</a><a href="pricing.html" aria-current="page">Pricing</a><a href="why-this-approach.html">Why This Approach</a><a href="start-a-brief.html" class="btn">Start a Brief</a></nav>
+  <nav class="nav" aria-label="Main"><a href="how-it-works.html">How It Works</a><a href="try-it-yourself.html">Try It Yourself</a><a href="pricing.html" aria-current="page">Pricing</a><a href="contact.html" class="btn">Contact</a></nav>
 </div></header>
 <main id="main">
 
 <section class="page-head"><div class="wrap">
   <h1>Build your intelligence plan</h1>
-  <div class="steps-inline"><span><i>1</i>Choose the jobs</span><span><i>2</i>Set how often</span><span><i>3</i>See the cost and send the plan</span></div>
+  <div class="steps-inline"><span><i>1</i>Choose the jobs</span><span><i>2</i>See the cost</span><span><i>3</i>Send the plan</span></div>
 </div></section>
 
 <section class="wrap block" id="plan" style="padding-top:1.2rem">
-  <noscript><p>The plan builder needs JavaScript. You can still <a href="start-a-brief.html">start a brief</a> and list the jobs you want in your own words.</p></noscript>
+  <noscript><p>The plan builder needs JavaScript. You can still <a href="contact.html">contact me</a> and list the jobs you want in your own words.</p></noscript>
   <div class="planwrap">
     <div class="planmain">
       <fieldset class="pstep"><legend>Jobs</legend>
-        <p class="hint">Each price is the yearly cost of the job at the standard scope. A shared service fee is added once.</p>
+        <p class="hint">Setup is a flat $1,000, however many jobs you choose. Each job costs about 30% of what the same work costs to do by hand.</p>
         <div class="pjobs" id="jobs"></div>
       </fieldset>
-      <fieldset class="pstep" id="opts" hidden><legend>Scope</legend></fieldset>
       <fieldset class="pstep" id="analyst-box" hidden><legend>Optional analyst fees</legend>
         <p class="hint">Billed separately, and not part of the workflow cost.</p>
-        <div class="pjobs slim" id="human"></div>
+        <div class="pjobs" id="human"></div>
       </fieldset>
     </div>
     <aside class="psum" id="sum" aria-label="Your plan"><div class="psum-in">
       <h2>Your plan</h2>
       <div id="sum-body" aria-live="polite"></div>
-      <a class="btn" id="send" href="start-a-brief.html#brief" aria-disabled="true">Send my plan</a>
+      <a class="btn" id="send" href="contact.html#brief" aria-disabled="true">Send my plan</a>
       <p class="ps-note">Sending a plan is an enquiry and commits you to nothing.</p>
     </div></aside>
   </div>
@@ -50,20 +49,19 @@
 
 <section class="wrap block"><h2>Pricing questions</h2>
   <div class="faqs" style="margin-top:1rem">
-<details class="faq"><summary>How is the price built?</summary><p>A shared service fee each year, plus a yearly fee for each job. Setup is one-time: a shared onboarding fee once, and a small configuration fee for each job. Frequency and the amount of material change the yearly fees. Analyst work is billed separately.</p></details>
-<details class="faq"><summary>Is setup charged every month?</summary><p>No. Setup is charged once. It is charged again only for a new setup or a material reconfiguration, such as changing a job&rsquo;s sources or rules, at half the job&rsquo;s setup fee.</p></details>
-<details class="faq"><summary>How firm is this?</summary><p>It is an indicative model built on assumptions I have not yet tested against real delivery cost. The proposal that follows your brief replaces it, and depends on source coverage, how often it runs, data volume and the review you want.</p></details>
+<details class="faq"><summary>How is the price built?</summary><p>A flat one-time setup fee of $1,000, and a yearly fee for each job you add. Each job is priced at about 30% of what the same work would cost to do by hand. With every job selected, the recurring cost is at most $18,000 a year. Analyst work is billed separately.</p></details>
+<details class="faq"><summary>Why a range?</summary><p>The final figure depends on scope, complexity and how often a job runs. The top of the range is the most it would cost at the standard scope, and the proposal after your brief gives a firm figure.</p></details>
+<details class="faq"><summary>Is setup charged again?</summary><p>Not for adding jobs later. A new setup or a material reconfiguration, such as changing a job&rsquo;s sources or rules, is quoted separately.</p></details>
+<details class="faq"><summary>How firm is this?</summary><p>It is an indicative model built on assumptions I have not yet tested against real delivery cost. The proposal that follows your brief replaces it.</p></details>
 <details class="faq"><summary>Can I start with one job?</summary><p>Yes, and that is the usual way in. Choose one job, see whether it earns its place, and add others later.</p></details>
-<details class="faq"><summary>How long does setup take?</summary><p>I confirm a timeline after scoping. It depends on how many sources are involved and how clean your data is.</p></details>
 <details class="faq"><summary>What error rate should I expect?</summary><p>It has not been measured. A pilot on a real job would measure what the workflow misses, what it gets wrong, and how much human review it needs.</p></details>
-<details class="faq"><summary>Do you run pilots?</summary><p>For selected jobs, a short pilot can show whether the approach works with real inputs. We agree the scope, the dates and the measures in advance. A pilot is offered selectively after the first conversation, and it is not a commitment to a free build.</p></details>
   </div>
 </section>
 
 </main>
 <footer class="foot"><div class="wrap">
   <p><b data-brand="name">Decision Memo</b>: <span data-brand="descriptor">Repeatable intelligence work, with human judgement</span>. By Mandhir Dua, an independent competitive-strategy and decision-intelligence advisor. All examples use hypothetical companies and invented figures. Nothing here is investment, legal or medical advice.</p>
-  <p><a href="start-a-brief.html#privacy">Privacy</a></p>
+  <p><a href="how-it-works.html#data">How your data is handled</a></p>
 </div></footer>
 <script src="assets/brand.js"></script>
 <script src="assets/pricing.js"></script>

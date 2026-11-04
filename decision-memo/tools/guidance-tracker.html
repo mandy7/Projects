@@ -3,25 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../assets/fonts.css">
 <title>Guidance Tracker | Decision Memo</title>
 <style>
 :root{
-  --bg:#f6f3ec; --paper:#fffdf8; --ink:#1c1b19; --mut:#66625a; --rule:#d9d3c4; --soft:#efeadd; --accent:#8a3a22; --warn:#8a3a22;
-  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+  --bg:#ffffff; --paper:#ffffff; --ink:#101a2e; --mut:#66625a; --rule:#e1e6ee; --soft:#efeadd; --accent:#2457d6; --warn:#2457d6;
+  --serif:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;font-variant-numeric:tabular-nums}
 a{color:var(--ink);text-underline-offset:3px}
-.sitebar{background:#f6f3ec;border-bottom:1px solid #d9d3c4;font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;line-height:1.4}
+.sitebar{background:#ffffff;border-bottom:1px solid #e1e6ee;font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.4}
 .sitebar .sb{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
-.sitebar .sb-word{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-weight:600;font-size:19px;color:#1c1b19;text-decoration:none}
+.sitebar .sb-word{font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-weight:600;font-size:19px;color:#101a2e;text-decoration:none}
 .sitebar nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:14.5px}
-.sitebar nav a{color:#625e56;text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
-.sitebar nav a:hover{color:#1c1b19}
-.sitebar nav a[aria-current=page]{color:#1c1b19;border-bottom-color:#1c1b19}
-.sitebar nav a.sb-btn{background:#8a3a22;color:#fffdf8;padding:7px 14px;border-radius:2px;border:1px solid #8a3a22;font-weight:600}
-.sitebar nav a.sb-btn:hover{background:#6e2d19;color:#fff}
+.sitebar nav a{color:#5a6579;text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+.sitebar nav a:hover{color:#101a2e}
+.sitebar nav a[aria-current=page]{color:#101a2e;border-bottom-color:#101a2e}
+.sitebar nav a.sb-btn{background:#2457d6;color:#ffffff;padding:7px 14px;border-radius:2px;border:1px solid #2457d6;font-weight:600}
+.sitebar nav a.sb-btn:hover{background:#1b44ad;color:#fff}
 .wrap{max-width:1180px;margin:0 auto;padding:26px 16px 60px}
 .back{margin:0 0 14px;font-size:13px;color:var(--mut)}.back a{color:var(--mut)}
 h1{font-family:var(--serif);font-weight:600;font-size:40px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.15}
@@ -32,7 +33,7 @@ h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:0 0 4px}
 .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0 6px}
 button{font:inherit;cursor:pointer}
 .btn{background:var(--accent);color:var(--paper);border:1px solid var(--accent);padding:0 22px;min-height:44px;border-radius:2px;font-weight:600;font-size:16px}
-.btn:hover{background:#6e2d19}
+.btn:hover{background:#1b44ad}
 .btn:disabled{opacity:.45;cursor:default}
 .btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
 .btn.ghost:hover{background:var(--ink);color:var(--paper)}
@@ -60,7 +61,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .tcard .tm{font-size:13px;color:var(--mut)}
 .bar{display:flex;height:9px;margin:6px 0 4px;background:#e7e1d2}
 .bar i{display:block;height:100%}
-.bar .m{background:#1c1b19}.bar .p{background:#8c867b}.bar .x{background:#8a3a22}
+.bar .m{background:#101a2e}.bar .p{background:#8c867b}.bar .x{background:#2457d6}
 @media(max-width:700px){#record{position:static}}
 .key{font-size:12.5px;color:var(--mut);margin-top:6px}
 .key i{display:inline-block;width:10px;height:10px;margin:0 4px 0 10px;vertical-align:middle}.key i:first-child{margin-left:0}
@@ -107,16 +108,15 @@ footer.pg{margin-top:30px;border-top:1px solid var(--rule);padding-top:12px;colo
 <div class="sitebar"><div class="sb">
   <a class="sb-word" href="../index.html"><span data-brand="name">Decision Memo</span></a>
   <nav aria-label="Main">
-    <a href="../examples.html" aria-current="page">Examples</a>
     <a href="../how-it-works.html">How It Works</a>
+    <a href="../try-it-yourself.html" aria-current="page">Try It Yourself</a>
     <a href="../pricing.html">Pricing</a>
-    <a href="../why-this-approach.html">Why This Approach</a>
-    <a class="sb-btn" href="../start-a-brief.html">Start a Brief</a>
+    <a class="sb-btn" href="../contact.html">Contact</a>
   </nav>
 </div></div>
 <div class="wrap">
 <div class="top">
-  <p class="back"><a href="../examples.html">Examples</a> / Guidance Tracker</p>
+  <p class="back"><a href="../try-it-yourself.html">Try it yourself</a> / Guidance Tracker</p>
   <h1>Guidance Tracker</h1>
   <p class="sub">Scores what a company said it would deliver against what it reported, and shows how reliable its record has been.</p>
   <ol class="how">
@@ -406,13 +406,13 @@ function svgStrip(r){
   function X(v){ return ml+(v-mn)/(mx-mn)*(W2-ml-mr); }
   var x1=c.low!==null?X(c.low):ml, x2=c.high!==null?X(c.high):W2-mr;
   var o='<svg viewBox="0 0 '+W2+' '+H+'" role="img" aria-label="Target range and result">';
-  o+='<line x1="'+ml+'" x2="'+(W2-mr)+'" y1="20" y2="20" stroke="#d9d3c4"/><rect x="'+x1+'" y="16" width="'+Math.max(2,x2-x1)+'" height="8" fill="#cfc8b6"/>';
+  o+='<line x1="'+ml+'" x2="'+(W2-mr)+'" y1="20" y2="20" stroke="#e1e6ee"/><rect x="'+x1+'" y="16" width="'+Math.max(2,x2-x1)+'" height="8" fill="#cfc8b6"/>';
   if(c.low===null||c.high===null){ var ex=c.low===null?x1:x2; o+='<line x1="'+ex+'" x2="'+ex+'" y1="12" y2="28" stroke="#cfc8b6" stroke-dasharray="2 2"/>'; }
   if(c.outcome!==null){ var x=X(c.outcome), y=20;
-    if(r.final==='Met') o+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="#1c1b19"/>';
-    else if(r.final==='Partly') o+='<path d="M'+x+' '+(y-6)+' L'+(x+6)+' '+y+' L'+x+' '+(y+6)+' L'+(x-6)+' '+y+' Z" fill="#1c1b19"/>';
-    else o+='<path d="M'+(x-5)+' '+(y-5)+' L'+(x+5)+' '+(y+5)+' M'+(x+5)+' '+(y-5)+' L'+(x-5)+' '+(y+5)+'" stroke="#8a3a22" stroke-width="2"/>';
-    o+='<text x="'+x+'" y="9" font-size="10.5" text-anchor="middle" fill="#1c1b19">'+fm(c.outcome)+'</text>'; }
+    if(r.final==='Met') o+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="#101a2e"/>';
+    else if(r.final==='Partly') o+='<path d="M'+x+' '+(y-6)+' L'+(x+6)+' '+y+' L'+x+' '+(y+6)+' L'+(x-6)+' '+y+' Z" fill="#101a2e"/>';
+    else o+='<path d="M'+(x-5)+' '+(y-5)+' L'+(x+5)+' '+(y+5)+' M'+(x+5)+' '+(y-5)+' L'+(x-5)+' '+(y+5)+'" stroke="#2457d6" stroke-width="2"/>';
+    o+='<text x="'+x+'" y="9" font-size="10.5" text-anchor="middle" fill="#101a2e">'+fm(c.outcome)+'</text>'; }
   return o+'</svg>';
 }
 function renderStrips(A){

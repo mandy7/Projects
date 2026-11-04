@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:"Figtree";font-weight:400;src:url(../decision-memo/assets/fonts/figtree-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Figtree";font-weight:500;src:url(../decision-memo/assets/fonts/figtree-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Figtree";font-weight:600;src:url(../decision-memo/assets/fonts/figtree-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Figtree";font-weight:700;src:url(../decision-memo/assets/fonts/figtree-latin-700-normal.woff2) format("woff2")}
+:root{--ink:#101a2e;--mut:#5a6579;--rule:#e1e6ee;--accent:#2457d6;--soft:#e9efff;--human:#d9480f;--hsoft:#fff0e8;--teal:#0b7a75}
+*{box-sizing:border-box}
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;font-family:"Figtree",system-ui,sans-serif;color:var(--ink);background:#eef2f9}
+#app{position:relative;width:1280px;height:720px;background:linear-gradient(135deg,#f4f7fd,#e7eefb)}
+#top{position:absolute;left:0;right:0;top:0;height:56px;display:flex;justify-content:space-between;align-items:center;padding:0 36px;font-size:16px}
+#top b{font-weight:700;letter-spacing:-.02em;font-size:19px}
+#top span{color:var(--mut);font-size:15px}
+#rail{position:absolute;left:36px;top:70px;width:250px;display:flex;flex-direction:column;gap:8px}
+.ri{display:flex;gap:12px;align-items:center;padding:11px 14px;border-radius:12px;font-size:16px;font-weight:600;color:#8a93a5;background:transparent;transition:none}
+.ri i{width:24px;height:24px;border-radius:50%;border:2px solid #b9c1d0;display:grid;place-items:center;font-style:normal;font-size:13px;color:#fff;flex:none}
+.ri.on{background:#fff;color:var(--ink);box-shadow:0 6px 18px -10px rgba(16,26,46,.45)}
+.ri.on i{border-color:var(--accent);background:var(--accent)}
+.ri.done{color:#35405a}.ri.done i{border-color:var(--teal);background:var(--teal)}
+.ri.human.on i{border-color:var(--human);background:var(--human)}
+.ri.human.on{color:var(--human)}
+#main{position:absolute;left:310px;top:70px;width:934px;height:494px;background:#fff;border:1px solid var(--rule);border-radius:18px;box-shadow:0 24px 60px -34px rgba(16,26,46,.5);overflow:hidden}
+.sc{position:absolute;inset:0;padding:30px 40px;opacity:0;display:flex;flex-direction:column;justify-content:center}
+.sc>.h{position:absolute;left:40px;top:28px;margin:0}
+.h{font-size:17px;font-weight:700;color:var(--mut);margin-bottom:14px}
+#cap{position:absolute;left:310px;right:36px;bottom:68px;height:56px;display:flex;align-items:center;font-size:25px;font-weight:600;letter-spacing:-.02em}
+#cap span{display:inline-block}
+/* s1 */
+#q{font-size:46px;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-top:30px}
+#qs{font-size:22px;color:var(--mut);margin-top:22px}
+/* s2 */
+.ev{display:grid;grid-template-columns:26px 1fr auto;gap:14px;align-items:center;padding:17px 8px;border-top:1px solid var(--rule);font-size:24px;opacity:0}
+.ev:first-of-type{border-top:0}
+.ev .m{width:14px;height:14px;border-radius:3px;background:var(--accent)}
+.ev .m.int{background:var(--human)}
+.ev b{font-size:17px;color:var(--mut);font-weight:600;padding:3px 12px;border:1px solid var(--rule);border-radius:999px;background:#fff}
+.ev.gap{background:var(--hsoft);border-radius:10px;border-top-color:transparent}
+.ev.gap b{color:var(--human);border-color:#f6c7ad}
+.dt{display:block;font-size:16px;color:var(--mut);font-weight:400}
+/* s3 */
+.bd{margin-top:8px;display:flex;flex-direction:column;gap:30px}
+.bdr{display:grid;grid-template-columns:1fr 150px 110px;gap:16px;align-items:center;font-size:27px;font-weight:600;opacity:0}
+.dots{display:flex;gap:8px}.dots i{width:22px;height:22px;border-radius:50%;border:2px solid var(--teal);display:block}.dots i.f{background:var(--teal)}
+.lab{font-size:20px;font-weight:700;text-align:right}
+#rule{margin-top:36px;font-size:20px;color:var(--mut);padding:14px 18px;background:#f6f8fb;border-radius:12px;opacity:0}
+/* s4 */
+.bars{display:flex;flex-direction:column;gap:18px;margin-top:6px}
+.br{display:grid;grid-template-columns:210px 1fr;gap:16px;align-items:center;font-size:22px;font-weight:600}
+.bt{display:flex;flex-direction:column;gap:6px}
+.bb{height:26px;border-radius:6px;display:flex;align-items:center;font-size:16px;color:#fff;padding-left:8px;font-weight:700;white-space:nowrap}
+.bb.plan{background:#b9c1d0}.bb.rec{background:var(--accent)}
+#cnt{position:absolute;right:40px;top:24px;font-size:18px;font-weight:700;color:var(--mut)}
+#cnt b{font-size:30px;color:var(--ink);letter-spacing:-.02em}
+#res4{margin-top:24px;display:flex;gap:16px;opacity:0}
+#res4 div{flex:1;background:var(--soft);border-radius:12px;padding:16px 20px;font-size:19px;color:var(--mut)}
+#res4 b{display:block;font-size:32px;color:var(--ink);letter-spacing:-.02em}
+/* s5 + s7 memo */
+.memo{font-size:23px;line-height:1.45}
+.memo h3{margin:0 0 4px;font-size:34px;letter-spacing:-.025em}
+.memo .meta{color:var(--mut);font-size:18px;margin-bottom:18px}
+.ml{opacity:0;margin:0 0 16px}
+.ml .k{display:block;font-size:15px;font-weight:700;color:var(--accent);margin-bottom:2px}
+.draft{display:inline-block;font-size:15px;font-weight:700;color:var(--human);background:var(--hsoft);padding:3px 12px;border-radius:999px;margin-left:10px;vertical-align:middle}
+.appr{position:absolute;right:40px;top:24px;font-size:17px;font-weight:700;color:#fff;background:var(--teal);padding:7px 16px;border-radius:999px;opacity:0}
+/* pause */
+#pause{position:absolute;inset:0;background:rgba(16,26,46,.55);opacity:0;display:grid;place-items:center}
+#pc{width:700px;background:#fff;border-radius:20px;padding:34px 40px;text-align:center;box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+#pi{display:flex;gap:10px;justify-content:center;margin-bottom:12px}#pi i{width:16px;height:46px;border-radius:5px;background:var(--human);display:block}
+#pt{font-size:38px;font-weight:700;letter-spacing:-.03em;color:var(--ink)}
+#ps{font-size:19px;color:var(--mut);margin:10px auto 22px;max-width:560px;line-height:1.4}
+#btns{display:flex;gap:14px;justify-content:center;position:relative}
+.bn{font-size:20px;font-weight:700;padding:13px 30px;border-radius:999px;border:2px solid #c3cad6;color:var(--ink);background:#fff}
+.bn.ok{background:#fff;border-color:var(--teal);color:var(--teal)}
+.bn.ok.hit{background:var(--teal);color:#fff}
+#cur{position:absolute;width:26px;height:26px;opacity:0;left:0;top:0}
+#ok2{font-size:23px;font-weight:700;color:var(--teal);margin-top:16px;opacity:0}
+#end{position:absolute;inset:0;display:grid;place-items:center;background:#f4f7fd;opacity:0}
+#end div{font-size:52px;font-weight:700;letter-spacing:-.03em;text-align:center;line-height:1.2}
+#end em{font-style:normal;color:var(--accent)}#end i{font-style:normal;color:var(--human)}
+</style></head><body>
+<div id="app">
+ <div id="top"><b>Decision Memo</b><span>An example job on invented figures</span></div>
+ <div id="rail"></div>
+ <div id="main">
+  <div class="sc" id="s1"><div class="h">The business question</div><div id="q"></div><div id="qs">A hotel chain asks this every month. The job is already set up.</div></div>
+  <div class="sc" id="s2"><div class="h">Evidence, gathered and dated</div><div id="evs"></div></div>
+  <div class="sc" id="s3"><div class="h">Analysis, by written rules</div><div class="bd" id="bd"></div><div id="rule">A decision is rated strong only when two independent primary sources agree and nothing is missing.</div></div>
+  <div class="sc" id="s4"><div class="h">Testing the numbers</div><div id="cnt"><b id="cn">0</b> scenarios</div><div class="bars" id="bars"></div><div id="res4"><div><b id="r1">80%</b>of scenarios beat the current plan</div><div><b>&#8377;153 crore</b>average, against &#8377;145 crore</div></div></div>
+  <div class="sc" id="s5"><div class="h">Drafting the recommendation <span class="draft">Draft</span></div><div class="memo" id="m5"></div></div>
+  <div class="sc" id="s7"><div class="h">The decision memo</div><div class="appr" id="appr">Approved by a person</div><div class="memo" id="m7"></div></div>
+ </div>
+ <div id="cap"><span id="capt"></span></div>
+ <div id="pause"><div id="pc"><div id="pi"><i></i><i></i></div><div id="pt">Paused for human approval</div><div id="ps">The workflow stops here. Nothing is released until a person decides.</div><div id="btns"><span class="bn ok" id="bok">Approve</span><span class="bn">Hold</span><span class="bn">Change</span><svg id="cur" viewBox="0 0 24 24"><path d="M5 3l14 8-6 2 3 7-3 1-3-7-5 4z" fill="#101a2e" stroke="#fff" stroke-width="1.5"/></svg></div><div id="ok2">Approved by a person</div></div></div>
+ <div id="end"><div>The workflow did the <em>repeating</em>.<br>A person made the <i>call</i>.</div></div>
+</div>
+<script>
+var DUR=62;
+var STEPS=['The question','Gather the evidence','Apply the rules','Test the numbers','Draft the recommendation','A person decides'];
+var EVID=[['pub','Agent announces the AI booking assistant','4 Aug','Company stated'],['pub','Rival chain reports more direct bookings','19 Aug','Disclosed'],['int','Our own site: more visits start from AI assistants','15 Sep','Your data'],['pub','Trade press expects a new fee for assisted bookings','2 Sep','Opinion'],['gap','The agent has not published its fee','28 Sep','Not disclosed']];
+var BD=[['Favour direct booking for assistant visitors',4,'Strong'],['Change our distribution terms',2,'Mixed'],['Build a plan for corporate clients',2,'Mixed']];
+var ROUTES=[['Direct bookings',20,40],['Online travel agents',60,40],['Corporate and group sales',20,20]];
+var MEMO=[['Recommendation','Favour direct booking for guests who start in an AI assistant. Move the budget split from 20/60/20 to 40/40/20.'],['What it rests on','Five dated items, one gap. The agent has not published its fee, so the terms change is held.'],['Watch next','10 November: the agent&rsquo;s partner briefing.']];
+var CAPS=[[0,'A recurring question comes in.'],[6,'The workflow gathers each item, with a date and a source. A gap stays a gap.'],[18,'Written rules rate how strong the evidence is.'],[28,'It tests the numbers across 5,000 possible futures.'],[38,'It drafts a recommendation, and stops.'],[46,'A person reviews it and makes the decision.'],[54,'Then the memo is written, with a source on every line.']];
+function $(i){return document.getElementById(i)}
+function clamp(x){return Math.max(0,Math.min(1,x))}
+function pr(t,a,b){return clamp((t-a)/(b-a))}
+function ease(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2}
+function vis(el,t,a,b,f){f=f||0.5; el.style.opacity=Math.min(pr(t,a,a+f),1-pr(t,b-f,b))}
+var rail=$('rail'); STEPS.forEach(function(s,i){var d=document.createElement('div'); d.className='ri'+(i==5?' human':''); d.innerHTML='<i></i><span>'+s+'</span>'; rail.appendChild(d);});
+var evs=$('evs'); EVID.forEach(function(e){var d=document.createElement('div'); d.className='ev'+(e[0]=='gap'?' gap':''); d.innerHTML='<span class="m'+(e[0]=='int'?' int':'')+'"></span><span>'+e[1]+'<span class="dt">'+e[2]+'</span></span><b>'+e[3]+'</b>'; evs.appendChild(d);});
+var bd=$('bd'); BD.forEach(function(r){var d=document.createElement('div'); d.className='bdr'; d.innerHTML='<span>'+r[0]+'</span><span class="dots"><i></i><i></i><i></i><i></i></span><span class="lab"></span>'; bd.appendChild(d);});
+var bars=$('bars'); ROUTES.forEach(function(r){var d=document.createElement('div'); d.className='br'; d.innerHTML='<span>'+r[0]+'</span><span class="bt"><span class="bb plan"></span><span class="bb rec"></span></span>'; bars.appendChild(d);});
+function memo(el,title,meta,n){ if(!el.dataset.b){ el.innerHTML='<h3>'+title+'</h3><div class="meta">'+meta+'</div>'+MEMO.map(function(m){return '<div class="ml"><span class="k">'+m[0]+'</span>'+m[1]+'</div>'}).join(''); el.dataset.b=1;} }
+memo($('m5'),'Market memo: how we sell rooms','A hypothetical hotel chain. Draft.');
+memo($('m7'),'Market memo: how we sell rooms','A hypothetical hotel chain. Reviewed and approved.');
+var QT='A big travel agent is adding an AI booking assistant. Do we change how we sell rooms?';
+function render(t){
+  var rs=rail.children, step=t<6?0:t<18?1:t<28?2:t<38?3:t<46?4:5;
+  for(var i=0;i<6;i++) rs[i].className='ri'+(i==5?' human':'')+(i<step?' done':'')+(i==step?' on':'');
+  if(t>=54) for(var j=0;j<6;j++) rs[j].className='ri'+(j==5?' human':'')+' done';
+  for(var c=CAPS.length-1;c>=0;c--) if(t>=CAPS[c][0]){ $('capt').textContent=CAPS[c][1]; break; }
+  vis($('s1'),t,0,6.4); $('q').textContent=QT.slice(0,Math.floor(QT.length*ease(pr(t,0.5,4.2))));
+  vis($('s2'),t,6,18.4); var e=evs.children; for(var k=0;k<e.length;k++){ var st=6.6+k*1.9; e[k].style.opacity=pr(t,st,st+.5); e[k].style.transform='translateY('+(10*(1-pr(t,st,st+.5)))+'px)'; }
+  vis($('s3'),t,18,28.4); var br=bd.children; for(var m=0;m<3;m++){ var s0=19+m*2.2; br[m].style.opacity=pr(t,s0,s0+.5); var dots=br[m].querySelectorAll('.dots i'); for(var d=0;d<4;d++){ dots[d].className=(d<BD[m][1]&&t>s0+.5+d*.35)?'f':''; } br[m].querySelector('.lab').textContent=t>s0+.5+BD[m][1]*.35?BD[m][2]:''; }
+  $('rule').style.opacity=pr(t,25,25.6);
+  vis($('s4'),t,28,38.4); $('cn').textContent=Math.round(5000*ease(pr(t,29,34))).toLocaleString('en-US'); var rows=bars.children;
+  for(var r=0;r<3;r++){ var pl=rows[r].querySelector('.plan'), rc=rows[r].querySelector('.rec'); var g=ease(pr(t,29.5+r*.4,32+r*.4)); pl.style.width=(ROUTES[r][1]*5.2*g)+'px'; rc.style.width=(ROUTES[r][2]*5.2*g)+'px'; pl.textContent=g>.6?'Current '+ROUTES[r][1]:''; rc.textContent=g>.6?'Recommended '+ROUTES[r][2]:''; }
+  $('res4').style.opacity=pr(t,34.5,35.2);
+  vis($('s5'),t,38,46.4); var ml=$('m5').querySelectorAll('.ml'); for(var q=0;q<3;q++){ var s5=39+q*1.8; ml[q].style.opacity=pr(t,s5,s5+.5); }
+  var pa=Math.min(pr(t,46,46.5),1-pr(t,53.2,53.9)); $('pause').style.opacity=pa;
+  var cur=$('cur'), bok=$('bok'); var cp=ease(pr(t,50,51.8)); var bx=bok.offsetLeft+bok.offsetWidth/2-8, by=bok.offsetTop+bok.offsetHeight/2-6;
+  cur.style.opacity=t>49.8&&t<53.6?1:0; cur.style.left=(bx+140*(1-cp))+'px'; cur.style.top=(by+90*(1-cp))+'px';
+  bok.className='bn ok'+(t>51.9?' hit':''); $('ok2').style.opacity=pr(t,52,52.5);
+  $('pi').style.transform='scale('+(1+0.06*Math.sin(t*5))+')';
+  vis($('s7'),t,53.6,DUR+1,.6); var l7=$('m7').querySelectorAll('.ml'); for(var z=0;z<3;z++){ var s7=55+z*1.5; l7[z].style.opacity=pr(t,s7,s7+.5); } $('appr').style.opacity=pr(t,54.6,55.1);
+  $('end').style.opacity=pr(t,59.6,60.4);
+}
+window.render=render; window.DUR=DUR; render(0);
+</script></body></html>

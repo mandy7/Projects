@@ -48,7 +48,7 @@
 
   function done() {
     form.reset(); plan = ''; if (planBox) planBox.hidden = true;
-    say('Thank you. I read every brief myself and will reply to the address or profile you gave, to say whether a repeatable workflow looks like a fit.', false);
+    say('Thank you. I read every message myself and will reply to the address or profile you gave.', false);
     btn.disabled = false;
   }
   function failed() {
