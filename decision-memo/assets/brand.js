@@ -7,7 +7,7 @@
   var STATIC_NAME = 'Second Analyst';           // the name written into the HTML files
   window.BRAND = {
     name: 'Second Analyst',                        // the product name
-    descriptor: 'Repeatable intelligence work, with human judgement',
+    descriptor: 'A managed intelligence service built around configured, AI-assisted workflows',
     owner: 'Mandhir Dua'
   };
   var B = window.BRAND;

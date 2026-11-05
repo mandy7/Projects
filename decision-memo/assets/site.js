@@ -43,7 +43,7 @@
 
   function say(text, isErr) {
     msg.textContent = text;
-    msg.className = isErr ? 'err' : '';
+    msg.className = isErr ? 'err' : (text === 'Sending.' ? '' : 'ok');
   }
 
   function done() {

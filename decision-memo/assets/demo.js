@@ -160,10 +160,10 @@
           ['2026-08-04', 'An online travel agent says it will add an AI booking assistant in India next year.', 'Company stated', 'pub', 'Agent announcement (example)', 1, 'Company disclosure'],
           ['2026-08-19', 'A rival chain reports a higher share of direct bookings this quarter.', 'Disclosed', 'pub', 'Rival results release (example)', 1, 'Company disclosure'],
           ['2026-09-02', 'Commentators expect agents to charge a fee for AI-assisted bookings.', 'Opinion', 'pub', 'Trade article (example)', 2, 'Analyst or press'],
-          ['2026-09-15', 'Our own site shows more first visits that start from AI assistants.', 'Disclosed', 'int', 'Your web analytics (example)', 1, 'Internal data'],
+          ['2026-09-15', 'Our own site shows more first visits that start from AI assistants.', 'Disclosed', 'int', 'Your web analytics (example)', 1, 'Customer-provided'],
           ['2026-09-28', 'The agent has not published its fee for AI-assisted bookings.', 'Not disclosed', 'pub', 'Agent partner notice (example)', 2, 'Company disclosure'],
           ['2026-10-06', 'A rival said it would join the agent programme by September. It has not joined.', 'Disclosed', 'pub', 'Rival statement and partner list (example)', 2, 'Company disclosure'],
-          ['2026-10-20', 'Two corporate clients ask our sales team about AI booking tools.', 'Disclosed', 'int', 'Your sales notes (example)', 3, 'Internal data'],
+          ['2026-10-20', 'Two corporate clients ask our sales team about AI booking tools.', 'Disclosed', 'int', 'Your sales notes (example)', 3, 'Customer-provided'],
           ['2026-11-10', 'The agent holds its partner briefing.', 'Scheduled', 'pub', 'Agent calendar (example)', 2, 'Company disclosure']],
         chain: ['The agent adds an AI assistant, and guests start their search there.', 'Direct bookings fall unless our site shows up in the assistant, and the agent gains leverage over terms.', 'Our commission bill rises, and we hold less guest data to personalise offers.'] },
       tool: ['tools/shiftwatch.html', 'Shiftwatch'] },
@@ -190,7 +190,7 @@
           ['2026-06-02', 'A regulator gives the rival an expedited review designation.', 'Disclosed', 'pub', 'Regulator announcement (example)', 2, 'Regulator'],
           ['2026-07-15', 'A conference abstract reports less daytime sleepiness than placebo. The sample is small.', 'Disclosed', 'pub', 'Abstract (example)', 3, 'Conference or journal'],
           ['2026-08-04', 'A commentator argues the rival could take most new patient starts within three years.', 'Opinion', 'pub', 'Trade article (example)', 2, 'Analyst or press'],
-          ['2026-09-18', 'Our medical team notes that clinicians are asking about the rival.', 'Disclosed', 'int', 'Your medical affairs notes (example)', 1, 'Internal data'],
+          ['2026-09-18', 'Our medical team notes that clinicians are asking about the rival.', 'Disclosed', 'int', 'Your medical affairs notes (example)', 1, 'Customer-provided'],
           ['2026-10-02', 'Price and access terms for the rival have not been disclosed.', 'Not disclosed', 'pub', 'Rival results release (example)', 2, 'Company disclosure'],
           ['2026-11-18', 'A health technology review of the rival is scheduled.', 'Scheduled', 'pub', 'Agency calendar (example)', 2, 'Payer or HTA body']],
         chain: ['The rival may reach the market first.', 'Clinicians form habits with it, and payers set a reference price.', 'Our price and our trial comparator both have to answer to that reference.'] },
@@ -216,9 +216,9 @@
           ['2026-08-10', 'A new entrant announces low-priced plans in three circles.', 'Company stated', 'pub', 'Entrant press release (example)', 3, 'Company disclosure'],
           ['2026-08-26', 'A rival operator cuts the price of its mid-tier plan.', 'Disclosed', 'pub', 'Rival tariff page (example)', 1, 'Company disclosure'],
           ['2026-09-09', 'Analysts expect the cut to spread to other operators within a quarter.', 'Opinion', 'pub', 'Analyst note (example)', 1, 'Analyst or press'],
-          ['2026-09-22', 'Our dealers report more customers asking to port out in the three circles.', 'Disclosed', 'int', 'Your dealer reports (example)', 2, 'Internal data'],
+          ['2026-09-22', 'Our dealers report more customers asking to port out in the three circles.', 'Disclosed', 'int', 'Your dealer reports (example)', 2, 'Customer-provided'],
           ['2026-10-05', 'The entrant has not said how long its prices will last.', 'Not disclosed', 'pub', 'Entrant press release (example)', 1, 'Company disclosure'],
-          ['2026-10-14', 'Our churn data shows a rise among prepaid customers in those circles.', 'Disclosed', 'int', 'Your churn data (example)', 3, 'Internal data'],
+          ['2026-10-14', 'Our churn data shows a rise among prepaid customers in those circles.', 'Disclosed', 'int', 'Your churn data (example)', 3, 'Customer-provided'],
           ['2026-10-28', 'The entrant said it would reach ten circles by year end. It has reached five.', 'Disclosed', 'pub', 'Entrant statement and coverage map (example)', 3, 'Company disclosure'],
           ['2026-11-12', 'The regulator holds a consultation on tariff changes.', 'Scheduled', 'pub', 'Regulator calendar (example)', 1, 'Regulator']],
         chain: ['A new entrant undercuts our prices in three circles.', 'Customers port out, and rivals match the price.', 'Dealers push whichever operator pays most, so our incentives rise or we lose shelf space.'] },
@@ -277,12 +277,12 @@
 
   /* ---------- small view helpers ---------- */
   function pm(kind) { return '<i class="pm ' + kind + '" aria-hidden="true"></i>'; }
-  var PM_TEXT = { pub: 'Public source', int: 'Your data', asm: 'Assumption' };
+  var PM_TEXT = { pub: 'Public source', int: 'Customer-provided information', asm: 'Assumption', ana: 'Analysis or interpretation' };
   function rangeBar(lo, mo, hi, mn, mx, p) {
     var W = 120, X = function (v) { return 4 + (v - mn) / (mx - mn) * (W - 8); };
-    return '<svg class="rb" viewBox="0 0 ' + W + ' 12" aria-hidden="true"><line x1="4" x2="' + (W - 4) + '" y1="6" y2="6" stroke="#d9dde3"/><rect x="' + X(lo) + '" y="3" width="' + Math.max(2, (X(hi) - X(lo)) * p) + '" height="6" fill="#cfd6e3"/><circle cx="' + (X(lo) + (X(mo) - X(lo)) * p) + '" cy="6" r="3.2" fill="#0b1f3a" opacity="' + p + '"/></svg>';
+    return '<svg class="rb" viewBox="0 0 ' + W + ' 12" aria-hidden="true"><line x1="4" x2="' + (W - 4) + '" y1="6" y2="6" stroke="#DCE1E4"/><rect x="' + X(lo) + '" y="3" width="' + Math.max(2, (X(hi) - X(lo)) * p) + '" height="6" fill="#cfd6e3"/><circle cx="' + (X(lo) + (X(mo) - X(lo)) * p) + '" cy="6" r="3.2" fill="#172B3A" opacity="' + p + '"/></svg>';
   }
-  var COLORS = ['#0b1f3a', '#2f7f86', '#9aa6b8'];
+  var COLORS = ['#172B3A', '#557C78', '#9aa6b8'];
 
   /* ---------- memo helpers ---------- */
   function memoShell(title, meta) { return { title: title, meta: meta, blocks: [] }; }
@@ -345,9 +345,12 @@
     var head = ['Route', 'Sales at half the budget', 'Contribution margin', 'How fast returns fade'];
     var steps = [];
     steps.push({ n: 'Collect what we know', t: 'Your own history, public rate cards and clearly marked assumptions.', d: 4300,
-      draw: function (v, p, first) { if (first) v.innerHTML = '<p class="v-title">' + esc(I.co) + ' has ₹100 crore to place across three routes. Low / typical / high.</p>' + inputsTable(head, tableRows(false, 1)); } });
+      draw: function (v, p) {
+        var k = Math.min(9, Math.floor(Math.min(1, p * 1.1) * 9) + 1), rows = tableRows(false, 1).map(function (r, i) { return r.map(function (c, j) { return j === 0 ? c : (i * 3 + (j - 1) < k ? c : '&nbsp;'); }); }).filter(function (r, i) { return i * 3 < k; });
+        v.innerHTML = '<p class="v-title">' + esc(I.co) + ' has ₹100 crore to place across three routes. Low / typical / high.</p>' + inputsTable(head, rows);
+      } });
     steps.push({ n: 'Turn each guess into a range', t: 'Nobody knows the exact number, so every input becomes a low, typical and high value.', d: 3800,
-      draw: function (v, p) { v.innerHTML = '<p class="v-title">Each input is a range, not a single number.</p>' + inputsTable(head, tableRows(true, Math.min(1, p * 1.4))); } });
+      draw: function (v, p) { v.innerHTML = '<p class="v-title">Each input is a range, not a single number.</p>' + inputsTable(head, tableRows(true, Math.min(1, p * 1.1))); } });
     var cv = null, cx = null, drawn = 0, cnt = null;
     steps.push({ n: 'Run 5,000 possible futures', t: 'In each one, work out the best way to split the budget.', d: 5600,
       draw: function (v, p, first) {
@@ -357,7 +360,7 @@
             names.map(function (n, i) { return '<div class="v-leg"><i style="background:' + COLORS[i] + '"></i>' + esc(n) + '</div>'; }).join('') + '</div></div>';
           cv = v.querySelector('canvas'); cnt = v.querySelector('#v-count'); cx = cv.getContext('2d');
           var W = cv.width, H = cv.height, ml = 46, mb = 40, mt = 12, mr = 14;
-          cx.fillStyle = '#ffffff'; cx.fillRect(0, 0, W, H); cx.strokeStyle = '#d9dde3'; cx.fillStyle = '#56627a'; cx.font = '14px sans-serif';
+          cx.fillStyle = '#ffffff'; cx.fillRect(0, 0, W, H); cx.strokeStyle = '#DCE1E4'; cx.fillStyle = '#697580'; cx.font = '14px sans-serif';
           [0, 25, 50, 75, 100].forEach(function (t) { var x = ml + t / 100 * (W - ml - mr), y = H - mb - t / 100 * (H - mt - mb); cx.beginPath(); cx.moveTo(x, mt); cx.lineTo(x, H - mb); cx.stroke(); cx.beginPath(); cx.moveTo(ml, y); cx.lineTo(W - mr, y); cx.stroke(); cx.textAlign = 'center'; cx.fillText(String(t), x, H - mb + 16); cx.textAlign = 'right'; cx.fillText(String(t), ml - 6, y + 4); });
           cx.textAlign = 'center'; cx.fillText(names[1] + ', ₹ crore', (ml + W - mr) / 2, H - 6);
           cx.save(); cx.translate(12, (mt + H - mb) / 2); cx.rotate(-Math.PI / 2); cx.fillText(names[0] + ', ₹ crore', 0, 0); cx.restore();
@@ -371,10 +374,9 @@
         cx.globalAlpha = 1; drawn = upto; if (cnt) cnt.textContent = (p >= 1 ? N : upto).toLocaleString('en-US') + ' of ' + N.toLocaleString('en-US') + ' futures';
       } });
     steps.push({ n: 'Find where each route stops paying', t: 'Past that point, each extra rupee brings back less than a rupee.', d: 4600,
-      draw: function (v, p, first) {
-        if (!first) return;
-        var h = '<div class="v-multi">';
-        for (var r = 0; r < 3; r++) h += tipChart(E, r, names[r], cfg.plan[r]);
+      draw: function (v, p) {
+        var q = Math.min(1, p * 1.15), h = '<div class="v-multi">';
+        for (var r = 0; r < 3; r++) h += tipChart(E, r, names[r], cfg.plan[r], q);
         v.innerHTML = '<p class="v-title">Spend on each route, ₹ crore. The tick is where it stops paying back.</p>' + h + '</div>';
       } });
     var hing = E.hinge.slice(0, 5);
@@ -403,22 +405,25 @@
     return { steps: steps, memo: memo, engine: E, summary: summary };
   }
 
-  function tipChart(E, r, name, planAt) {
+  function tipChart(E, r, name, planAt, q) {
+    if (q === undefined) q = 1;
     var W = 250, H = 190, ml = 28, mr = 8, mt = 22, mb = 30, YM = 2.5, c = E.curve[r], g = E.grid, col = COLORS[r], sp = E.stop[r];
     function X(s) { return ml + s / 100 * (W - ml - mr); }
     function Y(v) { return mt + (1 - Math.min(v, YM) / YM) * (H - mt - mb); }
     var o = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Return on the next rupee for ' + esc(name) + '">';
-    o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + (H - mb) + '" y2="' + (H - mb) + '" stroke="#56627a"/>';
-    [0, 1, 2].forEach(function (t) { o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="#e3e6ea"/><text x="' + (ml - 5) + '" y="' + (Y(t) + 4) + '" text-anchor="end" font-size="12" fill="#56627a">' + t + '</text>'; });
-    [0, 50, 100].forEach(function (t) { o += '<text x="' + X(t) + '" y="' + (H - mb + 14) + '" text-anchor="middle" font-size="12" fill="#56627a">' + t + '</text>'; });
+    o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + (H - mb) + '" y2="' + (H - mb) + '" stroke="#697580"/>';
+    [0, 1, 2].forEach(function (t) { o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(t) + '" y2="' + Y(t) + '" stroke="#e3e6ea"/><text x="' + (ml - 5) + '" y="' + (Y(t) + 4) + '" text-anchor="end" font-size="12" fill="#697580">' + t + '</text>'; });
+    [0, 50, 100].forEach(function (t) { o += '<text x="' + X(t) + '" y="' + (H - mb + 14) + '" text-anchor="middle" font-size="12" fill="#697580">' + t + '</text>'; });
     var d = 'M'; g.forEach(function (s, i) { d += (i ? 'L' : '') + X(s) + ' ' + Y(c.hi[i]); }); for (var i = g.length - 1; i >= 0; i--) d += 'L' + X(g[i]) + ' ' + Y(c.lo[i]);
+    o += '<defs><clipPath id="clp' + r + '"><rect x="' + ml + '" y="0" width="' + ((W - ml - mr) * q) + '" height="' + H + '"/></clipPath></defs><g clip-path="url(#clp' + r + ')">';
     o += '<path d="' + d + 'Z" fill="' + col + '" opacity="0.16"/>';
     var ln = ''; g.forEach(function (s, i) { ln += (i ? 'L' : 'M') + X(s) + ' ' + Y(c.md[i]); });
-    o += '<path d="' + ln + '" fill="none" stroke="' + col + '" stroke-width="2"/>';
-    o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(1) + '" y2="' + Y(1) + '" stroke="#0b1f3a" stroke-dasharray="4 3" stroke-width="1"/>';
-    if (sp.p50 <= 100) o += '<line x1="' + X(sp.p50) + '" x2="' + X(sp.p50) + '" y1="' + mt + '" y2="' + (H - mb) + '" stroke="#0b1f3a"/><circle cx="' + X(sp.p50) + '" cy="' + Y(1) + '" r="4" fill="' + col + '" stroke="#ffffff" stroke-width="2"/>';
-    o += '<text x="' + ml + '" y="12" font-size="14" font-weight="600" fill="#0b1f3a">' + esc(name) + '</text>';
-    o += '<text x="' + ml + '" y="' + (H - 4) + '" font-size="12.5" fill="#0b1f3a">' + (sp.p50 <= 100 ? 'Stops paying near ₹' + f0(sp.p50) + ' crore' : 'Does not stop within the budget') + '</text></svg>';
+    o += '<path d="' + ln + '" fill="none" stroke="' + col + '" stroke-width="2"/></g>';
+    o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(1) + '" y2="' + Y(1) + '" stroke="#172B3A" stroke-dasharray="4 3" stroke-width="1"/>';
+    if (sp.p50 <= 100 && sp.p50 <= q * 100) o += '<line x1="' + X(sp.p50) + '" x2="' + X(sp.p50) + '" y1="' + mt + '" y2="' + (H - mb) + '" stroke="#172B3A"/><circle cx="' + X(sp.p50) + '" cy="' + Y(1) + '" r="4" fill="' + col + '" stroke="#ffffff" stroke-width="2"/>';
+    o += '<text x="' + ml + '" y="12" font-size="14" font-weight="600" fill="#172B3A">' + esc(name) + '</text>';
+    if (q >= 1) o += '<text x="' + ml + '" y="' + (H - 4) + '" font-size="12.5" fill="#172B3A">' + (sp.p50 <= 100 ? 'Stops paying near ₹' + f0(sp.p50) + ' crore' : 'Does not stop within the budget') + '</text>';
+    o += '</svg>';
     return '<div class="v-ch">' + o + '</div>';
   }
 
@@ -448,15 +453,15 @@
       draw: function (v, p) {
         var W = 560, H = 310, ml = 56, mr = 20, mt = 38, mb = 50, lo = Math.min.apply(null, E.p10) * 0.97, hi = Math.max.apply(null, E.p90) * 1.03, k, o = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Expected profit for each price move">';
         function X(i) { return ml + (i + 0.5) / 5 * (W - ml - mr); } function Y(vv) { return mt + (1 - (vv - lo) / (hi - lo)) * (H - mt - mb); }
-        for (var t = 0; t <= 4; t++) { var val = lo + (hi - lo) * t / 4; o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(val) + '" y2="' + Y(val) + '" stroke="#e3e6ea"/><text x="' + (ml - 6) + '" y="' + (Y(val) + 4) + '" text-anchor="end" font-size="13" fill="#56627a">' + f0(val) + '</text>'; }
+        for (var t = 0; t <= 4; t++) { var val = lo + (hi - lo) * t / 4; o += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(val) + '" y2="' + Y(val) + '" stroke="#e3e6ea"/><text x="' + (ml - 6) + '" y="' + (Y(val) + 4) + '" text-anchor="end" font-size="13" fill="#697580">' + f0(val) + '</text>'; }
         var idx = Math.min(E.cp - 1, Math.max(0, Math.floor(p * E.cp) - 1)), showBand = p > 0.7;
         for (k = 0; k < 5; k++) {
-          o += '<text x="' + X(k) + '" y="' + (H - mb + 20) + '" text-anchor="middle" font-size="13" fill="#0b1f3a">' + PRICE_LABEL[k] + '</text>';
+          o += '<text x="' + X(k) + '" y="' + (H - mb + 20) + '" text-anchor="middle" font-size="13" fill="#172B3A">' + PRICE_LABEL[k] + '</text>';
           if (showBand) o += '<line x1="' + X(k) + '" x2="' + X(k) + '" y1="' + Y(E.p10[k]) + '" y2="' + Y(E.p90[k]) + '" stroke="#8c867b" stroke-width="3" opacity="' + Math.min(1, (p - .7) * 4) + '"/>';
           var rm = p <= 0.02 ? E.runMean[k][0] : E.runMean[k][idx];
-          o += '<circle cx="' + X(k) + '" cy="' + Y(rm) + '" r="6" fill="' + (k === 2 ? '#56627a' : '#0b1f3a') + '"/>';
+          o += '<circle cx="' + X(k) + '" cy="' + Y(rm) + '" r="6" fill="' + (k === 2 ? '#697580' : '#172B3A') + '"/>';
         }
-        o += '<text x="' + ml + '" y="12" font-size="14" fill="#56627a">Expected profit, ₹ crore a year. The grey line spans the middle 80% of scenarios.</text></svg>';
+        o += '<text x="' + ml + '" y="12" font-size="14" fill="#697580">Expected profit, ₹ crore a year. The grey line spans the middle 80% of scenarios.</text></svg>';
         v.innerHTML = '<div class="v-chart">' + o + '</div><div class="v-count">' + Math.max(1, Math.floor(p * N)).toLocaleString('en-US') + ' of ' + N.toLocaleString('en-US') + ' scenarios</div>';
       } });
     steps.push({ n: 'Compare the five options', t: 'How often does each price move turn out best?', d: 4200,
@@ -767,7 +772,7 @@
   }
   function resHtml(S) {
     var items = [['Recommendation', S.rec, ' big'], ['Trade-off', S.trade, ''], ['Key uncertainty', S.unc, ''], ['Next action', S.next, '']];
-    return '<div class="v-res"><div class="vr-g">' + items.map(function (x) { return '<div><div class="vr-l">' + x[0] + '</div><p class="vr-p' + x[2] + '">' + esc(x[1]) + '</p></div>'; }).join('') + '</div></div>';
+    return '<div class="v-res"><div class="vr-g">' + items.map(function (x) { return '<div><div class="vr-l">' + pm('ana') + x[0] + '</div><p class="vr-p' + x[2] + '">' + esc(x[1]) + '</p></div>'; }).join('') + '</div></div>';
   }
   function finish(plan) {
     $('st-view').innerHTML = resHtml(plan.summary) + '<div class="v-memo full"><div class="vr-h">The draft memo behind it</div>' + memoHtml(plan.memo) + '</div>';
@@ -816,11 +821,36 @@
     $('st-count').textContent = ''; $('st-name').textContent = ''; $('st-text').textContent = ''; setProg(0); $('st-foot-done').hidden = true; $('st-foot-job').hidden = true; $('st-skip').hidden = true; $('st-go').hidden = true;
   }
 
+
+  /* ---------- inputs panel: the illustrative inputs for the chosen job, and the one adjustable input ---------- */
+  function inputRows() {
+    var ik = sel.ind, I = IND[ik], d = sel.dec, rows = [['pub', 'Company', I.co + ' (illustrative)']];
+    var cfg = I[d];
+    if (d === 'budget') { rows.push(['int', 'Budget to place', '₹100 crore']); rows.push(['int', 'Routes', cfg.routes.join(', ')]); rows.push(['asm', 'Ranges for each route', 'Low, typical and high values are assumptions']); }
+    else if (d === 'price') { rows.push(['int', 'Current price per ' + cfg.unit, '₹' + cfg.P0.toLocaleString('en-IN')]); rows.push(['int', 'Volume per year', cfg.q0.toLocaleString('en-IN') + ' ' + cfg.unit + 's']); rows.push(['asm', 'Cost, price response and rival reaction', 'Ranges, not facts']); }
+    else if (d === 'rank') { rows.push(['int', 'Options', cfg.options.map(function (o) { return o.name; }).join(', ')]); rows.push(['asm', 'Scores for each option', 'Low, typical and high values']); }
+    else if (d === 'market') { rows.push(['int', 'Markets', I.market.options.map(function (o) { return o.name; }).join(', ')]); rows.push(['asm', 'Scores for each market', 'Low, typical and high values']); }
+    else if (d === 'bench') { rows.push(['int', 'Our figures', I.bench.metrics.map(function (m) { return m.n; }).join(', ')]); rows.push(['pub', 'Rivals', I.bench.rivals.join(', ')]); }
+    else if (d === 'watch') { rows.push(['pub', 'Sources', I.watch.sources.map(function (x) { return x[1]; }).join(', ')]); }
+    return rows;
+  }
+  function renderInputs() {
+    var html = inputRows().map(function (r) { return '<div class="kv">' + pm(r[0]) + esc(r[1]) + '<small>' + esc(r[2]) + '</small></div>'; }).join('');
+    if (sel.dec === 'budget') {
+      var cur = IND[sel.ind].budget.plan.join(' / ');
+      html += '<div class="field" style="margin-top:12px"><label>Current split across the three routes, %</label><select class="inp in-split">' +
+        SPLITS.map(function (a) { var t = a.join(' / '); return '<option value="' + t + '"' + (t === cur ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></div>';
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.in-body'), function (el) { el.innerHTML = html; });
+  }
+
   /* ---------- wiring ---------- */
   function choose(group, val) {
     sel[group] = val; if (group === 'ind') sel.indSet = true;
     if (group === 'mode') { var pk = document.querySelector('.picker'); if (pk) { pk.setAttribute('data-mode', val); } if ($('stage') && !P.running) reset(); }
     Array.prototype.forEach.call(document.querySelectorAll('[data-g="' + group + '"]'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === val ? 'true' : 'false'); });
+    Array.prototype.forEach.call(document.querySelectorAll('select[data-gsel="' + group + '"]'), function (el) { el.value = val; });
+    if (group === 'ind' || group === 'dec') renderInputs();
     if ($('st-view')) showIdle();
   }
   function restart() { if (P.running) { P.tok++; P.running = false; } $('stage').classList.remove('done'); run(); }
@@ -830,6 +860,15 @@
       var g = b.getAttribute('data-g'); choose(g, b.getAttribute('data-v'));
       if (g === 'ind' || (g === 'dec' && sel.indSet)) restart();
     }); });
+    Array.prototype.forEach.call(document.querySelectorAll('select[data-gsel]'), function (el) { el.addEventListener('change', function () {
+      var g = el.getAttribute('data-gsel'); choose(g, el.value); if (g === 'dec' && sel.indSet) restart();
+    }); });
+    document.addEventListener('change', function (e) {
+      var t = e.target; if (!t || !t.classList || !t.classList.contains('in-split')) return;
+      IND[sel.ind].budget.plan = t.value.split(' / ').map(Number); planCache = {};
+      Array.prototype.forEach.call(document.querySelectorAll('.in-split'), function (x) { x.value = t.value; });
+      if (sel.indSet && sel.dec === 'budget') restart(); else showIdle();
+    });
     if ($('run')) $('run').addEventListener('click', restart);
     $('st-skip').addEventListener('click', skip); $('st-dl').addEventListener('click', download);
     var again = function () { reset(); sel.indSet = false; Array.prototype.forEach.call(document.querySelectorAll('[data-g="ind"]'), function (b) { b.setAttribute('aria-pressed', 'false'); }); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); };

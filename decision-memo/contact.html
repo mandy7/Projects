@@ -3,39 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact | Second Analyst</title>
-<meta name="description" content="Tell me about a decision, or a job you would like to automate. I read each message myself and reply.">
-<meta name="theme-color" content="#0b1f3a">
-<meta property="og:title" content="Contact | Second Analyst">
-<meta property="og:description" content="Tell me about a decision, or a job you would like to automate. I read each message myself and reply.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b1f3a'/%3E%3Cpath d='M9 23l7-14 7 14' fill='none' stroke='white' stroke-width='2.6' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='20' r='2' fill='%232f7f86'/%3E%3C/svg%3E">
+<title>Discuss Your Requirements | Second Analyst</title>
+<meta name="description" content="Tell me about the recurring research, monitoring or analysis you have in mind. I read each message myself and reply.">
+<meta name="theme-color" content="#172B3A">
+<meta property="og:title" content="Discuss Your Requirements | Second Analyst">
+<meta property="og:description" content="Tell me about the recurring research, monitoring or analysis you have in mind. I read each message myself and reply.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23172B3A'/%3E%3Cpath d='M9 23l7-14 7 14' fill='none' stroke='white' stroke-width='2.6' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='20' r='2' fill='%23557C78'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body id="top">
 <a class="skip" href="#main">Skip to the content</a>
 <header class="mast"><div class="wrap">
-  <a class="word" href="index.html" aria-label="Home"><span data-brand="name">Second Analyst</span></a>
-  <nav class="nav" aria-label="Main"><a href="how-it-works.html">How it works</a><a href="try-it-yourself.html">Try it</a><a href="pricing.html">Pricing</a><a href="contact.html" aria-current="page">Contact</a></nav>
+  <a class="word" href="index.html" aria-label="Second Analyst, home"><span data-brand="name">Second Analyst</span></a>
+  <nav class="nav" aria-label="Main"><a href="try-it-yourself.html">Try It Out</a><a href="how-it-works.html">How It Works</a><a href="pricing.html">Pricing</a><a href="our-approach.html">Our Approach</a><a href="contact.html" class="cta" aria-current="page">Discuss Your Requirements</a></nav>
+  <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="mpanel" aria-label="Open menu"><i></i><i></i><i></i></button>
 </div></header>
+<div class="mpanel" id="mpanel" hidden><a class="l" href="try-it-yourself.html">Try It Out</a><a class="l" href="how-it-works.html">How It Works</a><a class="l" href="pricing.html">Pricing</a><a class="l" href="our-approach.html">Our Approach</a><a class="btn" href="contact.html">Discuss Your Requirements</a></div><div class="scrim" id="scrim" hidden></div>
 <main id="main">
-
-<section><div class="wrap"><div class="cbx" id="brief"><h1>Contact</h1><p style="font-size:18px;color:#35445f;margin-top:14px">Tell me about a decision, or a job you would like to automate.</p>
-<div class="planbox" id="plan-box" hidden><div class="ps-h">Your plan from the Pricing page</div><pre id="plan-text"></pre><p class="small" style="margin:.3rem 0 0">This goes with your message. <button type="button" class="linkbtn" id="plan-drop">Do not send the plan</button></p></div>
-<form id="ask" novalidate>
-<label for="f-pain">What would you like to talk about?</label><textarea id="f-pain" name="pain" maxlength="1200" required></textarea>
-<label for="f-industry">Your business or industry <span>(optional)</span></label><input type="text" id="f-industry" name="industry" maxlength="80" autocomplete="off">
-<label for="f-contact">Email or LinkedIn profile</label><input type="text" id="f-contact" name="contact" maxlength="200" autocomplete="email" required>
+<div class="wrap"><div class="dc2" id="brief"><div class="intro"><h1>Discuss Your Requirements</h1><p class="lede"><span data-brand="name">Second Analyst</span> is a managed intelligence service built around configured, AI-assisted workflows. Tell me about the recurring research, monitoring or analysis you have in mind. I read every message myself and reply to the email address or LinkedIn profile you give. The first conversation is complimentary.</p></div>
+<div class="formc"><form class="form" id="ask" novalidate>
+<div class="planbox" id="plan-box" hidden><div class="t"><span>Your plan from the Pricing page</span><button type="button" class="linkbtn" id="plan-drop">Do not send the plan</button></div><pre id="plan-text"></pre></div>
+<div class="f"><label for="f-pain">What would you like to investigate, monitor, analyse, check or produce?</label><textarea id="f-pain" name="pain" maxlength="1200" required placeholder="Describe the recurring job, the sources you have in mind and the output you would like."></textarea></div>
+<div class="f"><label for="f-industry">Your business or industry <span>(optional)</span></label><input type="text" id="f-industry" name="industry" maxlength="80" autocomplete="off" placeholder="Hotels, pharma, a software company"></div>
+<div class="f"><label for="f-contact">Email or LinkedIn profile</label><input type="text" id="f-contact" name="contact" maxlength="200" autocomplete="email" required placeholder="name@company.com"></div>
 <input type="hidden" id="f-source" name="source" value="">
 <div class="trap" aria-hidden="true"><label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
-<button class="btn" type="submit" id="send">Send</button>
-<p class="sm">I use this only to reply. <a href="how-it-works.html#data" style="color:var(--teal-d)">How your data is handled</a></p>
-<div id="form-msg" role="status" aria-live="polite"></div>
-</form></div></div></section>
-
+<button class="btn" type="submit" id="send">Send enquiry</button>
+<p class="note" style="margin:12px 0 0">I use this only to reply. <a class="lk2" href="#data-handling">How your data is handled</a></p>
+<div id="form-msg" role="status" aria-live="polite"></div></form></div>
+<div class="priv2" id="data-handling"><h3>How your data is handled</h3><p>I use what you send only to reply to you. The site has no analytics, and the form service and my email hold your message. Please do not include confidential material in this first message.</p><p>To have your message deleted, reply to any message I send you.</p></div></div></div>
 </main>
-<footer class="foot"><div class="wrap"><div class="l"><span class="word" style="font-size:15px" data-brand="name">Second Analyst</span></div><div class="l"><a href="how-it-works.html">How it works</a><a href="try-it-yourself.html">Try it</a><a href="pricing.html">Pricing</a><a href="contact.html">Contact</a></div></div></footer>
-<script src="assets/brand.js"></script>
-<script src="assets/config.js"></script>
-<script src="assets/site.js"></script>
+<footer class="foot"><div class="wrap"><p class="desc"><span data-brand="name">Second Analyst</span> is a managed intelligence service built around configured, AI-assisted workflows.</p><div class="row"><span><span data-brand="name">Second Analyst</span></span><nav aria-label="Footer"><a href="try-it-yourself.html">Try It Out</a><a href="how-it-works.html">How It Works</a><a href="pricing.html">Pricing</a><a href="our-approach.html">Our Approach</a><a href="contact.html">Discuss Your Requirements</a></nav></div></div></footer>
+<script src="assets/brand.js"></script><script src="assets/config.js"></script><script src="assets/site.js"></script><script src="assets/nav.js"></script>
 </body>
 </html>

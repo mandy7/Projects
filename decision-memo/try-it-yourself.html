@@ -3,46 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Try it yourself | Second Analyst</title>
-<meta name="description" content="Pick a job and an industry, and watch the workflow run on sample data, step by step.">
-<meta name="theme-color" content="#0b1f3a">
-<meta property="og:title" content="Try it yourself | Second Analyst">
-<meta property="og:description" content="Pick a job and an industry, and watch the workflow run on sample data, step by step.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b1f3a'/%3E%3Cpath d='M9 23l7-14 7 14' fill='none' stroke='white' stroke-width='2.6' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='20' r='2' fill='%232f7f86'/%3E%3C/svg%3E">
+<title>Try It Out | Second Analyst</title>
+<meta name="description" content="Choose a business question and an industry, and watch a configured workflow run on sample data, step by step.">
+<meta name="theme-color" content="#172B3A">
+<meta property="og:title" content="Try It Out | Second Analyst">
+<meta property="og:description" content="Choose a business question and an industry, and watch a configured workflow run on sample data, step by step.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23172B3A'/%3E%3Cpath d='M9 23l7-14 7 14' fill='none' stroke='white' stroke-width='2.6' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='20' r='2' fill='%23557C78'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/site.css">
 </head>
-<body>
+<body id="top">
 <a class="skip" href="#main">Skip to the content</a>
 <header class="mast"><div class="wrap">
-  <a class="word" href="index.html" aria-label="Home"><span data-brand="name">Second Analyst</span></a>
-  <nav class="nav" aria-label="Main"><a href="how-it-works.html">How it works</a><a href="try-it-yourself.html" aria-current="page">Try it</a><a href="pricing.html">Pricing</a><a href="contact.html">Contact</a></nav>
+  <a class="word" href="index.html" aria-label="Second Analyst, home"><span data-brand="name">Second Analyst</span></a>
+  <nav class="nav" aria-label="Main"><a href="try-it-yourself.html" aria-current="page">Try It Out</a><a href="how-it-works.html">How It Works</a><a href="pricing.html">Pricing</a><a href="our-approach.html">Our Approach</a><a href="contact.html" class="cta">Discuss Your Requirements</a></nav>
+  <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="mpanel" aria-label="Open menu"><i></i><i></i><i></i></button>
 </div></header>
+<div class="mpanel" id="mpanel" hidden><a class="l" href="try-it-yourself.html" aria-current="page">Try It Out</a><a class="l" href="how-it-works.html">How It Works</a><a class="l" href="pricing.html">Pricing</a><a class="l" href="our-approach.html">Our Approach</a><a class="btn" href="contact.html">Discuss Your Requirements</a></div><div class="scrim" id="scrim" hidden></div>
 <main id="main">
-
-<section class="page try"><div class="wrap"><h1>Try it yourself</h1><p class="sub1">Pick a job and an industry, and watch the workflow run on sample data, step by step.</p>
-<div id="demo">
-<div class="pick"><div class="lab" id="pl-dec"><span class="d-only">Pick a job you do repeatedly, or want to automate</span><span class="m-only">Pick a job</span></div><div class="chips" role="group" aria-labelledby="pl-dec"><button type="button" data-g="dec" data-v="watch" aria-pressed="false">Watch my competitors</button><button type="button" data-g="dec" data-v="budget" aria-pressed="true">Allocate my marketing budget</button><button type="button" data-g="dec" data-v="price" aria-pressed="false">Decide on a price change</button><button type="button" data-g="dec" data-v="rank" aria-pressed="false">Choose a go-to-market priority</button><button type="button" data-g="dec" data-v="market" aria-pressed="false">Size up a new market</button><button type="button" data-g="dec" data-v="bench" aria-pressed="false">Benchmark us against rivals</button></div></div>
-<div class="pick" style="margin-top:24px"><div class="lab" id="pl-ind">Pick an industry</div><div class="chips" role="group" aria-labelledby="pl-ind"><button type="button" data-g="ind" data-v="hotels" aria-pressed="false">Hotels</button><button type="button" data-g="ind" data-v="pharma" aria-pressed="false">Pharma</button><button type="button" data-g="ind" data-v="telecom" aria-pressed="false">Telecom</button></div><div class="hint">It runs as soon as you choose an industry.</div></div>
-<div class="stage" id="stage" aria-label="The workflow running">
-  <div class="st-top"><span id="st-ctx"></span><span class="st-key"><span><i class="pm pub"></i>Public source</span><span><i class="pm int"></i>Your data</span><span><i class="pm asm"></i>Assumption</span></span></div>
+<div class="wrap"><div class="ph1"><h1>Try It Out</h1><p class="lede">Choose a business question and an industry. The workflow runs on sample data, and you can change the inputs and run it again.</p></div>
+<div class="trywrap" id="demo">
+<div class="mctrl"><div class="field"><label for="m-dec">Business question</label><select id="m-dec" data-gsel="dec"><option value="watch">Watch my competitors</option><option value="budget">Allocate my marketing budget</option><option value="price">Decide on a price change</option><option value="rank">Choose a go-to-market priority</option><option value="market">Size up a new market</option><option value="bench">Benchmark us against rivals</option></select></div>
+<div class="field"><label id="m-ind-l">Industry</label><div class="seg3" role="group" aria-labelledby="m-ind-l"><button type="button" data-g="ind" data-v="hotels" aria-pressed="false">Hotels</button><button type="button" data-g="ind" data-v="pharma" aria-pressed="false">Pharma</button><button type="button" data-g="ind" data-v="telecom" aria-pressed="false">Telecom</button></div></div>
+<details class="mdet"><summary>Company and inputs</summary><div class="in-body"></div></details>
+<p class="note" style="margin:10px 0 0">It runs as soon as you choose an industry.</p></div>
+<aside class="ctrl" aria-label="Choices"><div class="grp"><div class="lab" id="pl-dec">1 &middot; Business question</div><div role="group" aria-labelledby="pl-dec"><button type="button" class="q" data-g="dec" data-v="watch" aria-pressed="false"><i></i>Watch my competitors</button><button type="button" class="q" data-g="dec" data-v="budget" aria-pressed="false"><i></i>Allocate my marketing budget</button><button type="button" class="q" data-g="dec" data-v="price" aria-pressed="false"><i></i>Decide on a price change</button><button type="button" class="q" data-g="dec" data-v="rank" aria-pressed="false"><i></i>Choose a go-to-market priority</button><button type="button" class="q" data-g="dec" data-v="market" aria-pressed="false"><i></i>Size up a new market</button><button type="button" class="q" data-g="dec" data-v="bench" aria-pressed="false"><i></i>Benchmark us against rivals</button></div></div>
+<div class="grp"><div class="lab" id="pl-ind">2 &middot; Industry</div><div class="chips" role="group" aria-labelledby="pl-ind"><button type="button" data-g="ind" data-v="hotels" aria-pressed="false">Hotels</button><button type="button" data-g="ind" data-v="pharma" aria-pressed="false">Pharma</button><button type="button" data-g="ind" data-v="telecom" aria-pressed="false">Telecom</button></div><p class="note" style="margin:10px 0 0">It runs as soon as you choose an industry.</p></div>
+<div class="grp"><div class="lab">3 &middot; Company and inputs</div><div class="in-body"></div></div></aside>
+<div class="res"><div class="stage" id="stage" aria-label="The workflow running">
+  <div class="st-top"><span id="st-ctx"></span><span class="st-key"><span><i class="pm pub"></i>Public source</span><span><i class="pm int"></i>Customer-provided</span><span><i class="pm asm"></i>Assumption</span><span><i class="pm ana"></i>Analysis</span></span></div>
   <div class="st-view" id="st-view"></div>
   <div class="st-prog" id="st-prog" hidden><span id="st-bar"></span></div>
   <div class="st-foot">
     <div class="st-cap" aria-live="polite"><div class="st-count" id="st-count"></div><div class="st-name" id="st-name"></div><div class="st-text" id="st-text"></div></div>
     <div class="st-acts">
       <button class="btn o small" id="st-skip" type="button" hidden>Skip to the answer</button>
-      <span class="st-acts" id="st-foot-done" hidden><a class="btn small" id="st-talk" href="contact.html">Start a Brief</a> <button class="btn o small" id="run" type="button" hidden>Run again</button> <button class="btn o small" id="st-dl" type="button">Download the memo</button> <button class="btn o small" id="st-again" type="button">Try another</button></span>
+      <span class="st-acts" id="st-foot-done" hidden><a class="btn small" id="st-talk" href="contact.html">Discuss Your Requirements</a> <button class="btn o small" id="run" type="button" hidden>Run again</button> <button class="btn o small" id="st-dl" type="button">Download the memo</button> <button class="btn o small" id="st-again" type="button">Try another</button></span>
       <span class="st-acts" id="st-foot-job" hidden><a id="st-add" href="pricing.html"></a><button id="st-again2" type="button"></button></span>
       <a id="st-full" href="#" hidden></a>
     </div>
   </div>
   <p id="st-go" hidden></p>
-</div></div>
-</div></section><div style="height:80px"></div>
-
+</div></div></div></div>
 </main>
-<footer class="foot"><div class="wrap"><div class="l"><span class="word" style="font-size:15px" data-brand="name">Second Analyst</span></div><div class="l"><a href="how-it-works.html">How it works</a><a href="try-it-yourself.html">Try it</a><a href="pricing.html">Pricing</a><a href="contact.html">Contact</a></div></div></footer>
-<script src="assets/brand.js"></script>
-<script src="assets/demo.js"></script>
+<a class="totop" href="#top">Back to top</a><footer class="foot"><div class="wrap"><p class="desc"><span data-brand="name">Second Analyst</span> is a managed intelligence service built around configured, AI-assisted workflows.</p><div class="row"><span><span data-brand="name">Second Analyst</span></span><nav aria-label="Footer"><a href="try-it-yourself.html">Try It Out</a><a href="how-it-works.html">How It Works</a><a href="pricing.html">Pricing</a><a href="our-approach.html">Our Approach</a><a href="contact.html">Discuss Your Requirements</a></nav></div></div></footer>
+<script src="assets/brand.js"></script><script src="assets/demo.js"></script><script src="assets/nav.js"></script>
 </body>
 </html>

@@ -5,10 +5,10 @@
    the page, the summary, the tests and the plan sent to Contact all follow.
 
    - Setup is one flat fee, charged once, however many jobs are chosen.
-   - Each job has an assumed yearly "value": roughly what the same work would cost to do by hand.
-     Its recurring price is a fixed share of that value (share, 30%), and that is the top of a range.
-     The bottom of the range is lowFactor of the top, because the final figure depends on scope,
-     complexity and how often the job runs.
+   - Each job has an internal planning value. Its recurring price is a fixed share of that value and is
+     the top of a range. The bottom of the range is lowFactor of the top, because the final figure
+     depends on scope, complexity and how often the job runs. This working model is internal and is
+     not presented on the site as a pricing methodology.
    - All seven jobs together cost at most 13,800 a year, well inside the 15,000 the plan aims for and
      the 20,000 ceiling.
    - Analyst review and advice are billed separately and are not part of these figures.
@@ -19,7 +19,7 @@
 
   var PRICING = {
     currency: '$',
-    ceiling: 15000,                // all jobs together must stay below this a year
+    ceiling: 20000,                // all jobs together must stay below this a year (hard limit)
     setup: 1000,                   // one flat, one-time fee
     share: 0.30,                   // a job's recurring price is this share of its assumed value
     lowFactor: 0.6,                // the bottom of the range is this share of the top
@@ -35,9 +35,9 @@
     },
     assumptions: [
       'Setup is one flat fee, charged once, however many jobs you choose.',
-      'Each job is priced at about 30% of what the same work would cost to do by hand. Those by-hand values are assumptions.',
-      'The range reflects scope, complexity and how often the job runs. The top is the most it would cost at the standard scope.',
-      'Analyst review and advice are billed separately.'
+      'The range reflects scope, complexity and how often the job runs.',
+      'Analyst review and advice are billed separately.',
+      'All figures are provisional until delivery economics have been validated.'
     ]
   };
 
@@ -70,11 +70,12 @@
     return { jobs: jobs, setup: setup, annual: [lo, hi], monthly: [lo / 12, hi / 12], firstYear: [setup + lo, setup + hi], ongoing: [lo, hi], withinCeiling: hi < P.ceiling };
   }
 
+  var FREQ = { request: 'on request', monthly: 'monthly', weekly: 'weekly' };
   function planText(sel) {
-    var E = estimate(sel);
+    var E = estimate(sel), fq = sel.freq || {};
     if (!E.jobs.length) return '';
-    return 'Jobs: ' + E.jobs.map(function (j) { return j.name; }).join('; ') + '.\n' +
-      'Indicative cost (provisional model): one-time setup ' + money(E.setup) + '; recurring ' + range(E.annual) + ' a year; first year ' + range(E.firstYear) + '. Analyst review and advice are billed separately.';
+    return 'Jobs: ' + E.jobs.map(function (j) { return j.name + (fq[j.id] && FREQ[fq[j.id]] ? ' (' + FREQ[fq[j.id]] + ')' : ''); }).join('; ') + '.\n' +
+      'Indicative cost (provisional): one-time setup ' + money(E.setup) + '; recurring ' + range(E.annual) + ' a year; first year ' + range(E.firstYear) + '. Frequency and scope are agreed before any work starts. Analyst review and advice are billed separately.';
   }
 
   window.__plan = { PRICING: PRICING, CATALOGUE: CATALOGUE, estimate: estimate, planText: planText, money: money, jobPrice: jobPrice };
@@ -84,31 +85,41 @@
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-  var state = { jobs: [] };
+  var state = { jobs: [], freq: {} };
 
+  function segHtml(id) {
+    var cur = state.freq[id] || 'request';
+    return ['request', 'monthly', 'weekly'].map(function (k) {
+      return '<button type="button" data-freq="' + k + '" aria-pressed="' + (cur === k ? 'true' : 'false') + '">' + (k === 'request' ? 'On request' : k === 'monthly' ? 'Monthly' : 'Weekly') + '</button>';
+    }).join('');
+  }
   function renderJobs() {
     var h = '';
     CATALOGUE.forEach(function (j) {
-      var on = state.jobs.indexOf(j.id) >= 0;
-      h += '<div class="job' + (on ? ' on' : '') + '" id="row-' + j.id + '" data-id="' + j.id + '"><div class="cb" aria-hidden="true"></div>' +
-        '<div><label for="job-' + j.id + '"><b>' + esc(j.name) + '</b></label><span>' + esc(j.desc) + '</span></div>' +
-        '<em>up to ' + money(jobPrice(j.id).top) + '<small>a year</small></em>' +
-        '<button type="button" class="more" aria-expanded="false" aria-label="Show details for ' + esc(j.name) + '">+</button>' +
+      var on = state.jobs.indexOf(j.id) >= 0, pr = jobPrice(j.id);
+      h += '<div class="jb' + (on ? ' on' : '') + '" id="row-' + j.id + '" data-id="' + j.id + '"><div class="cb" aria-hidden="true"></div>' +
+        '<div class="tx"><label for="job-' + j.id + '"><b>' + esc(j.name) + '</b></label><span class="ds">' + esc(j.desc) + '</span>' +
+        '<div class="fr" id="fr-' + j.id + '"' + (on ? '' : ' hidden') + '><small>How often</small><span class="seg" role="group" aria-label="How often: ' + esc(j.name) + '">' + segHtml(j.id) + '</span></div></div>' +
+        '<em>' + money(pr.low) + ' to ' + money(pr.top) + '<small>a year</small></em>' +
         '<input type="checkbox" id="job-' + j.id + '" data-job="' + j.id + '"' + (on ? ' checked' : '') + '></div>';
     });
     root.innerHTML = h;
   }
 
   function renderSummary() {
-    var E = estimate(state), send = $('send'), bar = $('psum-bar'), h = '';
-    h += '<div class="k">Approximate cost</div>';
+    var E = estimate(state), send = $('send'), bar = $('psum-bar'), h = '', all = estimate({ jobs: CATALOGUE.map(function (j) { return j.id; }) });
+    h += '<div class="lab a">' + (E.jobs.length ? 'Your plan &middot; ' + E.jobs.length + (E.jobs.length === 1 ? ' job' : ' jobs') : 'Your plan') + '<span class="tagp">Provisional</span></div>';
     if (!E.jobs.length) {
-      h += '<div class="big" id="t-ongoing">None yet</div><p class="sm">Tick a job to see the cost.</p>';
-      send.setAttribute('aria-disabled', 'true'); send.removeAttribute('href'); bar.hidden = true; document.body.classList.remove('hasbar');
+      h += '<div class="big" id="t-ongoing">None yet</div><p class="empty">Tick a job to see an indicative cost.</p>';
+      send.setAttribute('aria-disabled', 'true'); bar.hidden = true; document.body.classList.remove('hasbar');
+      send.href = 'contact.html#brief';
     } else {
-      h += '<div class="big" id="t-ongoing">' + range(E.ongoing) + '</div><p class="sm">a year, plus <span id="t-setup">' + money(E.setup) + '</span> one-time setup</p>' +
-        '<div class="row"><span>First year</span><b id="t-first">about ' + range(E.firstYear) + '</b></div>' +
-        '<p class="note">Indicative pricing. Send my plan opens a short contact form with these jobs and this estimate already filled in. I reply with a firm quote and a time to talk it through.</p>';
+      h += '<div class="big" id="t-ongoing">' + range(E.ongoing) + '</div><div class="note" style="margin-top:4px">recurring workflow fees, a year</div>' +
+        '<div class="row"><span>One-time setup<small>Charged once, not per job</small></span><b id="t-setup">' + money(E.setup) + '</b></div>' +
+        '<div class="row"><span>First year<small>Setup plus recurring</small></span><b id="t-first">about ' + range(E.firstYear) + '</b></div>' +
+        '<div class="row"><span>Ongoing, each year after<small>Recurring fees only</small></span><b id="t-ongoing2">' + range(E.ongoing) + '</b></div>' +
+        '<div class="row"><span>Optional analyst involvement<small>Review, interpretation, advice</small></span><b>Billed separately</b></div>' +
+        '<div class="cap">All seven jobs together: ' + range(all.annual) + ' a year, excluding optional analyst fees.</div>';
       send.removeAttribute('aria-disabled'); send.href = 'contact.html?plan=' + encodeURIComponent(planText(state).slice(0, 900)) + '#brief';
       bar.hidden = false; document.body.classList.add('hasbar'); $('bar-text').textContent = range(E.ongoing) + ' a year';
     }
@@ -118,19 +129,22 @@
   function toggle(id, on) {
     var i = state.jobs.indexOf(id);
     if (on && i < 0) state.jobs.push(id); if (!on && i >= 0) state.jobs.splice(i, 1);
-    var row = $('row-' + id); row.classList.toggle('on', on); $('job-' + id).checked = on;
+    var row = $('row-' + id); row.classList.toggle('on', on); $('job-' + id).checked = on; $('fr-' + id).hidden = !on;
     renderSummary();
   }
   root.addEventListener('change', function (e) { var id = e.target.getAttribute('data-job'); if (id) toggle(id, e.target.checked); });
   root.addEventListener('click', function (e) {
-    var row = e.target.closest('.job'); if (!row) return;
-    var id = row.getAttribute('data-id');
-    if (e.target.closest('.more')) { var x = row.classList.toggle('x'); var b = row.querySelector('.more'); b.textContent = x ? '−' : '+'; b.setAttribute('aria-expanded', String(x)); return; }
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') return;
+    var row = e.target.closest('.jb'); if (!row) return;
+    var id = row.getAttribute('data-id'), fb = e.target.closest('[data-freq]');
+    if (fb) {
+      state.freq[id] = fb.getAttribute('data-freq');
+      Array.prototype.forEach.call(row.querySelectorAll('[data-freq]'), function (b) { b.setAttribute('aria-pressed', b === fb ? 'true' : 'false'); });
+      renderSummary(); return;
+    }
+    if (e.target.closest('.fr') || e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL' || e.target.closest('label')) return;
     toggle(id, state.jobs.indexOf(id) < 0);
   });
   $('send').addEventListener('click', function (e) { if (this.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
-  var mt = $('mtog'); if (mt) mt.addEventListener('click', function () { var l = $('plede'), on = l.classList.toggle('show'); mt.setAttribute('aria-expanded', String(on)); });
 
   try {
     var qp = new URLSearchParams(window.location.search), pre = (qp.get('jobs') || qp.get('job') || '').split(',');
