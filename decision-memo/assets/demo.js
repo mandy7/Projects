@@ -734,7 +734,7 @@
   }
 
   /* ---------- player ---------- */
-  var sel = { ind: 'hotels', indSet: false, dec: 'budget', mode: 'e2e', job: 'scen' }, P = { tok: 0, running: false, skipping: false, last: null };
+  var sel = { ind: 'hotels', indSet: true, dec: 'budget', mode: 'e2e', job: 'scen' }, P = { tok: 0, running: false, skipping: false, last: null };
   function sleep(ms, tok) { return new Promise(function (res, rej) { setTimeout(function () { tok === P.tok ? res() : rej('stop'); }, ms); }); }
 
   function setCap(i, total, step) {
@@ -812,7 +812,7 @@
     var pl = null;
     try { var k = sel.ind + '-' + sel.dec; if (!planCache[k]) planCache[k] = PLANNERS[sel.dec](sel.ind); pl = planCache[k]; } catch (e) { pl = null; }
     var D = DEC[sel.dec];
-    return flowHtml(D.q, D.inputs, pl ? pl.steps.map(function (st) { return st.n; }) : [], D.outputs, (sel.indSet ? 'Running now, about half a minute. ' : 'Choose an industry above and it runs, in about half a minute. ') + 'A person reviews the result before it goes anywhere.');
+    return flowHtml(D.q, D.inputs, pl ? pl.steps.map(function (st) { return st.n; }) : [], D.outputs, 'Choose a business question and it runs, in about half a minute. ' + 'A person reviews the result before it goes anywhere.');
   }
   function showIdle() { if (!P.running && !$('stage').classList.contains('done')) $('st-view').innerHTML = idleHtml(); }
   function reset() {
@@ -871,7 +871,7 @@
     });
     if ($('run')) $('run').addEventListener('click', restart);
     $('st-skip').addEventListener('click', skip); $('st-dl').addEventListener('click', download);
-    var again = function () { reset(); sel.indSet = false; Array.prototype.forEach.call(document.querySelectorAll('[data-g="ind"]'), function (b) { b.setAttribute('aria-pressed', 'false'); }); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    var again = function () { reset(); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     $('st-again').addEventListener('click', again); if ($('st-again2')) $('st-again2').addEventListener('click', again);
     var auto = false;
     try {

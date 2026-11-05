@@ -37,7 +37,7 @@ let fails=0; const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m); if(!c)fails++;
    ok((await p.textContent('.close h2'))==='Need recurring intelligence without adding to your team?','closing heading');
    const order=await p.evaluate(()=>{const s=[...document.querySelectorAll('main > section')].map(x=>x.className.split(' ')[0]+':'+(x.querySelector('h2,h3')||{}).textContent);return s});
    const iF=order.findIndex(x=>/Built on practical/.test(x)), iP=order.findIndex(x=>/Pricing built/.test(x)), iV=order.findIndex(x=>/Explore an intelligence/.test(x)); ok(iV<iF&&iF<iP,'founder block sits after the preview and before pricing');
-   ok(await p.evaluate(()=>/led by Mandhir Dua/.test(document.querySelector('.fnd p').textContent)&&document.querySelector('.fnd p').textContent.length<420),'founder block is short');
+   ok(await p.evaluate(()=>/founded by Mandhir Dua, a strategy and competitive-intelligence leader with 15 years/.test(document.querySelector('.fnd p').textContent)&&document.querySelector('.fnd p').textContent.length<420),'founder block is short');
    const lk=await p.getAttribute('.fnd a.lk','href'); ok(lk==='our-approach.html#experience','founder link target '+lk);
    const memo=await p.getAttribute('.memolink','href'); ok(memo==='assets/sample-decision-memo.pdf'&&fs.existsSync(ROOT+memo)&&fs.readFileSync(ROOT+memo).slice(0,4).toString()==='%PDF','sample memo link points at a real PDF');
    // preview interactions
@@ -136,6 +136,29 @@ let fails=0; const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m); if(!c)fails++;
    const pos=await p.evaluate(()=>({form:document.getElementById('ask').getBoundingClientRect().top,priv:document.getElementById('data-handling').getBoundingClientRect().top,plan:!document.getElementById('plan-box').hidden,ov:document.documentElement.scrollWidth-document.documentElement.clientWidth,note:document.querySelector('.form .note').textContent}));
    ok(pos.priv>pos.form&&pos.plan&&pos.ov===0,'mobile '+w+': privacy block sits below the form, plan shown, no overflow'); ok(!/on the left/.test(pos.note)&&/How your data is handled/.test(pos.note),'mobile note uses the simple link wording');
    const fh=await p.$$eval('.foot nav a',a=>a.map(x=>Math.round(x.getBoundingClientRect().height))); ok(Math.max(...fh)<=24,'footer links do not wrap ('+fh.join(',')+')'); await p.context().close(); }
+
+
+ // ---- 9. round 9: positioning, founder, industry-agnostic demo, validation
+ { const files=[...fs.readdirSync(ROOT).filter(f=>/\.(html|md)$/.test(f)),...fs.readdirSync(ROOT+'assets').filter(f=>/\.(js|css)$/.test(f)).map(f=>'assets/'+f)].filter(f=>f!=='README.md');
+   const bad=files.filter(f=>/Expedia/i.test(fs.readFileSync(ROOT+f,'utf8'))); ok(bad.length===0,'Expedia is not named anywhere on the site: '+bad.join(','));
+   const pdf=require('child_process').execSync('pdftotext '+ROOT+'assets/sample-decision-memo.pdf -').toString(); ok(!/Expedia/i.test(pdf),'nor in the sample memo PDF');
+   const ap=fs.readFileSync(ROOT+'our-approach.html','utf8'); ok(!/travel|hospitality|marketplace|Initial industry/i.test(ap),'Our Approach no longer names industries');
+   const p=await open('our-approach.html'); const t=await p.textContent('#experience');
+   ok(/founded by Mandhir Dua, a strategy and competitive-intelligence leader with 15 years of professional experience/.test(t)&&/12 years leading global competitive strategy and intelligence within a large multinational organisation, followed by independent advisory work with growing businesses/.test(t)&&/structured, technology-enabled approach to recurring business intelligence/.test(t),'founder copy on Our Approach');
+   const im=await p.$eval('#experience img',e=>({ok:e.complete&&e.naturalWidth>0,alt:e.alt,w:Math.round(e.getBoundingClientRect().width),left:e.getBoundingClientRect().left,textLeft:e.closest('.in').lastElementChild.getBoundingClientRect().left})); await p.waitForTimeout(500);
+   ok(im.alt.includes('Mandhir Dua')&&im.w<=220,'founder photo is modest ('+im.w+'px) with alt text'); const im2=await p.$eval('#experience img',e=>e.complete&&e.naturalWidth>0); ok(im2,'founder photo loads');
+   ok(await p.$$eval('main img',a=>a.length)===1,'only one photo on the page'); await p.context().close(); }
+ { const p=await open('index.html'); ok(await p.$$eval('main img',a=>a.length)===0,'no founder photo or large founder section on the home page'); ok(await p.$eval('.fnd',e=>e.getBoundingClientRect().height)<260,'home founder block stays compact'); await p.context().close(); }
+ { const p=await open('try-it-yourself.html?speed=40'); ok((await p.getAttribute('.ctrl [data-g="ind"][data-v="hotels"]','aria-pressed'))==='true','an example setting is preselected, so no industry is needed to run');
+   ok((await p.textContent('.ctrl'))!==''&&/Example setting/.test(await p.textContent('.ctrl')),'setting is labelled "Example setting"');
+   ok(await p.$$eval('.ctrl .sub',a=>a.map(x=>x.textContent).join('|'))==='Test a decision|Monitor and compare','jobs are grouped by purpose');
+   await p.click('.ctrl [data-g="dec"][data-v="rank"]'); await p.waitForSelector('#stage.done',{timeout:30000}); ok(/Hotels/.test(await p.textContent('#st-ctx')),'choosing only a business question runs it in the default example setting');
+   await p.click('.ctrl [data-g="ind"][data-v="telecom"]'); await p.waitForSelector('#stage.done',{timeout:30000}); ok(/Telecom/.test(await p.textContent('#st-ctx')),'changing the setting re-runs the same workflow'); 
+   await p.click('#st-again'); ok(!(await p.$eval('#stage',e=>e.classList.contains('done'))),'Try another resets the stage'); await p.context().close(); }
+ { const p=await open('how-it-works.html'); ok((await p.textContent('.principle'))==='Traceable findings. Visible assumptions. Workflows tested against historical data.','principle line on How It Works');
+   await p.click('#tab3'); const t=await p.textContent('#sitem3'); ok(/historical data/.test(t)&&/known historical periods and outcomes/.test(t)&&/does not guarantee future predictive accuracy/.test(t),'stage 3 explains historical testing and its limit');
+   await p.click('#tab2'); ok(await p.$$eval('#sitem2 .leg4 span',a=>a.length)===4&&/traceable source/.test(await p.textContent('#sitem2')),'evidence categories and source transparency preserved on stage 2');
+   const f=await p.$eval('#sitem5',e=>e.textContent); ok(!/hotel|booking|travel/i.test(await p.textContent('.stagebox')),'How It Works diagrams use neutral examples'); await p.context().close(); }
 
  // ---- 8. overflow at four widths, every page, with errors
  for(const w of [1440,1280,390,360]) for(const [f] of PAGES){ const p=await open(f+'.html',w,800); await p.waitForTimeout(f==='index'?600:200); const ov=await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth); ok(ov===0,'no horizontal overflow '+w+' '+f); await p.context().close(); }

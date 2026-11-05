@@ -7,7 +7,7 @@ index.html                  Home: headline, 90-second video, workflow preview, f
 try-it-yourself.html        Try It Out: the full sandbox (6 jobs x 3 industries), results first
 how-it-works.html           Five stages (selector on wide screens, accordion on phones), evidence legend, FAQs
 pricing.html                Pricing: three components, what the fee covers, calculator, FAQs
-our-approach.html           Our Approach: comparison, why not a general-purpose AI tool, experience, who it is for
+our-approach.html           Our Approach: comparison, why not a general-purpose AI tool, experience (with photo), who it is for
 contact.html                Discuss Your Requirements: enquiry form (filename kept so old links keep working)
 assets/brand.js             The product name, descriptor and owner, in one place
 assets/config.js            Form settings (Google Form address and entry numbers, contact email)
@@ -20,6 +20,7 @@ assets/how.js               How It Works stage selector and accordion
 assets/demo.js              The demo engine: 6 jobs across 3 industries
 assets/pricing.js           The plan builder. All prices live in PRICING at the top
 assets/sample-decision-memo.pdf   Two-page sample memo (hotel budget job, illustrative)
+assets/img/mandhir-dua.jpg  Founder photograph (shown on Our Approach only)
 assets/video/               workflow.mp4, workflow.webm and the poster image
 assets/fonts/               Inter, self-hosted, so no request goes to a font service
 tools/                      Four earlier example pages (not linked from the site, older navy and teal)
@@ -29,7 +30,7 @@ tools/                      Four earlier example pages (not linked from the site
 
 1. **Check the form.** `assets/config.js` points at the Google Form. Submit one real message from the deployed site and confirm it appears in the Google Sheet. The browser cannot read Google's reply, so the site shows its thank-you once the request is sent. Source tracking (`?source=arjan`) is off until the Google Form has a fourth "Source" question and its entry number is added to `config.js`.
 2. **Set a contact email** in `assets/config.js` as `contactEmail` (optional).
-3. **Verify the founder wording** on the home page and on Our Approach: "global competitive strategy and intelligence at Expedia Group", "independent advisory work with smaller businesses", and the title "independent strategy and competitive-intelligence practitioner". Change it to match your actual role and responsibilities. Confirm you are comfortable naming Expedia Group.
+3. **Verify the founder wording** on the home page and on Our Approach: "a strategy and competitive-intelligence leader with 15 years of professional experience", "12 years leading global competitive strategy and intelligence within a large multinational organisation", and "independent advisory work with growing businesses". The employer is deliberately not named. The photograph is `assets/img/mandhir-dua.jpg`.
 4. **Check the answers in the pricing and How It Works FAQs** against what you do (what is included, change of scope, setup charged again, analyst involvement, data handling, no certification, no integrations).
 5. **Confirm the commitments:** the first conversation is complimentary; runs are on request; scope is agreed in advance.
 6. **The name.** "Second Analyst" is a working name. Change `name` in `assets/brand.js`; the HTML also holds the name as plain text, so search for `Second Analyst` for a permanent rename. The video shows the name in its top-left corner, so it would need re-rendering. Check trademarks and domains first (see `NAMING.md`, not part of the site). Do not upload `NAMING.md` or `form-setup.html`.
@@ -51,6 +52,7 @@ tools/                      Four earlier example pages (not linked from the site
 `assets/demo.js` runs it. Budget, price, go-to-market ranking and new-market ranking are real calculations in the browser on illustrative inputs; watching competitors and benchmarking are scripted on invented events and figures. Nothing is fetched or sent.
 
 - Test a combination: `?decision=market&industry=pharma&run=1`, add `&speed=10` to go ten times faster.
+- Jobs are grouped as "Test a decision" and "Monitor and compare". The industry is an optional **example setting** (hotels, pharma or telecom, preselected) that only changes the illustrative inputs; choosing a business question runs it straight away. The service is not tied to any sector.
 - The one adjustable input is the current budget split (budget job only). The other inputs are shown, not editable.
 - Evidence types are marked the same way everywhere (sandbox, How It Works, sample memo): public source, customer-provided information, assumption, analysis or interpretation.
 
@@ -70,6 +72,7 @@ tools/                      Four earlier example pages (not linked from the site
 | The plan and frequency carry into the enquiry | A browser test chose jobs and a frequency, followed the link and sent the form to a stand-in endpoint. |
 | The mobile menu, stage selector and accordion work | Browser tests at 390px and 360px. |
 | The video plays continuously | Played in Chromium for 14 seconds across the old still stretch: the clock advanced one second per second with no stalls; chapter buttons seek correctly. |
+| Workflows are tested against historical data | Described on How It Works (stage 3) as a test against known historical periods that does not guarantee future accuracy. No accuracy figure is claimed; accuracy has not been measured. |
 | No accuracy or time-saving figure is claimed | None appears on any page. |
 
 ## Not tested
