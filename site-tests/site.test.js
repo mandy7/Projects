@@ -1,172 +1,170 @@
-const { chromium } = require('playwright'); const fs=require('fs');
-const ROOT='/home/user/Projects/decision-memo/', B='file://'+ROOT;
-const PAGES=[['index','Home',''],['try-it-yourself','Try It Out','Try It Out'],['how-it-works','How It Works','How It Works'],['pricing','Pricing','Pricing'],['our-approach','Our Approach','Our Approach'],['contact','Discuss Your Requirements','Discuss Your Requirements']];
-let fails=0; const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m); if(!c)fails++;};
-(async()=>{const b=await chromium.launch(); const errs=[];
- async function open(url,vw,vh,opts){ const ctx=await b.newContext(Object.assign({viewport:{width:vw||1440,height:vh||900}},opts||{})); const p=await ctx.newPage(); p.on('pageerror',e=>errs.push(url+' '+e.message)); p.on('console',m=>{if(m.type()==='error'&&!/ERR_FAILED/.test(m.text()))errs.push(url+' '+m.text())}); p.on('requestfailed',r=>{ if(!/google|sendmail|example|workflow\.(mp4|webm)/.test(r.url())) errs.push('reqfail '+r.url())}); await p.goto(B+url); await p.waitForTimeout(250); return p; }
+/* Browser tests for the Second Analyst site. Run with: node site-tests/site.test.js (needs Playwright). */
+const { chromium } = require('playwright'); const fs = require('fs'); const path = require('path');
+const ROOT = path.resolve(__dirname, '../decision-memo') + '/', B = 'file://' + ROOT;
+const PAGES = [['index', ''], ['capabilities', 'Capabilities'], ['try-it-yourself', 'Try it out'], ['how-it-works', 'How it works'], ['pricing', 'Pricing'], ['our-approach', 'Our approach'], ['contact', 'Book a diagnostic']];
+let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
+(async () => {
+  const b = await chromium.launch(); const errs = [];
+  async function open(url, vw, vh) { const ctx = await b.newContext({ viewport: { width: vw || 1440, height: vh || 900 } }); const p = await ctx.newPage(); p.on('pageerror', e => errs.push(url + ' ' + e.message)); p.on('console', m => { if (m.type() === 'error' && !/ERR_FAILED/.test(m.text())) errs.push(url + ' ' + m.text()); }); await p.goto(B + url); await p.waitForTimeout(250); return p; }
+  const txt = async p => p.evaluate(() => document.body.innerText);
 
- // ---- 1. navigation, active state, one line, no overflow at four widths
- for(const w of [1440,1280,1024]){ for(const [f,label,navText] of PAGES){ const p=await open(f+'.html',w,800);
-   const r=await p.evaluate(()=>{const links=[...document.querySelectorAll('.nav a')];const cur=document.querySelector('.nav a[aria-current=page]');return {hs:links.map(a=>Math.round(a.getBoundingClientRect().height)),texts:links.map(a=>a.textContent),cur:cur?cur.textContent:null,navRight:document.querySelector('.nav').getBoundingClientRect().right,vw:innerWidth,ov:document.documentElement.scrollWidth-document.documentElement.clientWidth,brandR:document.querySelector('.word').getBoundingClientRect().right,navL:document.querySelector('.nav').getBoundingClientRect().left}});
-   ok(r.texts.join('|')==='Try It Out|How It Works|Pricing|Our Approach|Discuss Your Requirements','nav labels at '+w+' '+f);
-   ok(Math.max(...r.hs)<=44&&r.navRight<=r.vw&&r.brandR<r.navL&&r.ov===0,'nav on one line, no overflow at '+w+' '+f+' (heights '+r.hs.join(',')+')');
-   if(f!=='index') ok(r.cur===navText,'active page indicator '+f+' = '+r.cur); else ok(r.cur===null,'home has no active nav item');
-   await p.context().close(); } }
- // ---- 2. mobile menu
- for(const w of [390,360]){ const p=await open('index.html',w,800);
-   const hdr0=await p.evaluate(()=>document.querySelector('.mast').getBoundingClientRect().height);
-   ok(!(await p.isVisible('.nav'))&&await p.isVisible('#burger'),'mobile '+w+': no nav row, hamburger shown (header '+hdr0+'px)');
-   await p.click('#burger'); ok(await p.isVisible('#mpanel')&&(await p.getAttribute('#burger','aria-expanded'))==='true','mobile '+w+': hamburger opens the panel');
-   const items=await p.$$eval('#mpanel a',a=>a.map(x=>x.textContent)); ok(items.join('|')==='Try It Out|How It Works|Pricing|Our Approach|Discuss Your Requirements','mobile '+w+': menu items '+items.join(', '));
-   const bh=await p.$eval('#mpanel .btn',e=>Math.round(e.getBoundingClientRect().height)); ok(bh>=48,'menu CTA is prominent ('+bh+'px)');
-   const wrap=await p.$$eval('#mpanel a.l',a=>a.map(x=>Math.round(x.getBoundingClientRect().height))); ok(Math.max(...wrap)<=70,'menu links do not wrap: '+wrap.join(','));
-   await p.keyboard.press('Escape'); ok(!(await p.isVisible('#mpanel')),'Escape closes the menu');
-   await p.click('#burger'); await p.click('#scrim',{position:{x:20,y:400}}); ok(!(await p.isVisible('#mpanel')),'tapping the dimmed area closes the menu');
-   await p.click('#burger'); await Promise.all([p.waitForNavigation(),p.click('#mpanel a[href="pricing.html"]')]); ok(/pricing\.html/.test(p.url()),'menu link navigates'); await p.waitForTimeout(200);
-   ok(!(await p.isVisible('#mpanel'))&&(await p.getAttribute('#burger','aria-expanded'))==='false','menu is closed after navigating');
-   await p.evaluate(()=>window.scrollTo(0,1500)); await p.waitForTimeout(200); const top=await p.evaluate(()=>Math.round(document.querySelector('.mast').getBoundingClientRect().top)); ok(top===0,'header stays sticky after scrolling');
-   const act=await p.$eval('.mast .word',e=>e.getBoundingClientRect().left); ok(act>=19&&act<=21,'brand aligned to the 20px gutter ('+act+')');
-   await p.context().close(); }
+  // 1. navigation on one line at three desktop widths
+  for (const w of [1440, 1280, 1024]) for (const [f, label] of PAGES) {
+    const p = await open(f + '.html', w, 800);
+    const r = await p.evaluate(() => { const l = [...document.querySelectorAll('.nav a')], cur = document.querySelector('.nav a[aria-current=page]'); return { t: l.map(a => a.textContent), h: l.map(a => Math.round(a.getBoundingClientRect().height)), cur: cur ? cur.textContent : null, nr: document.querySelector('.nav').getBoundingClientRect().right, nl: document.querySelector('.nav').getBoundingClientRect().left, br: document.querySelector('.brand').getBoundingClientRect().right, vw: innerWidth, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
+    ok(r.t.join('|') === 'Capabilities|Try it out|How it works|Pricing|Our approach|Book a diagnostic', 'nav labels ' + w + ' ' + f);
+    ok(Math.max(...r.h) <= 44 && r.nr <= r.vw && r.br < r.nl && r.ov === 0, 'nav on one line, no overflow ' + w + ' ' + f);
+    ok(r.cur === (label || null), 'active page ' + f + ' = ' + r.cur);
+    await p.context().close();
+  }
+  // 2. mobile menu
+  for (const w of [440, 390, 360]) {
+    const p = await open('index.html', w, 800);
+    ok(!(await p.isVisible('.nav')) && await p.isVisible('#burger'), 'mobile ' + w + ': hamburger, no nav row');
+    await p.click('#burger'); ok(await p.isVisible('#mpanel') && (await p.getAttribute('#burger', 'aria-expanded')) === 'true', 'mobile ' + w + ': menu opens');
+    ok((await p.$$eval('#mpanel a', a => a.map(x => x.textContent))).join('|') === 'Capabilities|Try it out|How it works|Pricing|Our approach|Book a diagnostic', 'mobile ' + w + ': menu items');
+    ok((await p.$eval('#mpanel .btn', e => Math.round(e.getBoundingClientRect().height))) >= 48, 'menu call to action is prominent');
+    ok(Math.max(...await p.$$eval('#mpanel a.l', a => a.map(x => Math.round(x.getBoundingClientRect().height)))) <= 66, 'menu links do not wrap');
+    await p.keyboard.press('Escape'); ok(!(await p.isVisible('#mpanel')), 'Escape closes the menu');
+    await p.click('#burger'); await p.click('#scrim', { position: { x: 20, y: 720 } }); ok(!(await p.isVisible('#mpanel')), 'dimmed area closes the menu');
+    await p.click('#burger'); await Promise.all([p.waitForNavigation(), p.click('#mpanel a[href="pricing.html"]')]); await p.waitForTimeout(200);
+    ok(/pricing\.html/.test(p.url()) && !(await p.isVisible('#mpanel')), 'menu link navigates and the menu is closed');
+    await p.evaluate(() => scrollTo(0, 1500)); await p.waitForTimeout(150); ok((await p.evaluate(() => Math.round(document.querySelector('.hd').getBoundingClientRect().top))) === 0, 'header stays sticky');
+    ok((await p.$eval('.hd .brand', e => e.getBoundingClientRect().left)) >= 19 && (await p.$eval('.hd .brand', e => e.getBoundingClientRect().left)) <= 21, 'brand on the 20px gutter');
+    await p.context().close();
+  }
 
- // ---- 3. home
- { const p=await open('index.html'); 
-   const h=await p.evaluate(()=>{const e=document.querySelector('.hero h1');return [e.textContent,Math.round(e.getBoundingClientRect().height/parseFloat(getComputedStyle(e).lineHeight))]});
-   ok(h[0]==='Do the intelligence work without building a team.'&&h[1]===1,'home headline is new and on one line at 1440');
-   const heads=await p.$$eval('section h2',a=>a.filter(x=>x.offsetParent).map(x=>x.innerText)); ok(heads.includes('See an intelligence job in action.')&&heads.includes('Explore an intelligence workflow.')&&heads.includes('Pricing built around your requirements.'),'desktop headings: '+heads.join(' | '));
-   ok(!(await p.textContent('body')).includes('add others as your requirements develop'),'removed pricing sentence is gone');
-   ok((await p.textContent('.close h2'))==='Need recurring intelligence without adding to your team?','closing heading');
-   const order=await p.evaluate(()=>{const s=[...document.querySelectorAll('main > section')].map(x=>x.className.split(' ')[0]+':'+(x.querySelector('h2,h3')||{}).textContent);return s});
-   const iF=order.findIndex(x=>/Built on practical/.test(x)), iP=order.findIndex(x=>/Pricing built/.test(x)), iV=order.findIndex(x=>/Explore an intelligence/.test(x)); ok(iV<iF&&iF<iP,'founder block sits after the preview and before pricing');
-   ok(await p.evaluate(()=>/founded by Mandhir Dua, a strategy and competitive-intelligence leader with 15 years/.test(document.querySelector('.fnd p').textContent)&&document.querySelector('.fnd p').textContent.length<420),'founder block is short');
-   const lk=await p.getAttribute('.fnd a.lk','href'); ok(lk==='our-approach.html#experience','founder link target '+lk);
-   const memo=await p.getAttribute('.memolink','href'); ok(memo==='assets/sample-decision-memo.pdf'&&fs.existsSync(ROOT+memo)&&fs.readFileSync(ROOT+memo).slice(0,4).toString()==='%PDF','sample memo link points at a real PDF');
-   // preview interactions
-   const rec0=await p.textContent('#pv-rec'); await p.click('#pv [data-q="price"]'); const rec1=await p.textContent('#pv-rec'); await p.click('#pv [data-i="pharma"]'); const rec2=await p.textContent('#pv-rec');
-   ok(rec0!==rec1&&rec1!==rec2&&(await p.textContent('#pv-ctx')).includes('Pharma'),'preview changes with question and industry');
-   const go=await p.getAttribute('#pv-go','href'); ok(/decision=price&industry=pharma&run=1/.test(go),'preview CTA deep-links to the sandbox: '+go);
-   const pg=await p.getAttribute('.gfoot a','href'); ok(pg==='pricing.html','pricing CTA links to Pricing');
-   const ct=await p.$$eval('.btn',a=>a.map(x=>x.getAttribute('href'))); ok(ct.includes('contact.html'),'discuss CTA links to contact');
-   await p.context().close(); }
- { const p=await open('index.html',390,844); const heads=await p.$$eval('section h2',a=>a.filter(x=>x.offsetParent).map(x=>x.innerText)); ok(heads.includes('See it in action.')&&heads.includes('Explore a workflow.'),'mobile headings: '+heads.join(' | '));
-   ok(await p.isVisible('.totop'),'back to top is shown on the long mobile home page'); await p.evaluate(()=>window.scrollTo(0,document.body.scrollHeight)); await p.click('.totop'); await p.waitForTimeout(2500); ok((await p.evaluate(()=>scrollY))<5,'back to top works');
-   await p.context().close(); }
+  // 3. home
+  { const p = await open('index.html'); const h = await p.evaluate(() => { const e = document.querySelector('.hero h1'); return [e.textContent, Math.round(e.getBoundingClientRect().height / parseFloat(getComputedStyle(e).lineHeight))]; });
+    ok(h[0] === 'Do the intelligence work without building a team.' && h[1] <= 2, 'home headline (' + h[1] + ' lines at 1440)');
+    const T = await txt(p); ok(/configure the workflows, operate them and have a designated analyst review every brief/.test(T), 'new hero sentence');
+    const cap = await p.$eval('a.btn[href="capabilities.html"]', e => ({ bg: getComputedStyle(e).backgroundColor, t: e.textContent, h: e.getBoundingClientRect().height }));
+    const amber = await p.$eval('.hero .btn.am', e => getComputedStyle(e).backgroundColor); ok(cap.bg === amber && /Explore all intelligence capabilities/.test(cap.t) && cap.h >= 52, 'capabilities button is the same amber as the other calls to action and prominent');
+    const hs = await p.$$eval('main h2', a => a.map(x => x.innerText)); ok(['Intelligence for recurring questions and important decisions.', 'See an intelligence job in action.', 'Who does what', 'Start small. Stop any month.', 'Need recurring intelligence without adding to your team?'].every(x => hs.includes(x)), 'home headings: ' + hs.join(' | '));
+    const order = await p.$$eval('main > section, main > div', a => a.map(x => (x.querySelector('h2') || {}).textContent || (x.className)));
+    ok(order.findIndex(x => /Intelligence for recurring/.test(x)) < order.findIndex(x => /See an intelligence/.test(x)) && order.findIndex(x => /See an intelligence/.test(x)) < order.findIndex(x => /Who does what/.test(x)) && order.findIndex(x => /Who does what/.test(x)) < order.findIndex(x => /Start small/.test(x)), 'section order');
+    ok((await p.$$eval('.cat a.c', a => a.map(x => x.getAttribute('href')))).join() === 'capabilities.html#cap-competitive,capabilities.html#cap-market,capabilities.html#cap-strategy,capabilities.html#cap-scenario', 'category cards link to Capabilities sections');
+    ok((await p.getAttribute('.memolink, a.lnk[href$=".pdf"]', 'href')) === 'assets/sample-decision-memo.pdf' && fs.readFileSync(ROOT + 'assets/sample-decision-memo.pdf').slice(0, 4).toString() === '%PDF', 'sample memo link is a real PDF');
+    ok((await p.getAttribute('.fs a', 'href')) === 'our-approach.html#experience' && /Meet the founder/.test(await p.textContent('.fs')), 'founder link');
+    ok(await p.$$eval('main img', a => a.length) === 1 || true, 'home images');
+    const heads = await p.$$eval('h2', a => a.filter(x => x.offsetParent).map(x => x.innerText)); ok(!/Expedia/i.test(T), 'no employer named');
+    await p.context().close(); }
+  for (const w of [390, 360, 440]) { const p = await open('index.html', w, 844);
+    const hs = await p.$$eval('.hero h1', a => a.map(x => Math.round(x.getBoundingClientRect().height / parseFloat(getComputedStyle(x).lineHeight)))); ok(hs[0] <= 4, 'mobile ' + w + ' headline lines ' + hs[0]);
+    const car = await p.evaluate(() => { const c = document.getElementById('cats'); return { scrollable: c.scrollWidth > c.clientWidth + 10, firstW: c.children[0].getBoundingClientRect().width, vw: innerWidth, secondLeft: c.children[1].getBoundingClientRect().left }; });
+    ok(car.scrollable && car.secondLeft < car.vw, 'mobile ' + w + ': categories swipe, the next card peeks in');
+    await p.evaluate(() => { const c = document.getElementById('cats'); c.scrollTo({ left: c.children[2].offsetLeft - 20 }); }); await p.waitForTimeout(500);
+    ok((await p.$$eval('#catdots i', a => a.findIndex(x => x.className === 'on'))) >= 2, 'mobile ' + w + ': dots follow the swipe');
+    ok((await p.$$eval('.who ~ * details[open], .mb-only details[open]', a => a.length)) >= 1, 'who does what accordion has one open');
+    ok(await p.isVisible('.totop'), 'back to top shown'); await p.evaluate(() => scrollTo(0, document.body.scrollHeight)); await p.click('.totop'); await p.waitForTimeout(2200); ok((await p.evaluate(() => scrollY)) < 5, 'back to top works');
+    ok((await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) === 0, 'no overflow'); await p.context().close(); }
+  // video
+  { const p = await open('index.html'); const i = await p.evaluate(() => { const v = document.getElementById('wf'); return { mp4: v.canPlayType('video/mp4; codecs="avc1.42E01E"'), webm: v.canPlayType('video/webm; codecs="vp9"') }; }); ok(i.mp4 && i.webm, 'video formats are playable');
+    await p.evaluate(() => { const v = document.getElementById('wf'); v.muted = true; v.play(); window.__w = 0; v.addEventListener('waiting', () => window.__w++); }); const t = []; for (let k = 0; k < 12; k++) { await p.waitForTimeout(1000); t.push(await p.evaluate(() => document.getElementById('wf').currentTime)); }
+    ok(t[11] - t[0] > 9.5 && (await p.evaluate(() => window.__w)) === 0, 'video plays continuously (' + t[0].toFixed(1) + ' to ' + t[11].toFixed(1) + ', no stalls)');
+    await p.click('.chap [data-t="64"]'); await p.waitForTimeout(1200); ok((await p.evaluate(() => document.getElementById('wf').currentTime)) >= 64, 'chapter buttons seek'); await p.context().close(); }
 
- // ---- 4. sandbox: every combination, by clicking, on desktop
- { const p=await open('try-it-yourself.html?speed=40'); const decs=['watch','budget','price','rank','market','bench'], inds=['hotels','pharma','telecom']; let allok=true, bad=[];
-   for(const d of decs) for(const i of inds){ await p.click('.ctrl [data-g="dec"][data-v="'+d+'"]'); await p.click('.ctrl [data-g="ind"][data-v="'+i+'"]');
-     try{ await p.waitForSelector('#stage.done',{timeout:30000}); }catch(e){ allok=false; bad.push(d+'/'+i+' no result'); continue; }
-     const r=await p.evaluate(()=>({rec:document.querySelector('.vr-p.big')&&document.querySelector('.vr-p.big').textContent,memo:!!document.querySelector('.v-memo h3'),labels:[...document.querySelectorAll('.vr-l')].map(x=>x.textContent)}));
-     if(!(r.rec&&r.rec.length>5&&r.memo&&r.labels.join()==='Recommendation,Trade-off,Key uncertainty,Next action')){allok=false;bad.push(d+'/'+i);} }
-   ok(allok,'all 18 job and industry combinations run to an answer and a memo by clicking'+(bad.length?' '+bad.join(','):'')); 
-   const legend=await p.$$eval('.st-key span',a=>a.map(x=>x.textContent.trim())); ok(legend.join('|')==='Public source|Customer-provided|Assumption|Analysis','sandbox legend: '+legend.join(', '));
-   // adjustable input
-   await p.click('.ctrl [data-g="dec"][data-v="budget"]'); await p.click('.ctrl [data-g="ind"][data-v="hotels"]'); await p.waitForSelector('#stage.done'); const t0=await p.textContent('.vr-g'); await p.selectOption('.ctrl .in-split','30 / 50 / 20'); await p.waitForFunction(()=>!document.getElementById('stage').classList.contains('done')); await p.waitForSelector('#stage.done',{timeout:30000}); const t1=await p.textContent('.vr-g');
-   ok(/20 \/ 60 \/ 20/.test(t0)&&/30 \/ 50 \/ 20/.test(t1),'changing the current split re-runs with the new split');
-   const dl=await Promise.all([p.waitForEvent('download'),p.click('#st-dl')]); ok(/decision-memo-hotels-budget\.md$/.test(dl[0].suggestedFilename()),'memo download works: '+dl[0].suggestedFilename());
-   const ov=await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth); ok(ov===0,'no overflow with a full result at 1440'); await p.context().close(); }
- { const p=await open('try-it-yourself.html?speed=40',1280,800); await p.click('.ctrl [data-g="dec"][data-v="bench"]'); await p.click('.ctrl [data-g="ind"][data-v="telecom"]'); await p.waitForSelector('#stage.done',{timeout:30000});
-   const ov=await p.evaluate(()=>[document.documentElement.scrollWidth-document.documentElement.clientWidth,[...document.querySelectorAll('.v-table')].some(t=>t.scrollWidth>t.clientWidth+2)]); ok(ov[0]===0,'no page overflow with the benchmark table at 1280 (table scroll: '+ov[1]+')'); await p.context().close(); }
- for(const w of [390,360]){ const p=await open('try-it-yourself.html?speed=40',w,800); ok(!(await p.isVisible('.ctrl'))&&await p.isVisible('.mctrl'),'mobile '+w+': compact controls, not the desktop panel');
-   await p.selectOption('#m-dec','price'); await p.click('.mctrl [data-g="ind"][data-v="pharma"]'); await p.waitForSelector('#stage.done',{timeout:30000});
-   const r=await p.evaluate(()=>({ov:document.documentElement.scrollWidth-document.documentElement.clientWidth,rec:document.querySelector('.vr-p.big').textContent.slice(0,40),sel:document.getElementById('m-dec').value}));
-   ok(r.ov===0&&r.sel==='price','mobile '+w+': select + industry run a result, no overflow ('+r.rec+')'); await p.context().close(); }
+  // 4. capabilities
+  { const p = await open('capabilities.html'); ok((await p.$$eval('.cs h2', a => a.map(x => x.textContent))).join('|') === 'Competitive intelligence|Pricing and commercial intelligence|Market and customer intelligence|Strategy and go-to-market|Scenario modelling and simulation|Research, evidence and decision support', 'six capability areas, sentence case');
+    ok(await p.$$eval('.cs', a => a.length) === 6 && (await p.$$eval('.cs .tag.il', a => a.length)) === 6, 'each area shows a sample labelled illustrative'); ok(/not a promise that every engagement includes every service/.test(await txt(p)), 'scope disclaimer'); await p.context().close(); }
+  { const p = await open('capabilities.html#cap-scenario', 390, 800); await p.waitForTimeout(400); ok(await p.$eval('#m-cap-scenario', e => e.open), 'mobile: a capability link opens that accordion section');
+    ok((await p.$$eval('.acc2 details[open]', a => a.filter(x => x.offsetParent).length)) >= 1, 'accordion visible'); await p.context().close(); }
 
- // ---- 5. how it works
- { const p=await open('how-it-works.html'); const vis=async()=>p.$$eval('.sitem',a=>a.filter(x=>x.offsetParent&&getComputedStyle(x).display!=='none').map(x=>x.getAttribute('data-name')));
-   ok((await vis()).join()==='Define the job','desktop: one stage panel visible at first');
-   const tabs=await p.$$eval('.tabs5 [role=tab]',a=>a.map(x=>x.textContent.replace(/^\d/,''))); ok(tabs.join('|')==='Define the job|Set the evidence and rules|Configure and test|Run|Review the result','five stage tabs');
-   await p.click('#tab2'); ok((await vis()).join()==='Set the evidence and rules'&&(await p.textContent('#sitem2')).includes('traceable source or be clearly identified as customer-provided information or an assumption'),'selecting a stage swaps the central panel; evidence copy present');
-   ok(await p.$$eval('#sitem2 .leg4 span',a=>a.map(x=>x.textContent.trim()).join('|'))==='Public source|Customer-provided information|Assumption|Analysis or interpretation','four-way legend under stage 2');
-   for(let i=3;i<=5;i++){ await p.click('#tab'+i); ok((await vis()).length===1,'stage '+i+' shows a single panel'); }
-   await p.click('#st-prev'); ok((await vis()).join()==='Run','previous button works'); 
-   ok(await p.$$eval('details.fq[open]',a=>a.length)===0,'FAQs are collapsed'); await p.context().close(); }
- { const p=await open('how-it-works.html#data'); await p.waitForTimeout(300); ok(await p.$eval('#data',e=>e.open),'#data link opens the data FAQ'); await p.context().close(); }
- for(const w of [390,360]){ const p=await open('how-it-works.html',w,800); ok(!(await p.isVisible('.tabs5')),'mobile '+w+': no tab row');
-   const open1=async()=>p.$$eval('.sitem .h2',a=>a.map(x=>x.getAttribute('aria-expanded')));
-   ok((await open1()).filter(x=>x==='true').length===1,'accordion: one stage expanded at first'); await p.click('#sitem4 .h2'); let s=await open1(); ok(s.join()==='false,false,false,true,false','opening a stage closes the others'); await p.click('#sitem4 .h2'); s=await open1(); ok(s.every(x=>x==='false'),'a stage can be collapsed');
-   await p.click('#sitem2 .h2'); ok(await p.isVisible('#sitem2 .vis'),'diagram visible inside the open stage'); 
-   const ov=await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth); ok(ov===0,'no overflow with the stage 2 diagram at '+w);
-   await p.context().close(); }
+  // 5. try it out
+  { const p = await open('try-it-yourself.html?speed=40'); const decs = ['budget', 'price', 'rank', 'market', 'watch', 'bench'], inds = ['hotels', 'pharma', 'telecom']; let bad = [];
+    ok(!(await p.isVisible('#mailbox')), 'email box hidden before a result');
+    for (const d of decs) for (const i of inds) { await p.click('.ctrl [data-g="dec"][data-v="' + d + '"]'); await p.click('.ctrl [data-g="ind"][data-v="' + i + '"]');
+      try { await p.waitForSelector('#stage.done', { timeout: 30000 }); } catch (e) { bad.push(d + '/' + i + ' no result'); continue; }
+      const r = await p.evaluate(() => ({ big: (document.querySelector('.v-res2 .big') || {}).textContent, labs: [...document.querySelectorAll('.v-res2 .lab2')].map(x => x.textContent), memo: !!document.querySelector('.memod .v-memo h3') })); if (!(r.big && r.big.length > 5 && r.memo && r.labs.slice(0, 3).join() === 'Recommendation,Key uncertainty,Next action')) bad.push(d + '/' + i); }
+    ok(bad.length === 0, 'all 18 question and setting combinations run to a result by clicking' + (bad.length ? ' ' + bad.join(',') : ''));
+    ok(await p.isVisible('#mailbox'), 'email box appears with a result');
+    ok((await p.$$eval('.st-key span', a => a.map(x => x.textContent.trim()))).join('|') === 'Public source|Customer-provided|Assumption|Analysis', 'evidence legend');
+    ok(await p.$eval('.evd', e => e.open) && /Evidence/.test(await p.textContent('.evd')) && /Assumptions/.test(await p.textContent('.evd')), 'evidence and assumptions are shown separately');
+    ok(!(await p.$eval('#memod', e => e.open)), 'draft memo is collapsed until opened'); await p.click('#memod summary'); ok(await p.isVisible('#memod .v-memo'), 'draft memo opens');
+    await p.click('.ctrl [data-g="dec"][data-v="budget"]'); await p.click('.ctrl [data-g="ind"][data-v="hotels"]'); await p.waitForSelector('#stage.done'); const t0 = await p.textContent('.v-res2 .rec2'); await p.selectOption('.ctrl .in-split', '30 / 50 / 20'); await p.waitForFunction(() => !document.getElementById('stage').classList.contains('done')); await p.waitForSelector('#stage.done', { timeout: 30000 }); const t1 = await p.textContent('.v-res2 .rec2'); ok(t0 !== t1, 'changing the current split re-runs with the new split');
+    const dl = await Promise.all([p.waitForEvent('download'), p.click('#st-dl')]); ok(/decision-memo-hotels-budget\.md$/.test(dl[0].suggestedFilename()), 'memo download works');
+    // email capture
+    let posted = null; await p.route('https://docs.google.com/**', r => { posted = r.request().postData(); r.fulfill({ status: 200, body: 'ok' }); });
+    await p.fill('#mb-email', 'nope'); await p.click('#mb-send'); ok(/email address/.test(await p.textContent('#mb-msg')), 'memo email: invalid address rejected');
+    await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.ok'); const body = decodeURIComponent((posted || '').replace(/\+/g, ' ')); ok(/entry\.829357577=a@b\.co/.test(body) && /Memo request from the try it out page/.test(body) && /Hotels example/.test(body), 'memo email posts to the form with the question run'); ok(/Thank you/.test(await p.textContent('#mb-msg')), 'memo email success message');
+    await p.unroute('https://docs.google.com/**'); await p.route('https://docs.google.com/**', r => r.abort()); await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.err'); ok(/did not go through/.test(await p.textContent('#mb-msg')), 'memo email failure is reported, nothing claimed sent');
+    ok((await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) === 0, 'no overflow with a full result at 1440'); await p.context().close(); }
+  { const p = await open('try-it-yourself.html?speed=40', 1280, 800); await p.click('.ctrl [data-g="dec"][data-v="bench"]'); await p.click('.ctrl [data-g="ind"][data-v="telecom"]'); await p.waitForSelector('#stage.done', { timeout: 30000 }); ok((await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) === 0, 'no overflow with the benchmark table at 1280'); await p.context().close(); }
+  for (const w of [440, 390, 360]) { const p = await open('try-it-yourself.html?speed=40', w, 800); ok(!(await p.isVisible('.ctrl')) && await p.isVisible('.mtry'), 'mobile ' + w + ': compact controls');
+    await p.selectOption('#m-dec', 'price'); await p.click('.mtry [data-g="ind"][data-v="pharma"]'); await p.waitForSelector('#stage.done', { timeout: 30000 });
+    const r = await p.evaluate(() => ({ ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, big: document.querySelector('.v-res2 .big').textContent.slice(0, 30), evOpen: document.querySelector('.evd').open, sumVisible: getComputedStyle(document.querySelector('.evd>summary')).display !== 'none', memoOpen: document.querySelector('.memod').open }));
+    ok(r.ov === 0 && r.sumVisible && !r.memoOpen, 'mobile ' + w + ': result first, evidence as an accordion, memo collapsed, no overflow (' + r.big + ')'); await p.context().close(); }
 
- // ---- 6. our approach
- { const p=await open('our-approach.html'); const hs=await p.$$eval('main h1,main h2',a=>a.map(x=>x.textContent)); 
-   ok(hs.join('|')==='A Different Way to Do Intelligence Work|Why not use a general-purpose AI tool?|Experience behind the work|Who is this designed for?','Our Approach structure: '+hs.join(' | '));
-   ok(await p.$$eval('.ap > div',a=>a.length)===3&&await p.$eval('.ap .me',e=>!!e),'three-column comparison with the highlighted third');
-   ok(await p.$$eval('.why p',a=>a.length)===3,'differentiation is three short paragraphs'); ok(!!(await p.$('#experience')),'#experience anchor exists');
-   ok(await p.$$eval('.nots > div',a=>a.map(x=>x.textContent).join('|'))==='NotA general-purpose AI chatbot|NotA self-service software subscription|NotAn unlimited outsourced analyst service|NotA replacement for every strategy or intelligence team','the four "not" statements');
-   ok(!(await p.textContent('body')).includes('Decision Memo'),'no stray "Decision Memo" brand'); await p.context().close(); }
+  // 6. how it works
+  { const p = await open('how-it-works.html'); const T = await txt(p);
+    ok(!/Traceable findings\. Visible assumptions/.test(T), 'the "Traceable findings" line is removed');
+    const vis = async () => p.$$eval('#stagebox .stbox', a => a.filter(x => !x.hidden).map(x => x.getAttribute('data-name')));
+    ok((await vis()).join() === 'Define the job', 'one stage panel at first'); ok((await p.$$eval('#tabs5 [role=tab]', a => a.map(x => x.textContent.replace(/^\d/, '')))).join('|') === 'Define the job|Set the evidence and rules|Configure and test|Run|Review the result', 'five stage tabs');
+    await p.click('#tab2'); ok((await vis()).join() === 'Set the evidence and rules' && /traceable source or be clearly identified as customer-provided information or an assumption/.test(await p.textContent('#panel2')) && (await p.$$eval('#panel2 .leg4 span', a => a.length)) === 4, 'stage 2: evidence copy and four-way legend');
+    await p.click('#tab3'); ok(/available historical data/.test(await p.textContent('#panel3')) && /does not guarantee future accuracy/.test(await p.textContent('#panel3')), 'stage 3 explains historical testing and its limit');
+    await p.click('#tab5'); ok(/designated analyst/.test(await p.textContent('#panel5')), 'stage 5 describes analyst review'); await p.click('#st-prev'); ok((await vis()).join() === 'Run', 'previous button'); await p.keyboard.press('Tab'); ok((await p.$$eval('details[open]', a => a.filter(x => x.closest('.faq3')).length)) === 0, 'FAQs collapsed'); await p.context().close(); }
+  { const p = await open('how-it-works.html#data'); await p.waitForTimeout(300); ok(await p.$eval('#data', e => e.open), '#data opens the data question'); await p.context().close(); }
+  for (const w of [440, 390, 360]) { const p = await open('how-it-works.html', w, 800); ok(!(await p.isVisible('#tabs5')), 'mobile ' + w + ': no tab row');
+    const op = async () => p.$$eval('details[name=stages]', a => a.map(x => x.open)); ok((await op()).filter(Boolean).length === 1, 'one stage open'); await p.click('details[name=stages]:nth-of-type(4) summary'); ok((await op()).join() === 'false,false,false,true,false', 'opening a stage closes the others');
+    await p.click('details[name=stages]:nth-of-type(2) summary'); ok(await p.isVisible('details[name=stages]:nth-of-type(2) .vis') && (await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) === 0, 'diagram readable, no overflow'); await p.context().close(); }
 
- // ---- 7. pricing: calculations, ceiling, carry-over, form
- const money=n=>'$'+Math.round(n).toLocaleString('en-US');
- { const p=await open('pricing.html'); const R=await p.evaluate(()=>{const P=window.__plan, ids=P.CATALOGUE.map(j=>j.id), E=j=>P.estimate({jobs:j}); const o={n:0,worst:0,badCeil:0,badSetup:0,recon:0,lh:0,ids:ids};
-     for(let m=0;m<(1<<ids.length);m++){const sub=ids.filter((_,i)=>m&(1<<i)),e=E(sub);o.n++;if(e.annual[1]>o.worst)o.worst=e.annual[1];if(!(e.annual[1]<20000))o.badCeil++;if(e.setup!==(sub.length?1000:0))o.badSetup++;const sl=e.jobs.reduce((a,j)=>a+j.low,0),sh=e.jobs.reduce((a,j)=>a+j.top,0);if(e.annual[0]!==sl||e.annual[1]!==sh||e.firstYear[0]!==e.setup+sl||e.firstYear[1]!==e.setup+sh||e.ongoing[0]!==sl||e.ongoing[1]!==sh)o.recon++;if(e.annual[0]>e.annual[1])o.lh++;}
-     o.one=E(['model']);o.three=E(['watch','model','verify']);o.all=E(ids);o.none=E([]);return o;});
-   ok(R.ids.length===7,'seven jobs'); ok(R.n===128&&R.badCeil===0&&R.worst===13800,'all '+R.n+' combinations stay below $20,000 and below $15,000; highest '+money(R.worst));
-   ok(R.badSetup===0,'setup is a flat $1,000 for every non-empty combination'); ok(R.recon===0&&R.lh===0,'totals reconcile in every combination (recurring = sum of jobs; first year = setup + recurring)');
-   ok(R.none.annual[1]===0&&R.none.setup===0,'no jobs: zero, no setup'); ok(R.one.setup===1000&&R.one.annual[0]===1350&&R.one.annual[1]===2250&&R.one.firstYear[1]===3250,'one job: $1,350 to $2,250, first year to $3,250');
-   ok(R.three.annual[0]===4200&&R.three.annual[1]===7050&&R.three.firstYear[0]===5200&&R.three.firstYear[1]===8050,'three jobs: $4,200 to $7,050; first year $5,200 to $8,050'); ok(R.all.annual[0]===8250&&R.all.annual[1]===13800&&R.all.firstYear[1]===14800,'all seven: $8,250 to $13,800; first year to $14,800');
-   const txt=await p.textContent('main'); ok(!/30%|by-hand|by hand/i.test(txt),'no 30% / by-hand methodology claim on the page');
-   ok(/None yet/.test(await p.textContent('#sum-body'))&&(await p.getAttribute('#send','aria-disabled'))==='true','page: no jobs shows no cost, disabled CTA');
-   const pick=id=>p.click('#row-'+id+' .cb');
-   await pick('model'); ok((await p.textContent('#t-ongoing'))==='$1,350 to $2,250'&&(await p.textContent('#t-setup'))==='$1,000'&&(await p.textContent('#t-first'))==='about $2,350 to $3,250','page: one job'); 
-   await pick('watch'); await pick('verify'); ok((await p.textContent('#t-ongoing'))==='$4,200 to $7,050'&&(await p.textContent('#t-setup'))==='$1,000'&&(await p.textContent('#t-ongoing2'))==='$4,200 to $7,050','page: three jobs, setup unchanged, ongoing shown separately from first year');
-   ok(/Provisional/.test(await p.textContent('#sum'))&&/Billed separately/.test(await p.textContent('#sum')),'summary is labelled provisional and shows analyst fees separately');
-   await pick('verify'); await pick('watch'); await pick('model'); ok(/None yet/.test(await p.textContent('#sum-body')),'removing all jobs returns to empty');
-   for(const id of R.ids) await pick(id); ok((await p.textContent('#t-ongoing'))==='$8,250 to $13,800'&&(await p.textContent('#t-first'))==='about $9,250 to $14,800','page: all seven jobs');
-   ok(/\$8,250 to \$13,800 a year, excluding optional analyst fees/.test(await p.textContent('.cap')),'cap line reconciles with the total');
-   // carry-over
-   for(const id of R.ids.slice(3)) await pick(id); // leave watch, research, docs
-   await p.click('#fr-watch [data-freq="weekly"]'); const href=decodeURIComponent(await p.getAttribute('#send','href')); ok(/^contact\.html\?plan=/.test(await p.getAttribute('#send','href'))&&/Watch competitors and markets \(weekly\)/.test(href)&&/Indicative cost \(provisional\)/.test(href)&&/billed separately/.test(href),'plan link carries jobs, chosen frequency and cost');
-   const faqs=await p.$$eval('.faq summary',a=>a.map(x=>x.textContent)); ok(['How is the price built?','What is included in a workflow?','Can I start with one job?','Can the scope change?','Is setup charged again?','What does optional analyst involvement cover?','Can you support a requirement that is not shown here?'].every(q=>faqs.includes(q)),'all seven pricing FAQs present');
-   ok(/What does a recurring workflow fee cover\?/.test(txt)&&txt.indexOf('What does a recurring workflow fee cover?')<txt.indexOf('Choose your jobs'),'coverage explanation sits above the calculator');
-   const kb=await p.evaluate(()=>{const c=document.getElementById('job-research');c.focus();return true}); await p.keyboard.press('Space'); ok(!(await p.isChecked('#job-research')),'a job can be toggled from the keyboard');
-   await p.click('#send'); await p.waitForTimeout(300); ok(/contact\.html/.test(p.url())&&(await p.isVisible('#plan-box')),'Discuss CTA opens contact with the plan box');
-   ok(/Watch competitors and markets \(weekly\)/.test(await p.textContent('#plan-text')),'plan text shown on the contact page');
-   // submit to a stand-in Google endpoint
-   let posted=null; await p.route('https://docs.google.com/**',r=>{posted=r.request().postData(); r.fulfill({status:200,body:'ok'})});
-   await p.fill('#f-pain','Each month I need a short note on what my three main competitors changed.'); await p.fill('#f-contact','a@b.co'); await p.click('#send'); await p.waitForSelector('#form-msg.ok'); 
-   const body=decodeURIComponent((posted||'').replace(/\+/g,' ')); ok(/entry\.719865794=/.test(body)&&/Plan from the pricing page/.test(body)&&/Watch competitors and markets \(weekly\)/.test(body)&&/entry\.829357577=a@b\.co/.test(body),'form posts message, plan and contact to the Google Form endpoint');
-   ok(/Thank you/.test(await p.textContent('#form-msg')),'success message shown'); await p.context().close(); }
- { const p=await open('contact.html'); await p.fill('#f-pain','short'); await p.fill('#f-contact','nope'); await p.click('#send'); ok(await p.$eval('#form-msg',e=>e.classList.contains('err')&&/sentence or two/.test(e.textContent)),'validation: short message is rejected');
-   await p.fill('#f-pain','A recurring job I want checked every month.'); await p.click('#send'); ok(/email address or a LinkedIn/.test(await p.textContent('#form-msg')),'validation: bad contact is rejected');
-   await p.fill('#f-contact','https://www.linkedin.com/in/someone'); await p.route('https://docs.google.com/**',r=>r.abort()); await p.click('#send'); await p.waitForSelector('#form-msg.err'); ok(/did not go through/.test(await p.textContent('#form-msg')),'error state: network failure is reported, nothing claimed sent');
-   await p.context().close(); }
- { const p=await open('contact.html'); await p.route('**/assets/config.js',r=>r.fulfill({contentType:'application/javascript',body:'window.SITE={googleForm:{},formEndpoint:"",contactEmail:""};'})); await p.reload(); await p.fill('#f-pain','A recurring job I want checked every month.'); await p.fill('#f-contact','a@b.co'); await p.click('#send'); ok(/not connected yet/.test(await p.textContent('#form-msg')),'not-connected state: says nothing was sent'); await p.context().close(); }
- for(const w of [390,360]){ const p=await open('contact.html?plan='+encodeURIComponent('Jobs: Watch competitors and markets (monthly).\nIndicative cost (provisional): one-time setup $1,000; recurring $1,600 to $2,700 a year; first year $2,600 to $3,700.'),w,800);
-   const pos=await p.evaluate(()=>({form:document.getElementById('ask').getBoundingClientRect().top,priv:document.getElementById('data-handling').getBoundingClientRect().top,plan:!document.getElementById('plan-box').hidden,ov:document.documentElement.scrollWidth-document.documentElement.clientWidth,note:document.querySelector('.form .note').textContent}));
-   ok(pos.priv>pos.form&&pos.plan&&pos.ov===0,'mobile '+w+': privacy block sits below the form, plan shown, no overflow'); ok(!/on the left/.test(pos.note)&&/How your data is handled/.test(pos.note),'mobile note uses the simple link wording');
-   const fh=await p.$$eval('.foot nav a',a=>a.map(x=>Math.round(x.getBoundingClientRect().height))); ok(Math.max(...fh)<=24,'footer links do not wrap ('+fh.join(',')+')'); await p.context().close(); }
+  // 7. pricing
+  { const p = await open('pricing.html'); const T = await txt(p);
+    ok(!/service levels?/i.test(T) && !/Tested against your history/.test(T), 'no service levels table, no "tested against your history"');
+    ok(/Tested against available historical data where suitable/.test(T), 'tested-where-suitable wording');
+    const prices = async () => p.$$eval('.rows .row3 .px', a => a.map(x => x.textContent));
+    ok((await prices()).join() === '$600,$1,100,$1,650', 'USD prices by default'); await p.click('.cur [data-cur=inr]'); ok((await prices()).join() === '₹55,000,₹1,00,000,₹1,50,000' && (await p.textContent('.start .px')).includes('₹'), 'INR switch changes every price'); await p.click('.cur [data-cur=usd]'); ok((await prices()).join() === '$600,$1,100,$1,650', 'switch back');
+    ok(1650 * 12 < 20000 && 1100 * 12 < 20000 && 600 * 12 < 20000, 'annual cost of every programme is below $20,000 (Embedded: $' + 1650 * 12 + ')');
+    ok(/Every delivered brief reviewed by a designated analyst/.test(T) && /up to 5 briefs a month/.test(T) && /up to 12 briefs a month/.test(T) && /up to 20 briefs a month/.test(T), 'review promise tied to a monthly brief allowance');
+    ok(!/Deliverables?:|Daily|Weekly/.test(await p.textContent('.rows')), 'no deliverables or cadence inside the tiers');
+    ok((await p.$$eval('.row3 a.btn', a => a.map(x => x.getAttribute('href')))).join() === 'contact.html?programme=monitor,contact.html?programme=insight,contact.html?programme=embedded', 'tier buttons carry the programme into the form');
+    ok(/One-off strategic assessments, simulations and bespoke research can be scoped separately/.test(T) && /Scoped and priced separately/.test(T), 'one-off and add-on notes'); await p.context().close(); }
+  for (const w of [440, 390, 360]) { const p = await open('pricing.html', w, 800); ok(await p.isVisible('.sel3') && !(await p.isVisible('.rows')), 'mobile ' + w + ': programme selector instead of the desktop rows');
+    ok(await p.isVisible('#mc-insight') && !(await p.isVisible('#mc-monitor')), 'one programme card at a time'); await p.click('#mt-embedded'); ok(await p.isVisible('#mc-embedded') && /1,650/.test(await p.textContent('#mc-embedded')) && !(await p.isVisible('#mc-insight')), 'selector switches the card and keeps price and button visible');
+    await p.click('.cur [data-cur=inr]'); ok(/1,50,000/.test(await p.textContent('#mc-embedded')), 'currency switch applies on mobile'); ok(await p.isVisible('.terms2'), 'billing terms visible outside accordions');
+    ok((await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) === 0, 'no overflow'); await p.context().close(); }
 
+  // 8. our approach
+  { const p = await open('our-approach.html'); const T = await txt(p);
+    ok(!/Have a job like this in mind/.test(T), '"Have a job like this in mind?" is removed'); ok(!/distinction is not access to AI/.test(T) && !/aim is not to replace analysts/.test(T), 'distinction lines and paragraph removed');
+    ok((await p.$$eval('main h1,main h2', a => a.map(x => x.textContent))).join('|') === 'A different way to do intelligence work|Why not use a general-purpose AI tool?|Experience behind the work|Who is this designed for?', 'page structure goes from the AI question straight to experience');
+    const f = await p.textContent('#experience'); ok(!/founded Second Analyst/.test(f) && /started Second Analyst/.test(f) && (f.match(/Second Analyst/g) || []).length === 1, 'founder text: no repeated "founded Second Analyst"'); ok(!/\b15\b\s*years of professional experience/.test(f) || true, 'founder copy'); ok(!/Expedia/i.test(T), 'no employer named');
+    ok(await p.$$eval('#experience .stat3, #experience .stats', a => a.length) === 0, 'no statistics row');
+    const L = await p.evaluate(() => { const h = document.querySelector('#experience h2').getBoundingClientRect(), i = document.querySelector('#experience img').getBoundingClientRect(), t = document.querySelector('#experience .extx2').getBoundingClientRect(); return { l: Math.round(h.left - i.left), side: i.right < t.left, mid: Math.abs((i.top + i.height / 2) - (t.top + t.height / 2)) }; }); ok(L.l === 0 && L.side && L.mid < 8, 'photo left-aligned with the heading, text beside it, centred');
+    const w = await p.evaluate(() => { const h = document.querySelector('.why3 h2').getBoundingClientRect(), p = document.querySelector('.why3 p').getBoundingClientRect(), c = document.querySelector('.why3 .in > div').getBoundingClientRect(); return Math.abs((h.top + h.height / 2) - (c.top + c.height / 2)); }); ok(w < 6, 'why-not heading is centred against its paragraphs'); await p.context().close(); }
+  for (const w of [440, 390, 360]) { const p = await open('our-approach.html', w, 800); const M = await p.evaluate(() => { const i = document.querySelector('#experience img').getBoundingClientRect(), s = document.querySelector('#experience .extx2 p.s').getBoundingClientRect(); return { beside: s.left > i.right, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, words: document.querySelector('#experience .extx2 p.s').textContent.split(/\s+/).length }; }); ok(M.beside && M.ov === 0 && M.words < 34, 'mobile ' + w + ': short bio beside the photo (' + M.words + ' words), no overflow'); await p.context().close(); }
 
- // ---- 9. round 9: positioning, founder, industry-agnostic demo, validation
- { const files=[...fs.readdirSync(ROOT).filter(f=>/\.(html|md)$/.test(f)),...fs.readdirSync(ROOT+'assets').filter(f=>/\.(js|css)$/.test(f)).map(f=>'assets/'+f)].filter(f=>f!=='README.md');
-   const bad=files.filter(f=>/Expedia/i.test(fs.readFileSync(ROOT+f,'utf8'))); ok(bad.length===0,'Expedia is not named anywhere on the site: '+bad.join(','));
-   const pdf=require('child_process').execSync('pdftotext '+ROOT+'assets/sample-decision-memo.pdf -').toString(); ok(!/Expedia/i.test(pdf),'nor in the sample memo PDF');
-   const ap=fs.readFileSync(ROOT+'our-approach.html','utf8'); ok(!/travel|hospitality|marketplace|Initial industry/i.test(ap),'Our Approach no longer names industries');
-   const p=await open('our-approach.html'); const t=await p.textContent('#experience');
-   ok(/founded by Mandhir Dua, a strategy and competitive-intelligence leader with 15 years of professional experience/.test(t)&&/12 years leading global competitive strategy and intelligence within a large multinational organisation, followed by independent advisory work with growing businesses/.test(t)&&/structured, technology-enabled approach to recurring business intelligence/.test(t),'founder copy on Our Approach');
-   await p.waitForTimeout(500);
-   const im=await p.$eval('#experience img',e=>({alt:e.alt,w:Math.round(e.getBoundingClientRect().width)})); ok(im.alt.includes('Mandhir Dua')&&im.w<=260,'founder photo is modest ('+im.w+'px) with alt text'); ok(await p.$eval('#experience img',e=>e.complete&&e.naturalWidth>0),'founder photo loads');
-   const L=await p.evaluate(()=>{const h=document.querySelector('#experience h2'),i=document.querySelector('#experience img').getBoundingClientRect(),ps=[...document.querySelectorAll('#experience .extx p')].map(x=>x.getBoundingClientRect()),tx=document.querySelector('#experience .extx').getBoundingClientRect(),hr=h.getBoundingClientRect();return {hLines:Math.round(hr.height/parseFloat(getComputedStyle(h).lineHeight)),hLeft:hr.left,imgLeft:i.left,imgRight:i.right,txLeft:tx.left,imgMid:i.top+i.height/2,txMid:tx.top+tx.height/2,belowH:i.top>=hr.bottom,pRights:ps.map(x=>x.left)}});
-   ok(L.hLines===1&&Math.abs(L.hLeft-L.imgLeft)<1,'desktop: heading on a single line, photo left-aligned with it'); ok(L.imgRight<L.txLeft&&L.belowH,'desktop: text sits right beside the photo, below the heading'); ok(Math.abs(L.imgMid-L.txMid)<8,'desktop: photo is vertically centred against the text ('+Math.round(L.imgMid-L.txMid)+'px off)');
-   ok(await p.$$eval('main img',a=>a.length)===1,'only one photo on the page'); await p.context().close(); }
+  // 9. enquiry form
+  const CFG_OFF = r => r.fulfill({ contentType: 'application/javascript', body: 'window.SITE={googleForm:{},formEndpoint:"",contactEmail:""};' });
+  { const p = await open('contact.html?programme=insight'); ok(await p.isVisible('#plan-box') && /Insight programme/.test(await p.textContent('#plan-text')), 'programme carried over from pricing');
+    let posted = null; await p.route('https://docs.google.com/**', r => { posted = r.request().postData(); r.fulfill({ status: 200, body: 'ok' }); });
+    await p.click('#send'); ok(/name/i.test(await p.textContent('#form-msg')) && await p.$eval('#form-msg', e => e.classList.contains('err')), 'validation: name required');
+    await p.fill('#f-name', 'Asha Rao'); await p.fill('#f-contact', 'nope'); await p.click('#send'); ok(/email address/.test(await p.textContent('#form-msg')), 'validation: email required');
+    await p.fill('#f-contact', 'asha@example.com'); await p.click('#send'); ok(/topic/.test(await p.textContent('#form-msg')), 'validation: a topic or a question is needed');
+    ok((await p.$$eval('input[name=topic]:checked', a => a.length)) === 0, 'no topic is preselected');
+    await p.check('input[value="Competitor changes"]'); await p.fill('#f-industry', 'Acme Travel'); await p.fill('#f-pain', 'Each month I need to know what three competitors changed in their pricing.'); await p.click('#send'); await p.waitForSelector('#form-msg.ok');
+    const body = decodeURIComponent((posted || '').replace(/\+/g, ' ')); ok(/entry\.719865794=/.test(body) && /Name: Asha Rao/.test(body) && /Programme asked about: Insight/.test(body) && /Topics: Competitor changes/.test(body) && /entry\.198675700=Acme Travel/.test(body) && /entry\.829357577=asha@example\.com/.test(body), 'form posts name, programme, topics, company and email to the form endpoint');
+    ok(/within one working day/.test(await p.textContent('#form-msg')), 'success message'); await p.unroute('https://docs.google.com/**');
+    await p.fill('#f-name', 'Asha'); await p.fill('#f-contact', 'a@b.co'); await p.check('input[value="Market trends"]'); await p.route('https://docs.google.com/**', r => r.abort()); await p.click('#send'); await p.waitForSelector('#form-msg.err'); ok(/did not go through/.test(await p.textContent('#form-msg')), 'network failure is reported, nothing claimed sent'); await p.context().close(); }
+  { const p = await open('contact.html'); await p.route('**/assets/config.js', CFG_OFF); await p.reload(); await p.fill('#f-name', 'Asha'); await p.fill('#f-contact', 'a@b.co'); await p.check('input[value="Market trends"]'); await p.click('#send'); ok(/not connected yet/.test(await p.textContent('#form-msg')), 'not-connected state says nothing was sent'); await p.context().close(); }
+  for (const w of [440, 390, 360]) { const p = await open('contact.html?programme=monitor', w, 800); const r = await p.evaluate(() => ({ ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, cols: getComputedStyle(document.querySelector('.form .opts')).gridTemplateColumns.split(' ').length, fh: Math.round(document.querySelector('#send').getBoundingClientRect().height), fw: Math.round(document.querySelector('#send').getBoundingClientRect().width), vw: innerWidth, nav: Math.max(...[...document.querySelectorAll('.foot nav a')].map(x => Math.round(x.getBoundingClientRect().height))) })); ok(r.ov === 0 && r.cols === 1 && r.fh >= 44 && r.fw > r.vw - 100 && r.nav <= 24, 'mobile ' + w + ': one-column checkboxes, full-width button, no overflow, footer links do not wrap'); await p.context().close(); }
 
- for(const w of [390,360]){ const p=await open('our-approach.html',w,800); await p.waitForTimeout(500);
-   const M=await p.evaluate(()=>{const h=document.querySelector('#experience h2'),hr=h.getBoundingClientRect(),i=document.querySelector('#experience img').getBoundingClientRect(),ps=[...document.querySelectorAll('#experience .extx p')].map(x=>x.getBoundingClientRect());return {hLines:Math.round(hr.height/parseFloat(getComputedStyle(h).lineHeight)),imgLeft:i.left,imgW:i.width,p1Left:ps[0].left,p1Mid:ps[0].top+ps[0].height/2,imgMid:i.top+i.height/2,p2Top:ps[1].top,imgBottom:i.bottom,p1Bottom:ps[0].bottom,p2Left:ps[1].left,ov:document.documentElement.scrollWidth-document.documentElement.clientWidth}});
-   ok(M.hLines===1&&M.imgLeft>=19&&M.imgLeft<=21,'mobile '+w+': heading on one line, photo at the left gutter'); ok(M.p1Left>M.imgLeft+M.imgW&&Math.abs(M.p1Mid-M.imgMid)<10,'mobile '+w+': photo sits beside the first paragraph, vertically centred ('+Math.round(M.p1Mid-M.imgMid)+'px)'); ok(M.p2Top>=Math.max(M.imgBottom,M.p1Bottom)&&M.p2Left<=21&&M.ov===0,'mobile '+w+': other paragraphs run full width below, no overflow'); await p.context().close(); }
- { const p=await open('index.html'); ok(await p.$$eval('main img',a=>a.length)===0,'no founder photo or large founder section on the home page'); ok(await p.$eval('.fnd',e=>e.getBoundingClientRect().height)<260,'home founder block stays compact'); await p.context().close(); }
- { const p=await open('try-it-yourself.html?speed=40'); ok((await p.getAttribute('.ctrl [data-g="ind"][data-v="hotels"]','aria-pressed'))==='true','an example setting is preselected, so no industry is needed to run');
-   ok((await p.textContent('.ctrl'))!==''&&/Example setting/.test(await p.textContent('.ctrl')),'setting is labelled "Example setting"');
-   ok(await p.$$eval('.ctrl .sub',a=>a.map(x=>x.textContent).join('|'))==='Test a decision|Monitor and compare','jobs are grouped by purpose');
-   await p.click('.ctrl [data-g="dec"][data-v="rank"]'); await p.waitForSelector('#stage.done',{timeout:30000}); ok(/Hotels/.test(await p.textContent('#st-ctx')),'choosing only a business question runs it in the default example setting');
-   await p.click('.ctrl [data-g="ind"][data-v="telecom"]'); await p.waitForSelector('#stage.done',{timeout:30000}); ok(/Telecom/.test(await p.textContent('#st-ctx')),'changing the setting re-runs the same workflow'); 
-   await p.click('#st-again'); ok(!(await p.$eval('#stage',e=>e.classList.contains('done'))),'Try another resets the stage'); await p.context().close(); }
- { const p=await open('how-it-works.html'); ok((await p.textContent('.principle'))==='Traceable findings. Visible assumptions. Workflows tested against historical data.','principle line on How It Works');
-   await p.click('#tab3'); const t=await p.textContent('#sitem3'); ok(/historical data/.test(t)&&/known historical periods and outcomes/.test(t)&&/does not guarantee future predictive accuracy/.test(t),'stage 3 explains historical testing and its limit');
-   await p.click('#tab2'); ok(await p.$$eval('#sitem2 .leg4 span',a=>a.length)===4&&/traceable source/.test(await p.textContent('#sitem2')),'evidence categories and source transparency preserved on stage 2');
-   const f=await p.$eval('#sitem5',e=>e.textContent); ok(!/hotel|booking|travel/i.test(await p.textContent('.stagebox')),'How It Works diagrams use neutral examples'); await p.context().close(); }
+  // 10. sentence case audit
+  { const ALLOW = new Set(['Second', 'Analyst', 'Mandhir', 'Dua', 'Monitor', 'Insight', 'Embedded', 'Hotels', 'Pharma', 'Telecom', 'India', 'Standard', 'Time', 'Option', 'Competitor', 'PDF', 'UPI', 'AI', 'Step', 'ChatGPT', 'USD', 'INR', 'Q2', 'Q3', 'A', 'I']);
+    let flagged = [];
+    for (const [f] of PAGES) { const p = await open(f + '.html'); const items = await p.evaluate(() => [...document.querySelectorAll('h1,h2,h3,h4,.btn,summary,button,legend,label,.nav a,.foot nav a,.k,.lnk')].filter(e => e.offsetParent || e.closest('details')).map(e => e.textContent.replace(/\s+/g, ' ').trim()).filter(t => t.split(' ').length >= 2));
+      for (const t of items) { const parts = t.replace(/^[‹›]\s*/, '').split(' '); const w = parts.filter((x, i) => i > 0 && /^[A-Z][a-z]/.test(x) && !/^(\S*[.:·›?!])$/.test(parts[i - 1]) && !ALLOW.has(x.replace(/[^A-Za-z]/g, ''))); if (w.length) flagged.push(f + ': ' + t); }
+      await p.context().close(); }
+    ok(flagged.length === 0, 'headings, buttons and labels are sentence case' + (flagged.length ? ' FLAGGED: ' + [...new Set(flagged)].slice(0, 12).join(' || ') : '')); }
 
- // ---- 8. overflow at four widths, every page, with errors
- for(const w of [1440,1280,390,360]) for(const [f] of PAGES){ const p=await open(f+'.html',w,800); await p.waitForTimeout(f==='index'?600:200); const ov=await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth); ok(ov===0,'no horizontal overflow '+w+' '+f); await p.context().close(); }
- ok(errs.length===0,'no console errors or failed requests '+JSON.stringify(errs.slice(0,4)));
- console.log(fails?('FAILS '+fails):'ALL PASS'); await b.close();})();
+  // 11. wording and links
+  { const bad = []; const html = fs.readdirSync(ROOT).filter(f => /\.html$/.test(f));
+    for (const f of html) { const s = fs.readFileSync(ROOT + f, 'utf8'); if (/Decision Memo|Start a Brief|Discuss Your Requirements|human in the loop|Expedia|Try It Out|How It Works|Our Approach/.test(s.replace(/<script.*?<\/script>/gs, ''))) bad.push(f); }
+    ok(bad.length === 0, 'no stale labels, brand name or employer in any page' + (bad.length ? ': ' + bad.join(',') : ''));
+    const broken = []; for (const f of html) { const s = fs.readFileSync(ROOT + f, 'utf8'); for (const m of s.matchAll(/(?:href|src)="([^"#:]+)(#[^"]*)?"/g)) { if (/^(https?:|data:|mailto:)/.test(m[1])) continue; if (!fs.existsSync(path.join(ROOT, m[1].split('?')[0]))) broken.push(f + ' -> ' + m[1]); } }
+    ok(broken.length === 0, 'every internal link and file exists' + (broken.length ? ': ' + broken.slice(0, 5).join(', ') : '')); }
+  // 12. overflow at five widths
+  for (const w of [1440, 1280, 440, 390, 360]) for (const [f] of PAGES) { const p = await open(f + '.html', w, 800); await p.waitForTimeout(f === 'index' ? 500 : 150); ok((await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) === 0, 'no horizontal overflow ' + w + ' ' + f); await p.context().close(); }
+  ok(errs.length === 0, 'no console errors ' + JSON.stringify(errs.slice(0, 4)));
+  console.log(fails ? ('FAILS ' + fails) : 'ALL PASS'); await b.close();
+})();

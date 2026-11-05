@@ -324,6 +324,7 @@
     return h + '</div>';
   }
 
+  function lc(t) { return t.charAt(0).toLowerCase() + t.slice(1); }
   function planBudget(ik) {
     var I = IND[ik], cfg = I.budget, E = budgetEngine(cfg), N = E.N, names = cfg.routes;
     var KM = { R: 'sales at half the budget', m: 'contribution margin', b: 'how fast returns fade' };
@@ -387,7 +388,7 @@
       } });
     var memo = memoShell('Where to place the next ₹100 crore: draft memo', I.co + '. Illustrative inputs, nothing here describes a real company. ' + N.toLocaleString('en-US') + ' scenarios, fixed seed.');
     addH(memo, 'Recommendation');
-    addP(memo, 'Place ' + cr(E.best[0]) + ' in ' + names[0] + ', ' + cr(E.best[1]) + ' in ' + names[1] + ' and ' + cr(E.best[2]) + ' in ' + names[2] + '. Across the scenarios this averages ' + cr(E.bestMean) + ' of contribution, against ' + cr(E.planMean) + ' for the current ' + cfg.plan.join('/') + ' plan, and it beats the plan in ' + pc(E.beat) + ' of scenarios.');
+    addP(memo, 'Place ' + cr(E.best[0]) + ' in ' + lc(names[0]) + ', ' + cr(E.best[1]) + ' in ' + lc(names[1]) + ' and ' + cr(E.best[2]) + ' in ' + lc(names[2]) + '. Across the scenarios this averages ' + cr(E.bestMean) + ' of contribution, against ' + cr(E.planMean) + ' for the current ' + cfg.plan.join('/') + ' plan, and it beats the plan in ' + pc(E.beat) + ' of scenarios.');
     addH(memo, 'Where each route stops paying');
     addL(memo, names.map(function (n, r) { return n + ': near ' + cr(E.stop[r].p50) + ' (80% range ' + f0(E.stop[r].p10) + ' to ' + (E.stop[r].p90 > 100 ? 'over 100' : f0(E.stop[r].p90)) + ').'; }));
     addH(memo, 'The assumption to check first');
@@ -398,7 +399,7 @@
     addL(memo, ['Every input is illustrative. Each route is an independent curve, so this is the best split inside the model and not a forecast.']);
     steps.push(memoStep(memo));
     var summary = {
-      rec: 'Place ' + cr(E.best[0]) + ' in ' + names[0] + ', ' + cr(E.best[1]) + ' in ' + names[1] + ' and ' + cr(E.best[2]) + ' in ' + names[2] + '.',
+      rec: 'Place ' + cr(E.best[0]) + ' in ' + lc(names[0]) + ', ' + cr(E.best[1]) + ' in ' + lc(names[1]) + ' and ' + cr(E.best[2]) + ' in ' + lc(names[2]) + '.',
       trade: 'Averages ' + cr(E.bestMean) + ' of contribution, against ' + cr(E.planMean) + ' for the current ' + cfg.plan.join(' / ') + ' plan. It beats the plan in ' + pc(E.beat) + ' of ' + N.toLocaleString('en-US') + ' scenarios.',
       unc: 'The answer depends most on ' + names[hing[0].r].toLowerCase() + ': ' + KM[hing[0].k] + '. At the low or high end of its range, the best split moves by up to ' + f0(hing[0].dist) + ' points of the budget.',
       next: 'The evidence that would settle it is ' + cfg.evidence + '. Replace the assumption with the real figure and rerun.' };
@@ -634,7 +635,7 @@
     addH(memo, 'Not disclosed');
     addL(memo, gaps.length ? gaps : ['Nothing is missing.']);
     addH(memo, 'Limits');
-    addL(memo, ['The figures are invented for this demo. A live engagement reads real sources on an agreed schedule, and a person reviews every item.']);
+    addL(memo, ['The figures are invented for this demo. A live engagement reads real sources on an agreed schedule, and a designated analyst reviews every delivered brief.']);
     steps.push(memoStep(memo));
     var summary = {
       rec: behind.length ? 'Look at ' + lc1(behind[0].m.n) + ' first.' : 'Protect the lead on ' + lc1(rows[0].m.n) + '.',
@@ -684,7 +685,7 @@
     addH(memo, 'Watch next');
     addL(memo, ev.filter(function (e) { return e.status === 'Scheduled'; }).map(function (e) { return e.date + ': ' + e.text + ' (' + e.src + ')'; }));
     addH(memo, 'Limits');
-    addL(memo, ['The events are invented for this demo. A live engagement reads real sources on an agreed schedule, and a person reviews every item.']);
+    addL(memo, ['The events are invented for this demo. A live engagement reads real sources on an agreed schedule, and a designated analyst reviews every delivered brief.']);
     steps.push(memoStep(memo));
     var bestI = 0, worstI = 0; ratings.forEach(function (r, i) { if (r.n > ratings[bestI].n) bestI = i; if (r.n < ratings[worstI].n) worstI = i; });
     var gaps = ev.filter(function (e) { return e.status === 'Not disclosed'; }), nxt = ev.filter(function (e) { return e.status === 'Scheduled'; });
@@ -734,7 +735,7 @@
   }
 
   /* ---------- player ---------- */
-  var sel = { ind: 'hotels', indSet: false, dec: 'budget', mode: 'e2e', job: 'scen' }, P = { tok: 0, running: false, skipping: false, last: null };
+  var sel = { ind: 'hotels', indSet: true, dec: 'budget', mode: 'e2e', job: 'scen' }, P = { tok: 0, running: false, skipping: false, last: null };
   function sleep(ms, tok) { return new Promise(function (res, rej) { setTimeout(function () { tok === P.tok ? res() : rej('stop'); }, ms); }); }
 
   function setCap(i, total, step) {
@@ -771,13 +772,17 @@
     finally { if (tok === P.tok) { P.running = false; lock(false); } }
   }
   function resHtml(S) {
-    var items = [['Recommendation', S.rec, ' big'], ['Trade-off', S.trade, ''], ['Key uncertainty', S.unc, ''], ['Next action', S.next, '']];
-    return '<div class="v-res"><div class="vr-g">' + items.map(function (x) { return '<div><div class="vr-l">' + pm('ana') + x[0] + '</div><p class="vr-p' + x[2] + '">' + esc(x[1]) + '</p></div>'; }).join('') + '</div></div>';
+    var rows = inputRows(), ev = rows.filter(function (r) { return r[0] !== 'asm'; }), as = rows.filter(function (r) { return r[0] === 'asm'; });
+    function li(r) { return '<li>' + pm(r[0]) + '<span>' + esc(r[1]) + '<small>' + esc(r[2]) + '</small></span></li>'; }
+    return '<div class="v-res2"><div class="rec2"><div class="lab2">' + pm('ana') + 'Recommendation</div><div class="big">' + esc(S.rec) + '</div><p>' + esc(S.trade) + '</p></div>' +
+      '<div class="twoc"><div class="bx"><div class="lab2">' + pm('ana') + 'Key uncertainty</div><p>' + esc(S.unc) + '</p></div><div class="bx"><div class="lab2">' + pm('ana') + 'Next action</div><p>' + esc(S.next) + '</p></div></div>' +
+      '<details class="evd" data-do data-mo open><summary>Evidence and assumptions</summary><div class="twoc"><div class="bx"><div class="lab2">Evidence</div><ul>' + ev.map(li).join('') + '</ul></div><div class="bx asm"><div class="lab2">Assumptions</div><ul>' + as.map(li).join('') + '</ul></div></div></details></div>';
   }
   function finish(plan) {
-    $('st-view').innerHTML = resHtml(plan.summary) + '<div class="v-memo full"><div class="vr-h">The draft memo behind it</div>' + memoHtml(plan.memo) + '</div>';
+    $('st-view').innerHTML = resHtml(plan.summary) + '<details class="memod" id="memod"><summary>Read the draft memo behind the answer</summary><div class="inner"><div class="v-memo full">' + memoHtml(plan.memo) + '</div></div></details>';
+    if (window.__ui) window.__ui.sync(); if ($('mailbox')) $('mailbox').hidden = false;
     $('stage').classList.add('done'); $('st-skip').hidden = true; $('st-prog').hidden = true;
-    $('st-count').textContent = 'Done'; $('st-name').textContent = 'The answer, then the memo behind it'; $('st-text').textContent = 'A person would review this before it went anywhere.';
+    $('st-count').textContent = 'Done'; $('st-name').textContent = 'The answer, then the memo behind it'; $('st-text').textContent = 'A designated analyst would review this before it went anywhere.';
     $('st-foot-done').hidden = false;
     if ($('st-full')) $('st-full').hidden = true; if ($('st-go')) $('st-go').hidden = true; if ($('run')) { $('run').hidden = false; }
     var v = $('st-view'); if (v.scrollTop) v.scrollTop = 0;
@@ -812,13 +817,13 @@
     var pl = null;
     try { var k = sel.ind + '-' + sel.dec; if (!planCache[k]) planCache[k] = PLANNERS[sel.dec](sel.ind); pl = planCache[k]; } catch (e) { pl = null; }
     var D = DEC[sel.dec];
-    return flowHtml(D.q, D.inputs, pl ? pl.steps.map(function (st) { return st.n; }) : [], D.outputs, (sel.indSet ? 'Running now, about half a minute. ' : 'Choose an industry above and it runs, in about half a minute. ') + 'A person reviews the result before it goes anywhere.');
+    return flowHtml(D.q, D.inputs, pl ? pl.steps.map(function (st) { return st.n; }) : [], D.outputs, 'Choose a business question and it runs, in about half a minute. ' + 'A designated analyst reviews every delivered brief before it reaches you.');
   }
   function showIdle() { if (!P.running && !$('stage').classList.contains('done')) $('st-view').innerHTML = idleHtml(); }
   function reset() {
     P.tok++; P.running = false; lock(false);
     $('stage').classList.remove('on', 'done'); $('st-view').innerHTML = idleHtml(); if ($('run')) $('run').hidden = true;
-    $('st-count').textContent = ''; $('st-name').textContent = ''; $('st-text').textContent = ''; setProg(0); $('st-foot-done').hidden = true; $('st-foot-job').hidden = true; $('st-skip').hidden = true; $('st-go').hidden = true;
+    $('st-count').textContent = ''; $('st-name').textContent = ''; $('st-text').textContent = ''; if ($('mailbox')) $('mailbox').hidden = true; setProg(0); $('st-foot-done').hidden = true; $('st-foot-job').hidden = true; $('st-skip').hidden = true; $('st-go').hidden = true;
   }
 
 
@@ -871,7 +876,7 @@
     });
     if ($('run')) $('run').addEventListener('click', restart);
     $('st-skip').addEventListener('click', skip); $('st-dl').addEventListener('click', download);
-    var again = function () { reset(); sel.indSet = false; Array.prototype.forEach.call(document.querySelectorAll('[data-g="ind"]'), function (b) { b.setAttribute('aria-pressed', 'false'); }); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    var again = function () { reset(); var d = $('demo'); if (d.scrollIntoView) d.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     $('st-again').addEventListener('click', again); if ($('st-again2')) $('st-again2').addEventListener('click', again);
     var auto = false;
     try {
