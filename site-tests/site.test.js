@@ -36,13 +36,13 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // 3. home
   { const p = await open('index.html'); const h = await p.evaluate(() => { const e = document.querySelector('.hero h1'); return [e.textContent, Math.round(e.getBoundingClientRect().height / parseFloat(getComputedStyle(e).lineHeight))]; });
-    ok(h[0] === 'Do the intelligence work without building a team.' && h[1] <= 2, 'home headline (' + h[1] + ' lines at 1440)');
+    ok(h[0] === 'Do intelligence work without building a team.' && h[1] <= 2, 'home headline (' + h[1] + ' lines at 1440)');
     const T = await txt(p); ok(/configure the workflows, operate them and have a designated analyst review every brief/.test(T), 'new hero sentence');
     const cap = await p.$eval('a.btn[href="capabilities.html"]', e => ({ bg: getComputedStyle(e).backgroundColor, t: e.textContent, h: e.getBoundingClientRect().height }));
     const amber = await p.$eval('.hero .btn.am', e => getComputedStyle(e).backgroundColor); ok(cap.bg === amber && /Explore all intelligence capabilities/.test(cap.t) && cap.h >= 52, 'capabilities button is the same amber as the other calls to action and prominent');
-    const hs = await p.$$eval('main h2', a => a.map(x => x.innerText)); ok(['Intelligence for recurring questions and important decisions.', 'See an intelligence job in action.', 'Who does what', 'Start small. Stop any month.', 'Need recurring intelligence without adding to your team?'].every(x => hs.includes(x)), 'home headings: ' + hs.join(' | '));
+    const hs = await p.$$eval('main h2', a => a.map(x => x.innerText)); ok(['Intelligence for recurring questions and important decisions.', 'See it in action.', 'Who does what', 'Start small. Stop any month.', 'Need recurring intelligence without adding to your team?'].every(x => hs.includes(x)), 'home headings: ' + hs.join(' | '));
     const order = await p.$$eval('main > section, main > div', a => a.map(x => (x.querySelector('h2') || {}).textContent || (x.className)));
-    ok(order.findIndex(x => /Intelligence for recurring/.test(x)) < order.findIndex(x => /See an intelligence/.test(x)) && order.findIndex(x => /See an intelligence/.test(x)) < order.findIndex(x => /Who does what/.test(x)) && order.findIndex(x => /Who does what/.test(x)) < order.findIndex(x => /Start small/.test(x)), 'section order');
+    ok(order.findIndex(x => /Intelligence for recurring/.test(x)) < order.findIndex(x => /See it in action/.test(x)) && order.findIndex(x => /See it in action/.test(x)) < order.findIndex(x => /Who does what/.test(x)) && order.findIndex(x => /Who does what/.test(x)) < order.findIndex(x => /Start small/.test(x)), 'section order');
     ok((await p.$$eval('.cat a.c', a => a.map(x => x.getAttribute('href')))).join() === 'capabilities.html#cap-competitive,capabilities.html#cap-market,capabilities.html#cap-strategy,capabilities.html#cap-scenario', 'category cards link to Capabilities sections');
     ok((await p.getAttribute('.memolink, a.lnk[href$=".pdf"]', 'href')) === 'assets/sample-decision-memo.pdf' && fs.readFileSync(ROOT + 'assets/sample-decision-memo.pdf').slice(0, 4).toString() === '%PDF', 'sample memo link is a real PDF');
     ok((await p.getAttribute('.fs a', 'href')) === 'our-approach.html#experience' && /Meet the founder/.test(await p.textContent('.fs')), 'founder link');
@@ -85,7 +85,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   }
   { const p = await open('try-it-yourself.html'); const T = await txt(p);
     ok((await p.$$eval('.tw-q4 button', a => a.map(x => x.textContent))).join('|') === QS.map(x => x[1]).join('|') && (await p.$$eval('.tw-q4 button:disabled', a => a.length)) === 0, 'four questions, all usable');
-    ok(/Competitor watch and new market read real public data/.test(T), 'page says which questions use real data');
+    ok(/Competitor watch and new market use real public data/.test(T), 'page says which questions use real data');
     ok((await p.$$eval('.tw-stp li', a => a.map(x => x.textContent.replace(/^[\d✓]/, '').trim()))).join('|') === 'Set up|Collect|Analyse|Synthesise|Decide and write|Act', 'six steps named');
     ok(await p.$eval('[data-act=next]', e => e.disabled === false) && !(await p.isVisible('#mailbox')), 'step 1: next is available, no email box yet'); await p.context().close(); }
   for (const [q] of QS) for (const ind of ['hotels', 'pharma', 'telecom']) {
@@ -104,7 +104,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     await p.click('[data-act=next]'); const r1 = await p.textContent('.rec2'); await p.click('input[data-act=dec][data-v=respond]'); ok(r1 !== (await p.textContent('.rec2')), 'memo: choosing a different decision rewrites the recommendation');
     await p.click('[data-act=next]'); ok(await p.isVisible('#mailbox') && /Waiting for your decision/.test(await p.textContent('.tw-r')), 'act: waits for your decision, email box present');
     await p.click('[data-act=out][data-v=approve]'); ok(/Nothing was sent from this page/.test(await p.textContent('.tw-out2')), 'approve says nothing was sent');
-    const dl = await Promise.all([p.waitForEvent('download'), p.click('[data-act=dl]')]); ok(/competitor-watch-hotels\.md$/.test(dl[0].suggestedFilename()), 'memo download works');
+    ok((await p.$$('[data-act=dl]')).length === 0 && !/Download/i.test(await p.textContent('.tw-r')), 'no download option: email is the only way to get the memo');
     let posted = null; await p.route('https://docs.google.com/**', r => { posted = r.request().postData(); r.fulfill({ status: 200, body: 'ok' }); });
     await p.fill('#mb-email', 'nope'); await p.click('#mb-send'); ok(/email address/.test(await p.textContent('#mb-msg')), 'memo email: invalid address rejected');
     await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.ok'); const body = decodeURIComponent((posted || '').replace(/\+/g, ' ')); ok(/entry\.829357577=a@b\.co/.test(body) && /Watch my competitors \(Hotels example\)/.test(body), 'memo email posts to the form with the question run');
@@ -172,6 +172,12 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     const w = await p.evaluate(() => { const h = document.querySelector('.why3 h2').getBoundingClientRect(), p = document.querySelector('.why3 p').getBoundingClientRect(), c = document.querySelector('.why3 .in > div').getBoundingClientRect(); return Math.abs((h.top + h.height / 2) - (c.top + c.height / 2)); }); ok(w < 6, 'why-not heading is centred against its paragraphs'); await p.context().close(); }
   for (const w of [440, 390, 360]) { const p = await open('our-approach.html', w, 800); const M = await p.evaluate(() => { const i = document.querySelector('#experience img').getBoundingClientRect(), s = document.querySelector('#experience .extx2 p.s').getBoundingClientRect(); return { beside: s.left > i.right, ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, words: document.querySelector('#experience .extx2 p.s').textContent.split(/\s+/).length }; }); ok(M.beside && M.ov === 0 && M.words < 34, 'mobile ' + w + ': short bio beside the photo (' + M.words + ' words), no overflow'); await p.context().close(); }
 
+  // 8b. page headlines are not repeats of the menu labels
+  for (const [f, h] of [['capabilities', 'Six areas of intelligence work'], ['how-it-works', 'From question to reviewed brief'], ['try-it-yourself', 'Run a decision end to end']]) {
+    const p = await open(f + '.html'); const t = (await p.textContent('main h1')).trim(); ok(t === h && t.split(/\s+/).length <= 6, f + ': headline "' + t + '"'); await p.context().close(); }
+  { const p = await open('contact.html'); const li = await p.$$eval('.fnotes li', a => a.map(x => x.textContent.trim()));
+    ok(li.length === 3 && /^We reply within one working day/.test(li[0]) && /how your data is handled/i.test(li[1]) && /^Prefer to look first/.test(li[2]), 'contact: three separate lines under the button');
+    const fs = await p.evaluate(() => [getComputedStyle(document.querySelector('.fnotes li')).fontSize, getComputedStyle(document.querySelector('.form label.l, .form .f > label')).fontSize]); ok(fs[0] === fs[1], 'contact: note font size matches the form labels (' + fs.join(' / ') + ')'); await p.context().close(); }
   // 9. enquiry form
   const CFG_OFF = r => r.fulfill({ contentType: 'application/javascript', body: 'window.SITE={googleForm:{},formEndpoint:"",contactEmail:""};' });
   { const p = await open('contact.html?programme=insight'); ok(await p.isVisible('#plan-box') && /Insight programme/.test(await p.textContent('#plan-text')), 'programme carried over from pricing');

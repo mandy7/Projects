@@ -61,7 +61,7 @@ Headings, buttons, navigation and labels use sentence case ("How it works", "Try
 - The data is a **snapshot shipped with the site** (6 Nov 2026), not fetched live. To refresh it, re-run the pull scripts and replace `competitor-data.js` and `market-data.js`. The snapshot date is shown on the page.
 - Test a combination: `?q=price&industry=telecom` (q is watch, price, budget or market).
 - `window.__trial` exposes the state and memo for tests.
-- Step 5 shows the draft memo and a Markdown download. Step 6 (act) waits for the visitor's approval and sends nothing.
+- Step 5 shows the draft memo. Step 6 (act) waits for the visitor's approval and offers one way to get the memo: "Email me the memo", which sends the email address to the Google Form. There is no download option, so every memo request captures an email.
 - No accuracy or return claims are made. Illustrative and real data are labelled as such.
 
 ## The home video and the sample memo
