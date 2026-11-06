@@ -1,19 +1,16 @@
-/* Try it out page: "Email me the memo". It goes through the same form connection as the enquiry form, and says so if it is not connected. */
+/* Try it out, last step: "Email me the memo". It goes through the same form connection as the enquiry form and says so if it is not connected. */
 (function () {
   'use strict';
-  var cfg = window.SITE || {}, f = document.getElementById('mailbox');
-  if (!f) return;
-  var m = document.getElementById('mb-msg'), b = document.getElementById('mb-send');
-  function say(t, k) { m.textContent = t; m.className = 'msg ' + (k || ''); }
-  var google = cfg.googleForm && cfg.googleForm.action && cfg.googleForm.entries && cfg.googleForm.entries.pain && cfg.googleForm.entries.contact;
-  f.addEventListener('submit', function (ev) {
-    ev.preventDefault();
+  var cfg = window.SITE || {};
+  document.addEventListener('submit', function (ev) {
+    var f = ev.target; if (!f || f.id !== 'mailbox') return; ev.preventDefault();
+    var m = f.querySelector('#mb-msg'), b = f.querySelector('#mb-send');
+    function say(t, k) { m.textContent = t; m.className = 'msg ' + (k || ''); }
     if (f._gotcha && f._gotcha.value) return;
     var email = f.email.value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say('Please give an email address.', 'err'); return; }
-    var s = (window.__demo && window.__demo.sel) || {}, D = window.__demo || {};
-    var what = (D.DEC && D.DEC[s.dec] ? D.DEC[s.dec].q : s.dec) + ' (' + (D.IND && D.IND[s.ind] ? D.IND[s.ind].label : s.ind) + ' example)';
-    var text = 'Memo request from the try it out page.\nQuestion run: ' + what;
+    var T = window.__trial, text = 'Memo request from the try it out page.\nQuestion run: ' + (T ? T.describe() : 'unknown');
+    var google = cfg.googleForm && cfg.googleForm.action && cfg.googleForm.entries && cfg.googleForm.entries.pain && cfg.googleForm.entries.contact;
     if (!google && !cfg.formEndpoint) { say('This is not connected yet, so nothing was sent.', 'err'); return; }
     b.disabled = true; say('Sending.', '');
     var ok = function () { f.reset(); b.disabled = false; say('Thank you. We will email the memo to you.', 'ok'); };

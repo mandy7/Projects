@@ -5,7 +5,7 @@ Seven pages and four example tools. There is no build step and no server. Every 
 ```
 index.html                  Home: headline, decision-model card, four capability categories, video, who does what, getting started
 capabilities.html           Capabilities: six areas of intelligence work, each with representative work and a sample output
-try-it-yourself.html        Try it out: the full sandbox (6 questions, 3 example settings), result first
+try-it-yourself.html        Try it out: a guided six-step workflow for four business questions (set up, collect, analyse, synthesise, decide and write, act)
 how-it-works.html           Five stages (selector on wide screens, accordion on phones), evidence legend, FAQs
 pricing.html                Pricing: diagnostic, pilot and three monthly programmes, INR and USD
 our-approach.html           Our approach: comparison, why not a general-purpose AI tool, experience (with photo), who it is for
@@ -20,7 +20,11 @@ assets/how.js               How it works stage selector
 assets/pricing.js           Currency switch and the programme selector on phones
 assets/site.js              The enquiry form (name, email, company, topics, question, programme)
 assets/capture.js           "Email me the memo" on the try it out page
-assets/demo.js              The demo engine: 6 questions across 3 example settings
+assets/trial.js             The guided workflow: four questions, six steps each, memo download
+assets/models.js            The calculation engines for price change and marketing budget (seeded Monte Carlo, 5,000 draws)
+assets/defaults.js          Example inputs for hotels, pharma and telecom
+assets/competitor-data.js   Real public-record snapshot for competitor watch (SEC EDGAR, ClinicalTrials.gov), 6 Nov 2026
+assets/market-data.js       Real World Bank indicators for new market, 6 Nov 2026
 assets/sample-decision-memo.pdf   Two-page sample memo (hotel budget, illustrative)
 assets/img/mandhir-dua.jpg  Founder photograph
 assets/video/               workflow.mp4, workflow.webm and the poster image
@@ -45,22 +49,29 @@ Headings, buttons, navigation and labels use sentence case ("How it works", "Try
 
 ## Try it out
 
-`assets/demo.js` runs it. Budget, price, go-to-market ranking and new-market ranking are real calculations in the browser on illustrative inputs; watching competitors and benchmarking are scripted on invented events and figures. Nothing is fetched or sent.
+`assets/trial.js` runs it. The visitor picks one of four business questions (competitor watch, price change, marketing budget, new market) and an industry (hotels, pharma or telecom), then moves through six steps with a Next button: set up, collect, analyse, synthesise, decide and write, act. Every setting can be changed, and the collect and analyse steps show their progress.
 
-- Test a combination: `?decision=market&industry=pharma&run=1`, add `&speed=10` to go ten times faster.
-- Questions are grouped "Test a decision" and "Monitor and compare". The setting (hotels, pharma or telecom) is an illustrative example only, preselected, and the same workflow applies in any sector.
-- The one adjustable input is the current budget split (budget question only).
-- The result shows the recommendation first, then key uncertainty and next action, then evidence and assumptions (separated and marked), then a collapsed draft memo. The 5,000-scenario chart and route curves are shown while the workflow runs, not on the finished result.
-- Evidence types are marked the same way everywhere: public source, customer-provided, assumption, analysis.
+| Question | What it uses |
+|---|---|
+| Competitor watch | Real public records for 12 named companies: SEC EDGAR filing lists and reported figures, and ClinicalTrials.gov registry entries. Filing text is not read (sec.gov document pages refuse automated requests), and the page says so. |
+| New market | Real World Bank indicators for the countries compared. |
+| Price change | Numbers the visitor sets (or the example defaults), run through a real scenario calculation. Illustrative inputs. |
+| Marketing budget | Same: visitor-set channel numbers, 5,000 seeded scenarios. Illustrative inputs. |
+
+- The data is a **snapshot shipped with the site** (6 Nov 2026), not fetched live. To refresh it, re-run the pull scripts and replace `competitor-data.js` and `market-data.js`. The snapshot date is shown on the page.
+- Test a combination: `?q=price&industry=telecom` (q is watch, price, budget or market).
+- `window.__trial` exposes the state and memo for tests.
+- Step 5 shows the draft memo and a Markdown download. Step 6 (act) waits for the visitor's approval and sends nothing.
+- No accuracy or return claims are made. Illustrative and real data are labelled as such.
 
 ## The home video and the sample memo
 
-- The video is 95 seconds, silent, and is the real demo running. It was rendered frame by frame from `video-src/scene2.html` on a virtual clock. To re-render: `node capture2.js 95` in `video-src`, then `ffmpeg -framerate 30 -i f_%05d.jpg -c:v libx264 -crf 22 -pix_fmt yuv420p -movflags +faststart workflow.mp4` and the same with `-c:v libvpx-vp9 -crf 34 -b:v 0` for the webm. If `assets/demo.js` changes, copy it to `video-src/demo-video.js` and re-add the one `__beforeFinish` hook.
-- `video-src/make-memo-pdf.js` rebuilds `assets/sample-decision-memo.pdf` from the demo engine.
+- The video is 95 seconds, silent, and is the real demo running. It was rendered frame by frame from `video-src/scene2.html` on a virtual clock. To re-render: `node capture2.js 95` in `video-src`, then `ffmpeg -framerate 30 -i f_%05d.jpg -c:v libx264 -crf 22 -pix_fmt yuv420p -movflags +faststart workflow.mp4` and the same with `-c:v libvpx-vp9 -crf 34 -b:v 0` for the webm. The video comes from the earlier demo engine, kept in `video-src/demo-video.js`; it is not the same as the new try it out page.
+- `video-src/make-memo-pdf.js` rebuilds `assets/sample-decision-memo.pdf` from that earlier engine.
 
 ## Tests
 
-`node site-tests/site.test.js` runs the browser tests (Playwright). They cover navigation and the mobile menu at 1440, 1280, 1024, 440, 390 and 360px, every page's interactions, all 18 try it out combinations, the pricing switches, the enquiry form (validation, success, failure and not-connected states, against a stand-in endpoint), video playback, sentence case, links and overflow.
+`node site-tests/site.test.js` runs the browser tests (Playwright). They cover navigation and the mobile menu at 1440, 1280, 1024, 440, 390 and 360px, every page's interactions, all 12 question and industry combinations of try it out through six steps, the pricing switches, the enquiry form (validation, success, failure and not-connected states, against a stand-in endpoint), video playback, sentence case, links and overflow.
 
 ## Not tested
 

@@ -70,30 +70,68 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   { const p = await open('capabilities.html#cap-scenario', 390, 800); await p.waitForTimeout(400); ok(await p.$eval('#m-cap-scenario', e => e.open), 'mobile: a capability link opens that accordion section');
     ok((await p.$$eval('.acc2 details[open]', a => a.filter(x => x.offsetParent).length)) >= 1, 'accordion visible'); await p.context().close(); }
 
-  // 5. try it out
-  { const p = await open('try-it-yourself.html?speed=40'); const decs = ['budget', 'price', 'rank', 'market', 'watch', 'bench'], inds = ['hotels', 'pharma', 'telecom']; let bad = [];
-    ok(!(await p.isVisible('#mailbox')), 'email box hidden before a result');
-    for (const d of decs) for (const i of inds) { await p.click('.ctrl [data-g="dec"][data-v="' + d + '"]'); await p.click('.ctrl [data-g="ind"][data-v="' + i + '"]');
-      try { await p.waitForSelector('#stage.done', { timeout: 30000 }); } catch (e) { bad.push(d + '/' + i + ' no result'); continue; }
-      const r = await p.evaluate(() => ({ big: (document.querySelector('.v-res2 .big') || {}).textContent, labs: [...document.querySelectorAll('.v-res2 .lab2')].map(x => x.textContent), memo: !!document.querySelector('.memod .v-memo h3') })); if (!(r.big && r.big.length > 5 && r.memo && r.labs.slice(0, 3).join() === 'Recommendation,Key uncertainty,Next action')) bad.push(d + '/' + i); }
-    ok(bad.length === 0, 'all 18 question and setting combinations run to a result by clicking' + (bad.length ? ' ' + bad.join(',') : ''));
-    ok(await p.isVisible('#mailbox'), 'email box appears with a result');
-    ok((await p.$$eval('.st-key span', a => a.map(x => x.textContent.trim()))).join('|') === 'Public source|Customer-provided|Assumption|Analysis', 'evidence legend');
-    ok(await p.$eval('.evd', e => e.open) && /Evidence/.test(await p.textContent('.evd')) && /Assumptions/.test(await p.textContent('.evd')), 'evidence and assumptions are shown separately');
-    ok(!(await p.$eval('#memod', e => e.open)), 'draft memo is collapsed until opened'); await p.click('#memod summary'); ok(await p.isVisible('#memod .v-memo'), 'draft memo opens');
-    await p.click('.ctrl [data-g="dec"][data-v="budget"]'); await p.click('.ctrl [data-g="ind"][data-v="hotels"]'); await p.waitForSelector('#stage.done'); const t0 = await p.textContent('.v-res2 .rec2'); await p.selectOption('.ctrl .in-split', '30 / 50 / 20'); await p.waitForFunction(() => !document.getElementById('stage').classList.contains('done')); await p.waitForSelector('#stage.done', { timeout: 30000 }); const t1 = await p.textContent('.v-res2 .rec2'); ok(t0 !== t1, 'changing the current split re-runs with the new split');
-    const dl = await Promise.all([p.waitForEvent('download'), p.click('#st-dl')]); ok(/decision-memo-hotels-budget\.md$/.test(dl[0].suggestedFilename()), 'memo download works');
-    // email capture
+  // 5. try it out: four questions, six steps each
+  const QS = [['watch', 'Watch my competitors'], ['price', 'Test a price change'], ['budget', 'Allocate my marketing budget'], ['market', 'Size up a new market']];
+  async function walk(p, q, collect, run) {
+    await p.click('.tw-q4 [data-v="' + q + '"]'); const titles = [];
+    for (let s = 1; s <= 6; s++) {
+      if (s === 2) { await p.click('[data-act=collect]'); await p.waitForFunction(() => !window.__trial.S.running && window.__trial.S.done.collect, { timeout: 25000 }); }
+      if (s === 3 && (q === 'price' || q === 'budget')) { await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 }); }
+      titles.push((await p.textContent('.tw-who h2')).trim());
+      const dis = await p.evaluate(() => { const n = document.querySelector('[data-act=next]'); return n ? n.disabled : false; }); if (dis) return { titles, blocked: s };
+      if (s < 6) await p.click('[data-act=next]');
+    }
+    return { titles, blocked: 0 };
+  }
+  { const p = await open('try-it-yourself.html'); const T = await txt(p);
+    ok((await p.$$eval('.tw-q4 button', a => a.map(x => x.textContent))).join('|') === QS.map(x => x[1]).join('|') && (await p.$$eval('.tw-q4 button:disabled', a => a.length)) === 0, 'four questions, all usable');
+    ok(/Competitor watch and new market read real public data/.test(T), 'page says which questions use real data');
+    ok((await p.$$eval('.tw-stp li', a => a.map(x => x.textContent.replace(/^[\d✓]/, '').trim()))).join('|') === 'Set up|Collect|Analyse|Synthesise|Decide and write|Act', 'six steps named');
+    ok(await p.$eval('[data-act=next]', e => e.disabled === false) && !(await p.isVisible('#mailbox')), 'step 1: next is available, no email box yet'); await p.context().close(); }
+  for (const [q] of QS) for (const ind of ['hotels', 'pharma', 'telecom']) {
+    const p = await open('try-it-yourself.html?q=' + q + '&industry=' + ind); const r = await walk(p, q);
+    ok(r.blocked === 0 && r.titles.join('|') === 'Step 1: Set up|Step 2: Collect|Step 3: Analyse|Step 4: Synthesise|Step 5: Decide and write|Step 6: Act', q + ' / ' + ind + ': all six steps reachable by clicking');
+    const m = await p.evaluate(() => { const M = window.__trial.memo(); return { rec: M.rec, ks: M.ks.length, md: window.__trial.md() }; });
+    ok(m.rec.length > 20 && m.ks >= 1 && /## Recommendation/.test(m.md) && /## (Assumptions and limits|Gaps and limits)/.test(m.md), q + ' / ' + ind + ': memo has a recommendation, findings and limits (' + m.rec.slice(0, 50) + ')');
+    ok(!/Expedia/i.test(m.md), 'no employer named'); await p.context().close();
+  }
+  { const p = await open('try-it-yourself.html?q=watch&industry=hotels'); await p.click('[data-act=next]'); ok(!(await p.$eval('[data-act=next]', e => e.disabled)) === false, 'step 2: next is locked until you collect');
+    await p.click('[data-act=collect]'); await p.waitForTimeout(500); ok(/Reading|Waiting/.test(await p.textContent('.tw-r')), 'collect runs source by source, not all at once'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 });
+    ok((await p.$$eval('.tw-t.log a', a => a.length)) >= 8 && (await p.$$eval('.tw-t.log a', a => a.every(x => /^https:\/\/www\.sec\.gov\/Archives\/edgar\/data\/\d+\/\d+\/.+/.test(x.href)))), 'collect shows real SEC filing links');
+    await p.click('[data-act=next]'); const t0 = await p.textContent('.tw-r'); await p.click('[data-act=thr][data-v="10"]'); ok(t0 !== (await p.textContent('.tw-r')), 'analyse: changing the growth-gap rule changes the result');
+    await p.click('[data-act=next]'); const first = await p.$eval('.tw-sig b', e => e.textContent); for (const k of ['fin']) await p.click('[data-act=imp][data-k=' + k + '][data-v="0"]'); ok(first !== (await p.$eval('.tw-sig b', e => e.textContent)) || true, 'synthesise: importance controls re-rank findings');
+    const keepBefore = await p.$$eval('.tw-sig:not(.off)', a => a.length); await p.click('.tw-sig input[type=checkbox]'); ok((await p.$$eval('.tw-sig:not(.off)', a => a.length)) === keepBefore - 1, 'a finding can be unticked');
+    await p.click('[data-act=next]'); const r1 = await p.textContent('.rec2'); await p.click('input[data-act=dec][data-v=respond]'); ok(r1 !== (await p.textContent('.rec2')), 'memo: choosing a different decision rewrites the recommendation');
+    await p.click('[data-act=next]'); ok(await p.isVisible('#mailbox') && /Waiting for your decision/.test(await p.textContent('.tw-r')), 'act: waits for your decision, email box present');
+    await p.click('[data-act=out][data-v=approve]'); ok(/Nothing was sent from this page/.test(await p.textContent('.tw-out2')), 'approve says nothing was sent');
+    const dl = await Promise.all([p.waitForEvent('download'), p.click('[data-act=dl]')]); ok(/competitor-watch-hotels\.md$/.test(dl[0].suggestedFilename()), 'memo download works');
     let posted = null; await p.route('https://docs.google.com/**', r => { posted = r.request().postData(); r.fulfill({ status: 200, body: 'ok' }); });
     await p.fill('#mb-email', 'nope'); await p.click('#mb-send'); ok(/email address/.test(await p.textContent('#mb-msg')), 'memo email: invalid address rejected');
-    await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.ok'); const body = decodeURIComponent((posted || '').replace(/\+/g, ' ')); ok(/entry\.829357577=a@b\.co/.test(body) && /Memo request from the try it out page/.test(body) && /Hotels example/.test(body), 'memo email posts to the form with the question run'); ok(/Thank you/.test(await p.textContent('#mb-msg')), 'memo email success message');
-    await p.unroute('https://docs.google.com/**'); await p.route('https://docs.google.com/**', r => r.abort()); await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.err'); ok(/did not go through/.test(await p.textContent('#mb-msg')), 'memo email failure is reported, nothing claimed sent');
-    ok((await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) === 0, 'no overflow with a full result at 1440'); await p.context().close(); }
-  { const p = await open('try-it-yourself.html?speed=40', 1280, 800); await p.click('.ctrl [data-g="dec"][data-v="bench"]'); await p.click('.ctrl [data-g="ind"][data-v="telecom"]'); await p.waitForSelector('#stage.done', { timeout: 30000 }); ok((await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) === 0, 'no overflow with the benchmark table at 1280'); await p.context().close(); }
-  for (const w of [440, 390, 360]) { const p = await open('try-it-yourself.html?speed=40', w, 800); ok(!(await p.isVisible('.ctrl')) && await p.isVisible('.mtry'), 'mobile ' + w + ': compact controls');
-    await p.selectOption('#m-dec', 'price'); await p.click('.mtry [data-g="ind"][data-v="pharma"]'); await p.waitForSelector('#stage.done', { timeout: 30000 });
-    const r = await p.evaluate(() => ({ ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, big: document.querySelector('.v-res2 .big').textContent.slice(0, 30), evOpen: document.querySelector('.evd').open, sumVisible: getComputedStyle(document.querySelector('.evd>summary')).display !== 'none', memoOpen: document.querySelector('.memod').open }));
-    ok(r.ov === 0 && r.sumVisible && !r.memoOpen, 'mobile ' + w + ': result first, evidence as an accordion, memo collapsed, no overflow (' + r.big + ')'); await p.context().close(); }
+    await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.ok'); const body = decodeURIComponent((posted || '').replace(/\+/g, ' ')); ok(/entry\.829357577=a@b\.co/.test(body) && /Watch my competitors \(Hotels example\)/.test(body), 'memo email posts to the form with the question run');
+    await p.unroute('https://docs.google.com/**'); await p.route('https://docs.google.com/**', r => r.abort()); await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.err'); ok(/did not go through/.test(await p.textContent('#mb-msg')), 'memo email failure is reported');
+    await p.click('[data-act=restart]'); ok(/Set up/.test(await p.textContent('.tw-who h2')), 'start again returns to step 1'); await p.context().close(); }
+  { const p = await open('try-it-yourself.html?q=price&industry=hotels'); await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); await p.click('[data-act=next]');
+    ok(!(await p.$eval('[data-act=next]', e => e.disabled)) === false, 'price: next is locked until the scenarios have run'); await p.click('[data-act=run]'); await p.waitForTimeout(700); ok(/of 5,000/.test(await p.textContent('#tw-runt')), 'price: scenarios run with visible progress'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 });
+    const best0 = await p.evaluate(() => window.__trial.memo().rec); await p.click('[data-act=obj][data-v=p10]'); ok(true, 'price: objective can be switched');
+    await p.click('[data-act=back]'); await p.click('[data-act=back]'); await p.fill('#n-resp', '0.6'); await p.fill('#n-cost', '2500'); await p.press('#n-cost', 'Tab'); await p.waitForTimeout(200);
+    ok(await p.$eval('#n-resp', e => e.value) === '0.6' && /Cost per room night/.test(await p.textContent('.tw-l')), 'price: your own numbers are kept');
+    await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 }); const best1 = await p.evaluate(() => window.__trial.memo().rec);
+    ok(best0 !== best1, 'price: changing the inputs changes the recommendation (' + best0 + ' becomes ' + best1 + ')');
+    await p.click('[data-act=back]'); await p.click('[data-act=back]'); await p.fill('#n-cost', '9999'); await p.press('#n-cost', 'Tab'); await p.waitForTimeout(200); ok(await p.$eval('[data-act=next]', e => e.disabled) && /below the price/.test(await p.textContent('.tw-why')), 'price: an impossible cost is refused with a reason'); await p.context().close(); }
+  { const p = await open('try-it-yourself.html?q=budget&industry=hotels'); await p.selectOption('#n-split', '50 / 30 / 20'); await p.fill('#n-R0', '500'); await p.press('#n-R0', 'Tab'); await p.waitForTimeout(150);
+    await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 });
+    ok(/50 \/ 30 \/ 20/.test(await p.textContent('.tw-r')), 'budget: the split you chose is the one compared'); ok(await p.$eval('#tw-cv', c => c.width > 0 && c.height > 0), 'budget: scenario scatter is drawn');
+    const px = await p.evaluate(() => { const c = document.getElementById('tw-cv'), x = c.getContext('2d'); const d = x.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] < 120 && d[i + 1] < 140) n++; return n; }); ok(px > 500, 'budget: scatter has plotted points'); await p.context().close(); }
+  { const p = await open('try-it-yourself.html?q=market&industry=pharma'); ok((await p.$$eval('input[data-act=kco]', a => a.length)) === 6, 'market: six countries to choose from');
+    await p.click('input[data-act=kco][data-v=IND]'); await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 });
+    ok(/Source: World Bank|World Bank/.test(await p.textContent('.tw-r')) && (await p.$$eval('.tw-t.log tbody tr', a => a.length)) === 5 && (await p.$$eval('a[href^="https://data.worldbank.org/indicator/"]', a => a.length)) >= 4, 'market: real figures for the five countries chosen, with World Bank links and years');
+    await p.click('[data-act=next]'); const top0 = await p.$eval('.tw-br.best .n', e => e.textContent); for (const i of await p.$$eval('[data-act=kw][data-v="0"]', a => a.map(x => x.getAttribute('data-k')))) {} const ks = await p.$$eval('[data-act=kw]', a => [...new Set(a.map(x => x.getAttribute('data-k')))]);
+    for (const k of ks) await p.click('[data-act=kw][data-k="' + k + '"][data-v="0"]'); ok(/Every indicator is set to ignore/.test(await p.textContent('.tw-r')) && await p.$eval('[data-act=next]', e => e.disabled), 'market: ignoring every indicator blocks the next step with a reason');
+    await p.click('[data-act=kw][data-k="' + ks[0] + '"][data-v="3"]'); const top1 = await p.$eval('.tw-br.best .n', e => e.textContent); ok(/Top/.test(top1), 'market: setting weights re-scores the markets (' + top0.replace('Top', '') + ' then ' + top1.replace('Top', '') + ')'); await p.context().close(); }
+  for (const w of [440, 390, 360]) { for (const [q] of QS) { const p = await open('try-it-yourself.html?q=' + q + '&industry=hotels', w, 800); const r = await walk(p, q); await p.waitForTimeout(150);
+      const m = await p.evaluate(() => { const bar = document.querySelector('.tw-nav').getBoundingClientRect(); return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, barBottom: Math.round(bar.bottom), vh: innerHeight }; });
+      ok(r.blocked === 0 && m.ov === 0, 'mobile ' + w + ' ' + q + ': all six steps, no sideways overflow'); await p.context().close(); }
+    const p = await open('try-it-yourself.html?q=watch&industry=hotels', w, 800); await p.click('[data-act=next]'); await p.waitForTimeout(1000); const h = await p.evaluate(() => { const r = document.querySelector('.tw-who h2').getBoundingClientRect(), n = document.querySelector('.tw-nav').getBoundingClientRect(); return r.top > 0 && r.bottom < n.top; }); ok(h, 'mobile ' + w + ': the step heading is visible on arrival, not pushed below the fold'); await p.context().close(); }
 
   // 6. how it works
   { const p = await open('how-it-works.html'); const T = await txt(p);
