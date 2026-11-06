@@ -140,8 +140,9 @@
   /* ---------- views ---------- */
   function chipsBar() {
     var f = FOCUS.filter(function (x) { return S.focus[x.k] && (!x.only || x.only === S.ind); }).map(function (x) { return x.n.toLowerCase(); });
-    return '<div class="tw-bar"><span class="lab2">Your brief</span><span><b>' + esc(IND().label) + '</b></span><span>' + cos().map(function (c) { return esc(c.name); }).join(', ') + '</span><span>' + (f.join(', ') || 'nothing selected') + '</span><span>' + S.win + ' days</span>' + (S.who.trim() ? '<span>for ' + esc(S.who.trim()) + '</span>' : '') + '</div>';
+    return '<div class="tw-bar"><span class="tw-bs"><b>Your brief</b> \u00b7 ' + esc(briefShort()) + '</span><span class="lab2">Your brief</span><span><b>' + esc(IND().label) + '</b></span><span>' + cos().map(function (c) { return esc(c.name); }).join(', ') + '</span><span>' + (f.join(', ') || 'nothing selected') + '</span><span>' + S.win + ' days</span>' + (S.who.trim() ? '<span>for ' + esc(S.who.trim()) + '</span>' : '') + '</div>';
   }
+  function briefShort() { var n = FOCUS.filter(function (x) { return S.focus[x.k] && (!x.only || x.only === S.ind); }).length; return IND().label + ' \u00b7 ' + cos().length + ' companies \u00b7 ' + n + ' focus area' + (n === 1 ? '' : 's') + ' \u00b7 ' + S.win + ' days'; }
   function vSetup() {
     var ids = S.cos || allCos().map(function (c) { return c.id; });
     var left = '<div class="tw-f"><div class="lab2">1 &middot; Industry</div><div class="chp" role="group" aria-label="Industry">' + Object.keys(CW.industries).map(function (k) { return '<button type="button" data-act="ind" data-v="' + k + '" aria-pressed="' + (S.ind === k) + '">' + CW.industries[k].label + '</button>'; }).join('') + '</div></div>' +
@@ -242,9 +243,10 @@
     var qrow = '<div class="tw-q4" role="group" aria-label="Business question"><button type="button" aria-pressed="true">Watch my competitors</button><button type="button" class="soon" disabled>Test a price change<small>Next</small></button><button type="button" class="soon" disabled>Allocate my marketing budget<small>Next</small></button><button type="button" class="soon" disabled>Size up a new market<small>Next</small></button></div>';
     var pane = '<div class="tw-pane"><div class="tw-l"><div class="tw-who"><span class="tag">' + st.who + '</span><h2>Step ' + S.step + ': ' + st.n + '</h2><p class="does"><b>What happens here.</b> ' + st.does + '</p></div>' + v.left + '</div><div class="tw-r" aria-live="polite">' + v.right + '</div></div>';
     var nav = '<div class="tw-nav"><button type="button" class="btn o" data-act="back"' + (S.step === 1 ? ' disabled' : '') + '>Back</button><span class="tw-why">' + (v.ok ? '' : esc(v.why || '')) + '</span>' + (S.step < 6 ? '<button type="button" class="btn am" data-act="next"' + (v.ok ? '' : ' disabled') + '>Next step: ' + STEPS[S.step].n.toLowerCase() + '</button>' : '<button type="button" class="btn o" data-act="restart">Start again</button>') + '</div>';
-    var y = window.scrollY; root.innerHTML = qrow + stp + mob + (S.step > 1 ? chipsBar() : '') + pane + nav; if (keepScroll) window.scrollTo(0, y);
+    document.documentElement.setAttribute('data-tw-step', S.step); var y = window.scrollY; root.innerHTML = qrow + stp + mob + (S.step > 1 ? chipsBar() : '') + pane + nav; if (keepScroll) window.scrollTo(0, y);
     var w = $('#tw-who'); if (w && S._focusWho) { w.focus(); w.setSelectionRange(w.value.length, w.value.length); }
   }
+  function toStep() { var t = root.querySelector(window.innerWidth <= 820 ? '.tw-mstep' : '.tw-stp'); if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - (window.innerWidth <= 820 ? 70 : 90), behavior: 'smooth' }); }
   function resetRun() { S.done.collect = false; S.running = false; S.showAll = false; S.keep = null; S.outcome = null; S.maxStep = Math.min(S.maxStep, 2); }
   function runCollect() {
     var plan = srcPlan(); S.running = true; plan.forEach(function (r) { r.state = 'wait'; }); S._plan = plan; render(true);
@@ -268,9 +270,9 @@
     else if (a === 'imp') { S.imp[b.getAttribute('data-k')] = +v; render(true); }
     else if (a === 'collect') { runCollect(); }
     else if (a === 'all') { S.showAll = !S.showAll; render(true); }
-    else if (a === 'go') { S.step = +v; render(); }
-    else if (a === 'back') { S.step = Math.max(1, S.step - 1); render(); window.scrollTo(0, root.offsetTop - 80); }
-    else if (a === 'next') { S.step = Math.min(6, S.step + 1); S.maxStep = Math.max(S.maxStep, S.step); render(); window.scrollTo(0, root.offsetTop - 80); }
+    else if (a === 'go') { S.step = +v; render(); toStep(); }
+    else if (a === 'back') { S.step = Math.max(1, S.step - 1); render(); toStep(); }
+    else if (a === 'next') { S.step = Math.min(6, S.step + 1); S.maxStep = Math.max(S.maxStep, S.step); render(); toStep(); }
     else if (a === 'restart') { S.step = 1; S.maxStep = 1; resetRun(); render(); }
     else if (a === 'out') { S.outcome = v; render(true); }
     else if (a === 'dl') { var A = analyse(), M = memo(A), u = URL.createObjectURL(new Blob([memoMd(A, M)], { type: 'text/markdown' })), l = document.createElement('a'); l.href = u; l.download = 'competitor-watch-' + S.ind + '.md'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 800); }
