@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/fonts.css">
+<title>Shiftwatch | Second Analyst</title>
+<style>
+:root{
+  --bg:#f5f2ea;--bg2:#f5f2ea;--panel:#fbfaf6;--panel2:#f1eee5;--line:#d6d0c1;
+  --text:#1e2330;--mut:#555b6b;--dim:#8a8c93;
+  --teal:#23395b;--amber:#23395b;--green:#1e2330;--blue:#23395b;--purple:#555b6b;--red:#0b1f3a;
+  --serif:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 var(--serif);display:grid;grid-template-rows:auto 54px minmax(0,1fr) 30px;overflow:hidden}
+a{color:var(--teal)}
+button{font:inherit;color:inherit;cursor:pointer}
+
+/* header */
+header{display:flex;align-items:center;gap:18px;padding:0 22px;border-bottom:1px solid var(--line);background:var(--bg)}
+.brand{display:flex;align-items:baseline;gap:12px;min-width:230px}
+.brand b{font:600 21px/1 var(--serif);letter-spacing:.1px}
+.brand em{font:italic 13px var(--serif);color:var(--mut)}
+.case{flex:1;font:12.5px/1.3 var(--sans);color:var(--mut);min-width:0;overflow-wrap:anywhere}
+.controls{display:flex;align-items:center;gap:8px}
+.btn{font:13px var(--sans);border:1px solid #b9b3a2;background:transparent;padding:6px 11px;border-radius:2px}
+.btn:hover{border-color:var(--text)}
+.btn.primary{background:var(--text);color:#fff;border-color:var(--text);padding:6px 16px}
+.btn.primary:hover{background:#000}
+.btn[disabled]{opacity:.4;cursor:default}
+select.btn{padding:6px 6px}
+.chk{display:flex;align-items:center;gap:6px;color:var(--mut);font:12.5px var(--sans);cursor:pointer;user-select:none}
+.chk input{accent-color:var(--text)}
+.sep{width:1px;height:20px;background:var(--line)}
+
+.backlink{font:12.5px var(--sans);color:var(--mut);text-decoration:none;border-right:1px solid var(--line);padding-right:14px;white-space:nowrap}.backlink:hover{color:var(--text)}
+/* layout */
+main{display:grid;grid-template-columns:232px minmax(0,1fr) 440px;min-height:0}
+.rail{border-right:1px solid var(--line);padding:18px 18px;display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto}
+.rail h4,.docbar h4{margin:0;font:600 13px var(--sans);color:var(--text)}
+.stages{display:flex;flex-direction:column;gap:2px}
+.stg{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:8px 8px 8px 10px;border-left:2px solid transparent;cursor:default}
+.stg.clickable{cursor:pointer}
+.stg.clickable:hover{background:var(--panel2)}
+.stg .n{font:13px var(--sans);color:var(--dim);padding-top:1px}
+.stg .t{font:600 14.5px var(--serif);color:var(--mut)}
+.stg .s{font:12px var(--sans);color:var(--dim)}
+.stg .m{font:italic 12.5px var(--serif);color:var(--text);margin-top:2px;min-height:16px}
+.stg.run{border-left-color:var(--teal);background:var(--panel2)}
+.stg.run .n,.stg.done .n{color:var(--teal);font-weight:600}
+.stg.run .t,.stg.done .t{color:var(--text)}
+.stg.sel{background:var(--panel2)}
+.tally{margin:0;display:flex;flex-direction:column;gap:3px;font:12.5px var(--sans)}
+.tally div{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:3px 0}
+.tally dt{color:var(--mut)}
+.tally dd{margin:0;font-variant-numeric:tabular-nums;color:var(--text)}
+.clock{font:12px var(--sans);color:var(--dim)}
+
+/* center */
+.center{display:grid;grid-template-rows:minmax(0,1fr) 104px;gap:10px;padding:16px 22px;min-width:0;min-height:0}
+.panels{position:relative;min-height:0}
+.panel{display:none;height:100%;flex-direction:column;background:var(--panel);border:1px solid var(--line);padding:18px 22px;min-height:0;animation:fade .3s ease}
+.panel.on{display:flex}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.ph{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.ph h2{margin:0;font:600 19px var(--serif)}
+.ph p{margin:0;color:var(--mut);font:italic 13px var(--serif)}
+.scroll{overflow:auto;min-height:0;flex:1}
+
+/* idle */
+.idle{justify-content:center;align-items:flex-start;gap:14px}
+.idle h1{margin:0;font:600 34px/1.1 var(--serif)}
+.idle p{margin:0;color:var(--mut);max-width:600px}
+.casecard{display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;max-width:640px;width:100%;margin:4px 0}
+.casecard div{font-size:14px}
+.casecard span{display:block;color:var(--dim);font:12px var(--sans)}
+.bigrun{font-size:14px;padding:9px 24px}
+.hint{font:12px var(--sans);color:var(--dim)}
+
+/* sources */
+.sgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 22px}
+.sc{border-top:1px solid var(--line);padding:9px 0 8px;display:flex;flex-direction:column;gap:3px;min-height:118px}
+.sc .top{display:flex;justify-content:space-between;font:12px var(--sans);color:var(--dim)}
+.sc .org{font:600 14.5px var(--serif)}
+.sc .ttl{font-size:13px;color:var(--mut);line-height:1.35;flex:1}
+.sc .bar{height:1px;background:var(--line)}
+.sc .bar i{display:block;height:100%;width:0;background:var(--text)}
+.sc .st{font:12px var(--sans);color:var(--dim);display:flex;justify-content:space-between}
+.sc.fetch .org{color:var(--teal)}
+.sc.fetch .st,.sc.ok .st{color:var(--text)}
+
+/* log */
+.lhead,.lrow{display:grid;grid-template-columns:92px minmax(0,1fr) 124px 74px;gap:14px;align-items:start;padding:8px 6px}
+.lhead{font:12px var(--sans);color:var(--dim);border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:1}
+.lrow{border-bottom:1px solid var(--line);animation:fade .35s ease}
+.lrow .d{font:12.5px var(--sans);color:var(--mut);font-variant-numeric:tabular-nums}
+.lrow .x{font-size:14px}
+.lrow .x small{display:block;color:var(--mut);font:italic 12.5px var(--serif);margin-top:2px}
+.lrow.gap{box-shadow:inset 2px 0 0 var(--teal)}
+.lrow.flash{background:var(--panel2)}
+.chip{font:13px var(--serif);white-space:nowrap}
+.c-disclosed,.c-stated{color:var(--text)}
+.c-gap{color:var(--red);font-weight:700}
+.c-opinion,.c-inference{color:var(--mut);font-style:italic}
+.c-scheduled{color:var(--dim)}
+.srcs a{display:inline-block;font:12px var(--sans);color:var(--teal);margin:0 7px 3px 0;text-decoration:underline}
+.srcs a:hover{color:#000}
+
+/* map */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;overflow:auto;min-height:0;flex:1;align-content:start}
+.dc{border-top:1px solid var(--line);padding:10px 0 12px;display:none;flex-direction:column;gap:8px;animation:fade .35s ease}
+.dc.on{display:flex}
+.dc .id{font:600 12px var(--sans);color:var(--teal)}
+.dc h3{margin:0;font:600 15.5px/1.3 var(--serif)}
+.dc .f{display:none;font-size:13.5px;animation:fade .3s ease}
+.dc .f.on{display:block}
+.dc .f label{display:block;font:12px var(--sans);color:var(--dim);margin-bottom:2px}
+.meter{display:flex;align-items:center;gap:9px}
+.meter .seg{display:flex;gap:4px}
+.meter .seg i{width:9px;height:9px;border-radius:50%;border:1px solid var(--text);background:transparent}
+.meter .seg i.fill{background:var(--text)}
+.meter span{font:13px var(--sans);color:var(--text)}
+.links a,.links b{display:inline-block;font:12px var(--sans);font-weight:400;color:var(--text);margin:0 8px 3px 0}
+.links b.g{font-style:italic;font-weight:700;color:var(--red)}
+
+/* review */
+.rv{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:16px;align-items:center;border-top:1px solid var(--line);padding:11px 0}
+.rv .a{font:600 14.5px var(--serif)}
+.rv .a i{font:600 12px var(--sans);font-style:normal;color:var(--teal);margin-right:8px}
+.rv .e{font-size:13px;color:var(--mut);margin-top:3px}
+.rv .e em{font-style:italic;color:var(--dim)}
+.sw{display:grid;grid-template-columns:1fr 1fr;border:1px solid #b9b3a2;border-radius:2px;overflow:hidden}
+.sw button{background:transparent;border:0;padding:6px 4px;font:13px var(--sans);color:var(--mut)}
+.sw button.on-approve{background:var(--text);color:#fff;font-weight:600}
+.sw button.on-hold{background:#d9d2bf;color:var(--text);font-weight:600}
+.sw button.sug{box-shadow:inset 0 -2px 0 var(--text)}
+.rvnote{font:13px var(--sans);color:var(--mut);display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:6px}
+.rvwait{font:italic 13px var(--serif);color:var(--text)}
+
+/* brief panel */
+.cl{display:flex;flex-direction:column;gap:7px;margin:4px 0 14px}
+.cl div{display:flex;align-items:baseline;gap:10px;font-size:14px;color:var(--dim)}
+.cl div i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--teal);visibility:hidden;align-self:center;margin-right:3px}
+.cl div.on{color:var(--text)}
+.cl div.on i{visibility:visible}
+.ready{display:none;gap:10px;align-items:center;flex-wrap:wrap}
+.ready.on{display:flex}
+
+/* run log */
+.feed{border-top:1px solid var(--line);padding:6px 2px;overflow:auto;font:12px/1.65 var(--sans);color:var(--mut)}
+.feed .fl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed .t{color:var(--dim);margin-right:10px;font-variant-numeric:tabular-nums}
+.feed .k{display:inline-block;min-width:58px;margin-right:8px;color:var(--dim)}
+.feed .k-gap{color:var(--red);font-weight:600}
+
+/* brief document */
+.doc{border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.docbar{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 10px}
+.paper{margin:0 22px 18px;background:#fff;border:1px solid var(--line);color:var(--text);padding:26px 30px;overflow:auto;flex:1;min-height:0;font:14px/1.6 var(--serif)}
+.paper h1{font:600 22px/1.25 var(--serif);margin:0 0 6px}
+.paper .meta{font:12px/1.5 var(--sans);color:var(--mut);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.paper h2{font:700 15px/1.3 var(--serif);color:var(--text);margin:18px 0 5px}
+.paper p{margin:0 0 6px}
+.paper ul{margin:0 0 6px;padding-left:18px}
+.paper li{margin-bottom:4px}
+.paper .dec{border-left:2px solid var(--text);padding:1px 0 1px 12px;margin-bottom:10px}
+.paper .hold{border-left-color:var(--dim)}
+.paper sup,.paper .ref{font:11px var(--sans);color:var(--mut)}
+.paper a{color:var(--teal)}
+.paper .src li{font-size:12.5px}
+.blk{animation:fade .4s ease}
+.placeholder{color:var(--dim);font-style:italic}
+
+footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 22px;border-top:1px solid var(--line);font:12px var(--sans);color:var(--mut)}
+
+/* how it works / run record */
+.sheet{position:fixed;inset:0;background:rgba(30,35,48,.35);display:none;justify-content:center;align-items:flex-start;padding:36px 16px;overflow:auto;z-index:10}
+.sheet.on{display:flex}
+.sheet .page{background:#fff;max-width:780px;width:100%;padding:28px 34px 34px;border:1px solid var(--line);font:14.5px/1.6 var(--serif)}
+.sheet .page h2{font:600 22px var(--serif);margin:0 0 4px}
+.sheet .page h3{font:700 15px var(--serif);margin:20px 0 4px}
+.sheet .page p{margin:0 0 8px}
+.sheet .page ol,.sheet .page ul{margin:0 0 8px;padding-left:20px}
+.sheet .page li{margin-bottom:4px}
+.sheet .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}
+.sheet table{border-collapse:collapse;width:100%;font-size:13.5px;margin:6px 0 10px}
+.sheet th,.sheet td{border-bottom:1px solid var(--line);padding:6px 8px 6px 0;text-align:left;vertical-align:top}
+.sheet th{font:600 12.5px var(--sans);color:var(--mut)}
+.sheet pre{background:var(--panel2);border:1px solid var(--line);padding:12px;font:11.5px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow:auto;max-height:340px;white-space:pre-wrap;word-break:break-word}
+.sheet .acts{display:flex;gap:8px;margin:8px 0}
+
+@media (max-width:1200px){main{grid-template-columns:200px minmax(0,1fr) 370px}.sgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){body{overflow:auto;display:block}main{display:block}.doc{border-left:0}.paper{max-height:none}.center{display:block}.panels{height:auto}.panel{height:auto}.feed{height:104px;margin-top:12px}header{flex-wrap:wrap;height:auto;padding:10px 16px}.controls{flex-wrap:wrap}.brand{min-width:0}.case{white-space:normal}.dgrid{grid-template-columns:1fr}}
+@media print{
+  body{display:block;overflow:visible;background:#fff}
+  header,.rail,.center,footer,.docbar,.sheet{display:none!important}
+  main{display:block}.doc{border:0}
+  .paper{margin:0;border:0;max-height:none;overflow:visible;padding:0}
+}
+
+.sitebar{background:#ffffff;border-bottom:1px solid #e1e6ee;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.4}
+.sitebar .sb{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+.sitebar .sb-word{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-weight:600;font-size:19px;color:#101a2e;text-decoration:none}
+.sitebar nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:14.5px}
+.sitebar nav a{color:#5a6579;text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+.sitebar nav a:hover{color:#101a2e}
+.sitebar nav a[aria-current=page]{color:#101a2e;border-bottom-color:#101a2e}
+.sitebar nav a.sb-btn{background:#0b1f3a;color:#ffffff;padding:7px 14px;border-radius:2px;border:1px solid #0b1f3a;font-weight:600}
+.sitebar nav a.sb-btn:hover{background:#06142a;color:#fff}
+@media print{.sitebar{display:none!important}}
+</style>
+</head>
+<body>
+<div class="sitebar"><div class="sb">
+  <a class="sb-word" href="../index.html"><span data-brand="name">Second Analyst</span></a>
+  <nav aria-label="Main">
+    <a href="../capabilities.html">Capabilities</a>
+    <a href="../how-it-works.html">How it works</a>
+    <a href="../try-it-yourself.html" aria-current="page">Try it out</a>
+    <a href="../pricing.html">Pricing</a>
+    <a href="../our-approach.html">Our approach</a>
+    <a class="sb-btn" href="../contact.html">Book a diagnostic</a>
+  </nav>
+</div></div>
+
+<header>
+  <div class="brand"><b>Shiftwatch</b><em>weekly market-shift record</em></div>
+  <div class="case">Hypothetical mid-size Indian hotel chain<br>Topic: AI-agent hotel booking</div>
+  <div class="controls">
+    <label class="chk" title="Stop at the review step and let a person decide"><input type="checkbox" id="pauseReview"> Pause at review</label>
+    <select class="btn" id="speed" title="Playback speed"><option value="1">1x</option><option value="1.5">1.5x</option><option value="2">2x</option></select>
+    <button class="btn" id="pauseBtn" disabled>Pause</button>
+    <button class="btn" id="resetBtn">Reset</button>
+    <span class="sep"></span>
+    <button class="btn" id="methodBtn">How it works</button>
+    <button class="btn" id="recordBtn">Run record</button>
+    <button class="btn primary" id="runBtn">Run weekly scan</button>
+  </div>
+</header>
+
+<main>
+  <aside class="rail">
+    <h4>Steps</h4>
+    <div class="stages" id="stages"></div>
+    <h4>This run</h4>
+    <dl class="tally">
+      <div><dt>Sources read</dt><dd id="c-src">0/8</dd></div>
+      <div><dt>Events logged</dt><dd id="c-ev">0</dd></div>
+      <div><dt>Not disclosed</dt><dd id="c-gap">0</dd></div>
+      <div><dt>Decisions flagged</dt><dd id="c-fl">0</dd></div>
+      <div><dt>Approved</dt><dd id="c-ap">0</dd></div>
+      <div><dt>On hold</dt><dd id="c-hd">0</dd></div>
+    </dl>
+    <div class="clock" id="clock">run time 00:00</div>
+  </aside>
+
+  <section class="center">
+    <div class="panels" id="panels">
+
+      <div class="panel idle on" id="p-idle">
+        <h1>Weekly scan</h1>
+        <p>Reads a fixed list of public sources, logs what changed with its date and source, says what is not disclosed, ties each change to a decision, waits for a person to approve, then writes the memo.</p>
+        <div class="casecard">
+          <div><span>Watching for</span>Example hotel group (hypothetical), mid-size, India</div>
+          <div><span>Topic</span>AI-agent hotel booking</div>
+          <div><span>Decisions on watch</span>4 commercial questions</div>
+          <div><span>Sources</span>8 public sources, no internal data</div>
+        </div>
+        <button class="btn primary bigrun" id="bigRun">Run weekly scan</button>
+        <div class="hint">This page replays one captured run. Space starts or pauses, R resets.</div>
+      </div>
+
+      <div class="panel" id="p-collect">
+        <div class="ph"><h2>1 &nbsp;Collect</h2><p>Reading the approved source list</p></div>
+        <div class="sgrid" id="sgrid"></div>
+      </div>
+
+      <div class="panel" id="p-log">
+        <div class="ph"><h2>2 &nbsp;Log events</h2><p id="logsum">Each item keeps its date, source and disclosure status</p></div>
+        <div class="scroll" id="logscroll">
+          <div class="lhead"><div>Date</div><div>What happened</div><div>Status</div><div>Source</div></div>
+          <div id="logrows"></div>
+        </div>
+      </div>
+
+      <div class="panel" id="p-map">
+        <div class="ph"><h2>3 &nbsp;Map to decisions</h2><p>What each change puts in question, and how strong the evidence is</p></div>
+        <div class="dgrid" id="dgrid"></div>
+      </div>
+
+      <div class="panel" id="p-review">
+        <div class="ph"><h2>4 &nbsp;Human review</h2><p>Nothing is released until a person approves it</p></div>
+        <div class="scroll" id="rvlist"></div>
+        <div class="rvnote"><span id="rvstate"></span><button class="btn primary" id="release" style="display:none" disabled>Approve and build memo</button></div>
+      </div>
+
+      <div class="panel" id="p-brief">
+        <div class="ph"><h2>5 &nbsp;Memo</h2><p>Built from the approved items only</p></div>
+        <div class="cl" id="cl"></div>
+        <div class="ready" id="ready">
+          <button class="btn primary" id="dl">Download memo (.md)</button>
+          <button class="btn" id="pr">Print or save as PDF</button>
+          <span class="hint">Every line in the memo carries a source tag.</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="feed" id="feed"></div>
+  </section>
+
+  <section class="doc">
+    <div class="docbar"><h4>Weekly decision memo</h4><div class="acts"></div></div>
+    <article class="paper" id="paper">
+      <p class="placeholder">The memo appears here when the run finishes.</p>
+    </article>
+  </section>
+</main>
+
+<footer>
+  <span>Replay of a captured run on public sources, checked 29 Oct 2026. The hotel group is hypothetical.</span>
+  <span>Facts shown are as reported by the cited sources.</span>
+</footer>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="page" id="sheetPage"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- data ---------- */
+var SRC=[
+ {id:'S1',org:'Skift',type:'Trade press',date:'27 Aug 2026',title:"Google's Agentic Hotel Booking Tool Comes to AI Mode",url:'https://skift.com/2026/08/27/googles-agentic-hotel-booking-tool-comes-to-ai-mode/'},
+ {id:'S2',org:'PhocusWire',type:'Trade press',date:'Aug 2026',title:'AI Mode launch: hotel booking, flight tracking, loyalty pricing',url:'https://www.phocuswire.com/news/technology/google-ai-mode-hotel-booking-agentic-flights-loyalty'},
+ {id:'S3',org:'Asian Hospitality',type:'Trade press',date:'Aug 2026',title:'Google adds AI hotel booking',url:'https://www.asianhospitality.com/google-ai-mode-hotel-booking/'},
+ {id:'S4',org:'Hospitality Net',type:'Opinion',date:'3 Aug 2026',title:'The Agentic Booking Question No One Has Answered: Who Gets the Commission?',url:'https://www.hospitalitynet.org/opinion/4133767/the-agentic-booking-question-no-one-has-answered-who-gets-the-commission'},
+ {id:'S5',org:'Hospitality.today',type:'Analysis',date:'28 May 2026',title:'Placement, not commission',url:'https://www.hospitality.today/article/placement-not-commission'},
+ {id:'S6',org:'10 Minutes News for Hoteliers',type:'Trade press',date:'25 Nov 2025',title:'Google keeps commercial model for agentic hotel booking',url:'https://en.10minhotel.com/2025/11/25/google-keeps-commercial-model-for-agentic-hotel-booking'},
+ {id:'S7',org:'Booking Holdings',type:'Company notice',date:'6 Oct 2026',title:'Third quarter 2026 results webcast notice',url:'https://www.prnewswire.com/news-releases/booking-holdings-to-webcast-third-quarter-2026-financial-results-on-november-3-302895776.html'},
+ {id:'S8',org:'Telecom Live',type:'Trade press',date:'13 Apr 2026',title:"Google's AI Mode can now book restaurant tables for you in India",url:'https://telecomlive.in/web/2026/04/13/googles-ai-mode-can-now-book-restaurant-tables-for-you-in-india/'}
+];
+var STATUS={disclosed:'Disclosed',gap:'Not disclosed',opinion:'Opinion',inference:'Inference',stated:'Company stated',scheduled:'Scheduled'};
+var EV=[
+ {id:'E1',date:'25 Nov 2025',st:'stated',src:['S6'],text:'Google says agentic hotel booking should follow a commercial model similar to today’s, with little new friction for partners.',note:'An expectation, not a published fee schedule.'},
+ {id:'E2',date:'Apr 2026',st:'disclosed',src:['S8'],text:'Google starts rolling out agentic restaurant reservations in AI Mode in India.',note:'Dining only; hotels were not part of it.'},
+ {id:'E3',date:'28 May 2026',st:'inference',src:['S5'],text:'Analysis argues Google will earn from placement and ads rather than a booking cut, because its checkout standard carries no transaction fee.',note:'The piece itself says Google has not announced a paid tier.'},
+ {id:'E4',date:'3 Aug 2026',st:'opinion',src:['S4'],text:'Commentator lays out three routes for hotels: an OTA app inside the chat, an aggregator that adds a new fee, or a hotel-owned feed. No rates or booking shares given.',note:'One author’s framing.'},
+ {id:'E5',date:'27 Aug 2026',st:'disclosed',src:['S1','S2'],text:'Google begins in-chat hotel booking in AI Mode for US travelers. Guests compare rooms, check cancellation terms and pay with Google Pay.'},
+ {id:'E6',date:'27 Aug 2026',st:'disclosed',src:['S1','S2'],text:'Launch partners are OTAs and large chains: Booking.com, Expedia, Hotels.com, Priceline, Trip.com, Hilton, Marriott, IHG, Choice, Wyndham.'},
+ {id:'E7',date:'27 Aug 2026',st:'disclosed',src:['S1','S2'],text:'The hotel or OTA stays merchant of record. Partners receive only the data needed for the booking, not the chat context. Google signalled this could change later.'},
+ {id:'E8',date:'27 Aug 2026',st:'disclosed',src:['S2'],text:'Google says AI Mode hotel results are organic with no paid placement for now, and ads are not ruled out.'},
+ {id:'E9',date:'Aug 2026',st:'disclosed',src:['S3'],text:'Google says hotel booking will expand to more partners and markets in the coming weeks.',note:'No market named in the coverage reviewed.'},
+ {id:'G1',date:'Open',st:'gap',src:['S1','S2'],text:'Fee or commission Google charges partners for bookings made through AI Mode.',note:'Not published in launch coverage.'},
+ {id:'G2',date:'Open',st:'gap',src:['S1','S2'],text:'Share of bookings arriving through the agent flow.',note:'No adoption data published.'},
+ {id:'G3',date:'Open',st:'gap',src:['S3'],text:'Hotel booking rollout in India.',note:'No announcement in the coverage reviewed.'},
+ {id:'G4',date:'Open',st:'gap',src:['S1','S2'],text:'How a mid-size chain connects its inventory to the flow.',note:'Not covered in the coverage reviewed.'},
+ {id:'E10',date:'3 Nov 2026',st:'scheduled',src:['S7'],text:'Booking Holdings reports Q3 2026 results at about 4:00 pm ET, with a call at 4:30 pm ET.'}
+];
+var FL=[
+ {id:'F1',q:'Which route do we accept for agent bookings, and on what terms?',
+  assume:'Agent-originated bookings will reach us through OTAs on the commission we already pay.',
+  ev:{label:'Mixed',n:2,why:'Structure is clear (seller stays merchant of record, partners are OTAs and big chains). Price is not disclosed.'},
+  links:['E1','E4','E6','E7','G1'],
+  next:'Ask each OTA account manager, in writing, whether bookings that start in AI Mode sit in the same commission class. Agree no new terms yet.',
+  sug:'approve'},
+ {id:'F2',q:'How does our inventory reach the agent flow at all?',
+  assume:'Being listed on OTAs is enough to be visible, and guests who prefer our site will find it.',
+  ev:{label:'Thin',n:1,why:'Named partners are OTAs and large chains. How a mid-size chain connects is not covered.'},
+  links:['E5','E6','E9','G4'],
+  next:'Map how our rates and availability would reach Google’s flow today: via OTAs, via our connectivity provider, or direct. List what we cannot answer.',
+  sug:'approve'},
+ {id:'F3',q:'Do we shift budget from classic hotel ads toward AI-surface placement?',
+  assume:'Google will keep AI Mode organic and earn only from bookings.',
+  ev:{label:'Inference only',n:1,why:'One analysis expects placement fees but says so itself as inference. Google says organic for now and ads are not ruled out.'},
+  links:['E3','E8'],
+  next:'Keep on watch, with no budget change on this evidence.',
+  holdWhy:'Held: inference only. No Google statement to act on.',
+  sug:'hold'},
+ {id:'F4',q:'Do we need an India plan this year?',
+  assume:'Hotel booking in AI Mode reaches India later than the US, leaving time to prepare.',
+  ev:{label:'Indirect',n:1,why:'No India hotel rollout announced. Google did launch agentic dining in India in April and says more markets are coming.'},
+  links:['E2','E9','G3'],
+  next:'Prepare a one-page readiness list now and re-run this scan the week Google names India or a new market for hotels.',
+  sug:'approve'}
+];
+var STAGES=[
+ {k:'collect',t:'Collect',s:'Read approved public sources'},
+ {k:'log',t:'Log events',s:'Date, source, disclosed or not'},
+ {k:'map',t:'Map to decisions',s:'What each change puts in question'},
+ {k:'review',t:'Human review',s:'Nothing goes out unapproved'},
+ {k:'brief',t:'Memo',s:'One-page decision memo'}
+];
+
+/* ---------- helpers ---------- */
+function $(s){return document.querySelector(s)}
+function el(h){var d=document.createElement('div');d.innerHTML=h;return d.firstElementChild}
+function byId(arr,id){for(var i=0;i<arr.length;i++){if(arr[i].id===id)return arr[i]}return null}
+function pad(n){return n<10?'0'+n:''+n}
+function fmt(ms){var s=Math.floor(ms/1000);return pad(Math.floor(s/60))+':'+pad(s%60)}
+function srcLinks(ids){return ids.map(function(i){var s=byId(SRC,i);return '<a href="'+s.url+'" target="_blank" rel="noopener" title="'+s.org+': '+s.title.replace(/"/g,'&quot;')+'">'+i+'</a>'}).join('')}
+
+/* ---------- state ---------- */
+var token=0,paused=false,speed=1,simT=0,running=false,finished=false;
+var dec={};           // flag decisions
+var counts={src:0,ev:0,gap:0,fl:0,ap:0,hd:0};
+var feedEl=$('#feed'),stageEls=[],panelIds=['p-idle','p-collect','p-log','p-map','p-review','p-brief'];
+var sel=-1,reachedStage=-1;
+
+function setCount(k,v){counts[k]=v;
+  $('#c-src').textContent=counts.src+'/'+SRC.length;
+  $('#c-ev').textContent=counts.ev;$('#c-gap').textContent=counts.gap;
+  $('#c-fl').textContent=counts.fl;$('#c-ap').textContent=counts.ap;$('#c-hd').textContent=counts.hd;}
+function feed(kind,msg){var d=document.createElement('div');d.className='fl';
+  d.innerHTML='<span class="t">t+'+fmt(simT)+'</span><span class="k k-'+kind+'">'+kind+'</span>'+msg;
+  feedEl.appendChild(d);feedEl.scrollTop=feedEl.scrollHeight;$('#clock').textContent='run time '+fmt(simT);}
+function sleep(ms){var my=token;
+  return new Promise(function(res,rej){
+    var left=ms/speed;
+    (function tick(){
+      if(my!==token){rej('cancel');return}
+      if(paused){setTimeout(tick,120);return}
+      if(left<=0){res();return}
+      var step=Math.min(40,left);
+      setTimeout(function(){left-=step;simT+=step*speed;tick()},step);
+    })();
+  });}
+function showPanel(id){panelIds.forEach(function(p){$('#'+p).classList.toggle('on',p===id)})}
+function setStage(i,state,metric){var e=stageEls[i];
+  e.classList.remove('run','done');if(state)e.classList.add(state);
+  if(metric!==undefined)e.querySelector('.m').textContent=metric;
+  e.classList.toggle('clickable',state==='done');}
+function selectStage(i){ // review finished stages by clicking the rail
+  if(running&&!paused&&!finished)return;
+  if(i>reachedStage&&!finished)return;
+  sel=i;stageEls.forEach(function(e,j){e.classList.toggle('sel',j===i)});
+  showPanel(panelIds[i+1]);}
+
+/* ---------- static render ---------- */
+function renderStatic(){
+  var st=$('#stages');st.innerHTML='';stageEls=[];
+  STAGES.forEach(function(s,i){
+    var e=el('<div class="stg"><div class="n">'+(i+1)+'</div><div><div class="t">'+s.t+'</div><div class="s">'+s.s+'</div><div class="m"></div></div></div>');
+    e.addEventListener('click',function(){if(e.classList.contains('clickable'))selectStage(i)});
+    st.appendChild(e);stageEls.push(e);});
+  var g=$('#sgrid');g.innerHTML='';
+  SRC.forEach(function(s){g.appendChild(el('<div class="sc" id="sc-'+s.id+'"><div class="top"><span>'+s.type+'</span><span>'+s.date+'</span></div><div class="org">'+s.org+'</div><div class="ttl">'+s.title+'</div><div class="bar"><i></i></div><div class="st"><span class="sx">Queued</span><span class="sy"></span></div></div>'))});
+  $('#logrows').innerHTML='';$('#logsum').textContent='Each item keeps its date, source and disclosure status';
+  var d=$('#dgrid');d.innerHTML='';
+  FL.forEach(function(f){
+    var segs='';for(var i=0;i<4;i++)segs+='<i></i>';
+    d.appendChild(el('<div class="dc" id="dc-'+f.id+'"><div class="id">'+f.id+'</div><h3>'+f.q+'</h3>'+
+     '<div class="f"><label>Assumption at risk</label>'+f.assume+'</div>'+
+     '<div class="f ev"><label>Evidence strength</label><div class="meter"><div class="seg">'+segs+'</div><span>'+f.ev.label+'</span></div><div style="color:var(--mut);font-size:11.5px;margin-top:3px">'+f.ev.why+'</div></div>'+
+     '<div class="f"><label>Linked items</label><div class="links">'+f.links.map(function(l){return '<b class="'+(l.charAt(0)==='G'?'g':'')+'">'+l+'</b>'}).join('')+'</div></div>'+
+     '<div class="f"><label>Proposed next step</label>'+f.next+'</div></div>'));
+  });
+  var r=$('#rvlist');r.innerHTML='';
+  FL.forEach(function(f){
+    r.appendChild(el('<div class="rv" id="rv-'+f.id+'"><div><div class="a"><i>'+f.id+'</i>'+f.q+'</div><div class="e"><em>Evidence: </em>'+f.ev.label+'. '+f.ev.why+'</div><div class="e" style="color:var(--teal)"><em>Proposed: </em>'+f.next+'</div></div>'+
+      '<div class="sw"><button data-f="'+f.id+'" data-v="approve">Approve</button><button data-f="'+f.id+'" data-v="hold">Hold</button></div></div>'));
+  });
+  var cl=$('#cl');cl.innerHTML='';
+  ['Header and scope','Recommended stance','What changed','Decisions touched','On hold and not known','Watch next','Sources'].forEach(function(t,i){cl.appendChild(el('<div id="cl'+i+'"><i></i>'+t+'</div>'))});
+  $('#ready').classList.remove('on');
+  var paper=$('#paper');paper.innerHTML='';
+  paper.appendChild(el('<p class="placeholder">The memo appears here when the run finishes.</p>'));
+  feedEl.innerHTML='';simT=0;$('#clock').textContent='run time 00:00';
+  dec={};counts={src:0,ev:0,gap:0,fl:0,ap:0,hd:0};setCount('src',0);
+  $('#rvstate').textContent='';$('#release').style.display='none';
+  reachedStage=-1;sel=-1;finished=false;
+}
+
+/* ---------- brief ---------- */
+var briefMD='';
+function buildBlocks(){
+  var ap=FL.filter(function(f){return dec[f.id]==='approve'}),hd=FL.filter(function(f){return dec[f.id]==='hold'});
+  var B=[];
+  B.push({h:'<h1>Decision memo: AI-agent hotel booking</h1><div class="meta">Example hotel group (hypothetical, mid-size, India) &nbsp;·&nbsp; Scan of 29 Oct 2026 &nbsp;·&nbsp; '+SRC.length+' public sources &nbsp;·&nbsp; Reviewer: approved '+ap.length+', held '+hd.length+'</div>',
+    m:'# Decision memo: AI-agent hotel booking\n\nExample hotel group (hypothetical, mid-size, India) | Scan of 29 Oct 2026 | '+SRC.length+' public sources | Reviewer: approved '+ap.length+', held '+hd.length+'\n'});
+  B.push({h:'<h2>Recommended stance</h2><p>No change to commercial terms on this week’s evidence. The structure of the launch is clear; price and India timing are not disclosed. '+ap.length+' follow-up actions are approved and '+hd.length+' item is on hold.</p>',
+    m:'## Recommended stance\n\nNo change to commercial terms on this week’s evidence. The structure of the launch is clear; price and India timing are not disclosed. '+ap.length+' follow-up actions are approved and '+hd.length+' item is on hold.\n'});
+  B.push({h:'<h2>What changed</h2><ul>'+
+    '<li>Google began in-chat hotel booking in AI Mode for US travelers on 27 Aug; guests pay with Google Pay. <span class="ref">[S1]</span></li>'+
+    '<li>Launch partners are OTAs and large chains. The seller stays merchant of record, though Google signalled that could change. <span class="ref">[S1][S2]</span></li>'+
+    '<li>Results are organic for now; ads are not ruled out. <span class="ref">[S2]</span></li>'+
+    '<li>Google said more partners and markets would follow; no hotel market beyond the US is named in the coverage reviewed. <span class="ref">[S3]</span></li></ul>',
+    m:'## What changed\n\n- Google began in-chat hotel booking in AI Mode for US travelers on 27 Aug; guests pay with Google Pay. [S1]\n- Launch partners are OTAs and large chains. The seller stays merchant of record, though Google signalled that could change. [S1][S2]\n- Results are organic for now; ads are not ruled out. [S2]\n- Google said more partners and markets would follow; no hotel market beyond the US is named in the coverage reviewed. [S3]\n'});
+  var dh='<h2>Decisions touched (approved)</h2>',dm='## Decisions touched (approved)\n\n';
+  if(!ap.length){dh+='<p>None approved in this run.</p>';dm+='None approved in this run.\n'}
+  ap.forEach(function(f){
+    dh+='<div class="dec"><b>'+f.id+'. '+f.q+'</b><br>Assumption at risk: '+f.assume+'<br>Evidence: '+f.ev.label+'. '+f.ev.why+'<br><b>Next step:</b> '+f.next+'</div>';
+    dm+='**'+f.id+'. '+f.q+'**\n- Assumption at risk: '+f.assume+'\n- Evidence: '+f.ev.label+'. '+f.ev.why+'\n- Next step: '+f.next+'\n\n';
+  });
+  B.push({h:dh,m:dm});
+  var hh='<h2>On hold</h2>',hm='## On hold\n\n';
+  if(!hd.length){hh+='<p>Nothing on hold.</p>';hm+='Nothing on hold.\n'}
+  hd.forEach(function(f){
+    hh+='<div class="dec hold"><b>'+f.id+'. '+f.q+'</b><br>'+(f.holdWhy||'Held by the reviewer.')+' Evidence: '+f.ev.label+'.</div>';
+    hm+='**'+f.id+'. '+f.q+'**\n- '+(f.holdWhy||'Held by the reviewer.')+' Evidence: '+f.ev.label+'.\n\n';
+  });
+  hh+='<h2>Not known</h2><ul>'+EV.filter(function(e){return e.st==='gap'}).map(function(e){return '<li>'+e.text+' '+e.note+'</li>'}).join('')+'</ul>';
+  hm+='## Not known\n\n'+EV.filter(function(e){return e.st==='gap'}).map(function(e){return '- '+e.text+' '+e.note}).join('\n')+'\n';
+  B.push({h:hh,m:hm});
+  B.push({h:'<h2>Watch next</h2><ul><li>3 Nov: Booking Holdings reports Q3 at about 4:00 pm ET, call at 4:30 pm ET. Check for any remark on agent-channel economics or partner terms and update this log the same day. <span class="ref">[S7]</span></li><li>Tripwire 1: Google publishes fee or commission terms for AI Mode bookings.</li><li>Tripwire 2: Google names India or another new market for hotel booking.</li></ul>',
+    m:'## Watch next\n\n- 3 Nov: Booking Holdings reports Q3 at about 4:00 pm ET, call at 4:30 pm ET. Check for any remark on agent-channel economics or partner terms and update this log the same day. [S7]\n- Tripwire 1: Google publishes fee or commission terms for AI Mode bookings.\n- Tripwire 2: Google names India or another new market for hotel booking.\n'});
+  B.push({h:'<h2>Sources</h2><ul class="src">'+SRC.map(function(s){return '<li>['+s.id+'] '+s.org+', '+s.date+': <a href="'+s.url+'" target="_blank" rel="noopener">'+s.title+'</a></li>'}).join('')+'</ul><p class="ref" style="margin-top:10px">Example case on public sources, with a hypothetical company. Not investment or legal advice.</p>',
+    m:'## Sources\n\n'+SRC.map(function(s){return '- ['+s.id+'] '+s.org+', '+s.date+': '+s.title+' - '+s.url}).join('\n')+'\n\nExample case on public sources, with a hypothetical company. Not investment or legal advice.\n'});
+  return B;
+}
+
+/* ---------- the run ---------- */
+async function waitReview(auto){
+  var rvState=$('#rvstate'),rel=$('#release');
+  function paint(id){var row=$('#rv-'+id);row.querySelectorAll('button').forEach(function(b){
+      b.className='';if(b.dataset.v===dec[id])b.className='on-'+dec[id];});}
+  function tally(){var a=0,h=0;FL.forEach(function(f){if(dec[f.id]==='approve')a++;if(dec[f.id]==='hold')h++});setCount('ap',a);setCount('hd',h);}
+  if(auto){
+    rvState.innerHTML='<span class="rvwait">Awaiting reviewer</span>';
+    await sleep(1400);
+    for(var i=0;i<FL.length;i++){var f=FL[i];dec[f.id]=f.sug;paint(f.id);tally();
+      feed('review',f.id+' '+(f.sug==='approve'?'approved':'held')+(f.sug==='hold'?' ('+f.holdWhy.replace('Held: ','')+')':''));
+      await sleep(1300);}
+    rvState.textContent='Reviewer: approved '+counts.ap+', held '+counts.hd;
+    await sleep(900);
+  } else {
+    FL.forEach(function(f){var b=$('#rv-'+f.id+' button[data-v="'+f.sug+'"]');b.classList.add('sug')});
+    rvState.innerHTML='<span class="rvwait">Waiting for your decision. Suggested choices are outlined.</span>';
+    rel.style.display='';rel.disabled=true;
+    feed('review','waiting for reviewer');
+    await new Promise(function(resolve,reject){
+      var my=token;
+      function onClick(e){var b=e.target.closest('button[data-f]');if(!b)return;
+        dec[b.dataset.f]=b.dataset.v;paint(b.dataset.f);tally();
+        feed('review',b.dataset.f+' '+(b.dataset.v==='approve'?'approved':'held'));
+        if(FL.every(function(f){return dec[f.id]}))rel.disabled=false;}
+      function onRel(){cleanup();resolve()}
+      function cleanup(){$('#rvlist').removeEventListener('click',onClick);rel.removeEventListener('click',onRel);clearInterval(iv)}
+      var iv=setInterval(function(){if(my!==token){cleanup();reject('cancel')}},150);
+      $('#rvlist').addEventListener('click',onClick);rel.addEventListener('click',onRel);
+    });
+    rel.style.display='none';rvState.textContent='Reviewer: approved '+counts.ap+', held '+counts.hd;
+  }
+}
+
+async function run(){
+  if(running)return;
+  if(finished||reachedStage>=0)reset(true);
+  var my=++token;running=true;finished=false;paused=false;
+  $('#runBtn').disabled=true;$('#pauseBtn').disabled=false;$('#pauseBtn').textContent='Pause';$('#bigRun').disabled=true;
+  try{
+    /* 1 collect */
+    reachedStage=0;setStage(0,'run','0 of '+SRC.length+' read');showPanel('p-collect');
+    feed('start','weekly scan, topic: AI-agent hotel booking');await sleep(700);
+    for(var i=0;i<SRC.length;i++){
+      var s=SRC[i],c=$('#sc-'+s.id),bar=c.querySelector('.bar i');
+      c.classList.add('fetch');c.querySelector('.sx').textContent='Reading';
+      feed('fetch',s.org+' · '+s.date);
+      bar.style.transition='width '+(520/speed)+'ms linear';bar.style.width='100%';
+      await sleep(620);
+      var n=EV.filter(function(e){return e.src.indexOf(s.id)>=0}).length;
+      c.classList.remove('fetch');c.classList.add('ok');c.querySelector('.sx').textContent='Read';c.querySelector('.sy').textContent=n+(n===1?' item':' items');
+      setCount('src',i+1);stageEls[0].querySelector('.m').textContent=(i+1)+' of '+SRC.length+' read';
+      await sleep(180);
+    }
+    setStage(0,'done',SRC.length+' sources read');await sleep(600);
+
+    /* 2 log */
+    reachedStage=1;setStage(1,'run','0 items');showPanel('p-log');
+    var rows=$('#logrows'),evN=0,gapN=0;
+    for(var j=0;j<EV.length;j++){
+      var e=EV[j];
+      var row=el('<div class="lrow flash'+(e.st==='gap'?' gap':'')+'"><div class="d">'+e.date+'</div><div class="x">'+e.text+(e.note?'<small>'+e.note+'</small>':'')+'</div><div><span class="chip c-'+e.st+'">'+STATUS[e.st]+'</span></div><div class="srcs">'+srcLinks(e.src)+'</div></div>');
+      rows.appendChild(row);$('#logscroll').scrollTop=$('#logscroll').scrollHeight;
+      if(e.st==='gap'){gapN++;setCount('gap',gapN);feed('gap',e.id+' not disclosed: '+e.text.replace(/\.$/,''))}
+      else{evN++;setCount('ev',evN);feed('log',e.id+' · '+e.date+' · '+STATUS[e.st].toLowerCase())}
+      stageEls[1].querySelector('.m').textContent=(evN+gapN)+' items';
+      await sleep(e.st==='gap'?1150:1000);
+      row.classList.remove('flash');
+    }
+    $('#logsum').textContent=evN+' events logged, '+gapN+' gaps marked as not disclosed';
+    setStage(1,'done',evN+' events, '+gapN+' gaps');await sleep(900);
+
+    /* 3 map */
+    reachedStage=2;setStage(2,'run','0 flagged');showPanel('p-map');
+    feed('flag','checking assumptions behind '+FL.length+' standing decisions');await sleep(600);
+    for(var k=0;k<FL.length;k++){
+      var f=FL[k],card=$('#dc-'+f.id);card.classList.add('on');
+      setCount('fl',k+1);stageEls[2].querySelector('.m').textContent=(k+1)+' flagged';
+      var fs=card.querySelectorAll('.f');
+      feed('flag',f.id+' · '+f.q);
+      await sleep(550);
+      fs[0].classList.add('on');await sleep(700);
+      fs[1].classList.add('on');
+      var segs=fs[1].querySelectorAll('.seg i');
+      for(var q=0;q<f.ev.n;q++){segs[q].classList.add('fill');await sleep(150)}
+      feed('flag',f.id+' evidence: '+f.ev.label.toLowerCase());
+      await sleep(900);
+      fs[2].classList.add('on');await sleep(500);
+      fs[3].classList.add('on');await sleep(900);
+      card.scrollIntoView({block:'nearest',behavior:'smooth'});
+    }
+    setStage(2,'done',FL.length+' flagged');await sleep(700);
+
+    /* 4 review */
+    reachedStage=3;setStage(3,'run','');showPanel('p-review');
+    feed('review','flags held for human review before anything is released');
+    var autoMode=!$('#pauseReview').checked;
+    await waitReview(autoMode);
+    setStage(3,'done','approved '+counts.ap+', held '+counts.hd);await sleep(700);
+
+    /* 5 brief */
+    reachedStage=4;setStage(4,'run','');showPanel('p-brief');
+    feed('memo','assembling memo from approved items');
+    var blocks=buildBlocks();briefMD='';
+    var paper=$('#paper');paper.innerHTML='';
+    for(var b=0;b<blocks.length;b++){
+      var blk=el('<div class="blk">'+blocks[b].h+'</div>');paper.appendChild(blk);
+      briefMD+=blocks[b].m+'\n';
+      $('#cl'+b).classList.add('on');paper.scrollTop=paper.scrollHeight;
+      feed('memo','section '+(b+1)+' of '+blocks.length+' written');
+      await sleep(b===3?1800:1300);
+    }
+    paper.scrollTop=0;
+    setStage(4,'done','ready');$('#ready').classList.add('on');
+    feed('memo','done · memo ready for download');
+    finished=true;
+  }catch(err){ if(err!=='cancel')throw err; return; }
+  finally{ if(my===token){running=false;$('#runBtn').disabled=false;$('#runBtn').textContent='Replay';$('#pauseBtn').disabled=true;$('#bigRun').disabled=false;} }
+}
+
+function reset(silent){
+  token++;running=false;paused=false;
+  renderStatic();showPanel('p-idle');
+  $('#runBtn').disabled=false;$('#runBtn').textContent='Run weekly scan';$('#pauseBtn').disabled=true;$('#pauseBtn').textContent='Pause';$('#bigRun').disabled=false;
+}
+
+/* ---------- wiring ---------- */
+$('#runBtn').addEventListener('click',run);
+$('#bigRun').addEventListener('click',run);
+$('#resetBtn').addEventListener('click',function(){reset()});
+$('#pauseBtn').addEventListener('click',function(){paused=!paused;this.textContent=paused?'Resume':'Pause'});
+$('#speed').addEventListener('change',function(){speed=parseFloat(this.value)||1});
+$('#dl').addEventListener('click',function(){
+  var blob=new Blob([briefMD],{type:'text/markdown'});var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='shiftwatch-memo-2026-10-29.md';document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);});
+$('#pr').addEventListener('click',function(){window.print()});
+document.addEventListener('keydown',function(e){
+  var t=e.target&&e.target.tagName;if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;if($('#sheet').classList.contains('on'))return;
+  if(e.code==='Space'){e.preventDefault();
+    if(!running)run();else if(!$('#pauseBtn').disabled){$('#pauseBtn').click()}}
+  if(e.key==='r'||e.key==='R'){reset()}
+});
+
+/* ---------- how it works and run record (read-only views) ---------- */
+function recordObj(){
+  return {
+    case:'Hypothetical Indian mid-size hotel chain',
+    topic:'AI-agent hotel booking',
+    scan_date:'2026-10-29',
+    note:'Data of one captured run, stored in this page. Statuses, ratings and mappings were prepared in advance. The "sug" field is the preset reviewer choice used when the run plays without a pause.',
+    sources:SRC,events:EV,decisions:FL
+  };
+}
+function csvEsc(v){v=(v===undefined||v===null)?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+function ledgerCSV(){
+  var rows=[['id','date','status','text','note','sources']];
+  EV.forEach(function(e){rows.push([e.id,e.date,STATUS[e.st],e.text,e.note||'',e.src.join(' ')])});
+  return rows.map(function(r){return r.map(csvEsc).join(',')}).join('\n')+'\n';
+}
+function saveFile(name,text,type){
+  var blob=new Blob([text],{type:type});var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function openSheet(which){
+  var h='<div class="top"><h2>'+(which==='method'?'How it works':'Run record')+'</h2><button class="btn" id="sheetClose">Close</button></div>';
+  if(which==='method'){
+    h+='<p><i>What this page is.</i> A replay of one captured run on public sources, checked 29 Oct 2026, for a hypothetical hotel group. The page does not fetch anything and does not call a model. The events, ratings and mappings were prepared in advance and are stored in the page; the Run record shows them as data. When the run plays without a pause, the reviewer&rsquo;s choices are preset. Tick &ldquo;Pause at review&rdquo; to make them yourself.</p>'+
+    '<h3>What a live version would do at each step</h3>'+
+    '<ol><li><b>Collect.</b> Fetch the fixed source list on a schedule.</li>'+
+    '<li><b>Log events.</b> A model extracts date, source, a short quote and a status into a fixed structure. Each quote is checked against the fetched text, and anything that fails goes to the reviewer. Items already in the ledger are skipped.</li>'+
+    '<li><b>Map to decisions.</b> Changes are tied to the standing decisions, with a proposed evidence rating from rules the client can read.</li>'+
+    '<li><b>Human review.</b> A named person approves or holds each flag. The run waits for them.</li>'+
+    '<li><b>Memo.</b> Written from approved items only, every line tagged to a source.</li></ol>'+
+    '<h3>What is fixed, editable and stored</h3>'+
+    '<table><tr><th>Fixed</th><td>The five steps; the status labels; every item carries a source and a date; gaps are logged, not filled; nothing is released without approval.</td></tr>'+
+    '<tr><th>Set per client</th><td>Topic; source list; the standing decisions and the assumption behind each; the rating rules; memo format; schedule; reviewer; delivery.</td></tr>'+
+    '<tr><th>Changes each run</th><td>Pages fetched, events, gaps, flags, ratings, the memo.</td></tr>'+
+    '<tr><th>Kept between runs</th><td>The event ledger, decision history and review log. This page does not demonstrate that.</td></tr></table>'+
+    '<h3>What has and has not been tested</h3>'+
+    '<ul><li>A workflow version exists. It was tested end to end only against a mock model server and mock pages. It has not been run on the real model API or on live sites.</li>'+
+    '<li>Accuracy has not been measured: items missed, items logged wrongly, or how often a reviewer would change a rating.</li></ul>';
+  } else {
+    h+='<p>The data this page plays back, as stored. Download it to inspect it outside the page.</p>'+
+    '<div class="acts"><button class="btn primary" id="dlJson">Download record (.json)</button><button class="btn" id="dlCsv">Download event log (.csv)</button></div>'+
+    '<pre id="recpre"></pre>';
+  }
+  var pg=$('#sheetPage');pg.innerHTML=h;
+  if(which==='record'){$('#recpre').textContent=JSON.stringify(recordObj(),null,1);
+    $('#dlJson').addEventListener('click',function(){saveFile('shiftwatch-record-2026-10-29.json',JSON.stringify(recordObj(),null,1),'application/json')});
+    $('#dlCsv').addEventListener('click',function(){saveFile('shiftwatch-event-log-2026-10-29.csv',ledgerCSV(),'text/csv')});}
+  $('#sheetClose').addEventListener('click',closeSheet);
+  $('#sheet').classList.add('on');pg.parentNode.scrollTop=0;
+}
+function closeSheet(){$('#sheet').classList.remove('on')}
+$('#methodBtn').addEventListener('click',function(){openSheet('method')});
+$('#recordBtn').addEventListener('click',function(){openSheet('record')});
+$('#sheet').addEventListener('click',function(e){if(e.target===this)closeSheet()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()});
+
+window.__shiftwatch={setSpeed:function(v){speed=v},state:function(){return {counts:counts,dec:dec,finished:finished,running:running}}};
+renderStatic();
+})();
+</script>
+<script src="../assets/brand.js"></script>
+</body>
+</html>

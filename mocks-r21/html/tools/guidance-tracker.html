@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../assets/fonts.css">
+<title>Guidance Tracker | Second Analyst</title>
+<style>
+:root{
+  --bg:#ffffff; --paper:#ffffff; --ink:#101a2e; --mut:#66625a; --rule:#e1e6ee; --soft:#efeadd; --accent:#0b1f3a; --warn:#0b1f3a;
+  --serif:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;font-variant-numeric:tabular-nums}
+a{color:var(--ink);text-underline-offset:3px}
+.sitebar{background:#ffffff;border-bottom:1px solid #e1e6ee;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.4}
+.sitebar .sb{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+.sitebar .sb-word{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-weight:600;font-size:19px;color:#101a2e;text-decoration:none}
+.sitebar nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:14.5px}
+.sitebar nav a{color:#5a6579;text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+.sitebar nav a:hover{color:#101a2e}
+.sitebar nav a[aria-current=page]{color:#101a2e;border-bottom-color:#101a2e}
+.sitebar nav a.sb-btn{background:#0b1f3a;color:#ffffff;padding:7px 14px;border-radius:2px;border:1px solid #0b1f3a;font-weight:600}
+.sitebar nav a.sb-btn:hover{background:#06142a;color:#fff}
+.wrap{max-width:1180px;margin:0 auto;padding:26px 16px 60px}
+.back{margin:0 0 14px;font-size:13px;color:var(--mut)}.back a{color:var(--mut)}
+h1{font-family:var(--serif);font-weight:600;font-size:40px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.15}
+h2{font-family:var(--serif);font-size:21px;font-weight:600;margin:0 0 4px}
+.sub{color:#2e2c28;margin:0;max-width:760px;font-size:17px}
+.how{margin:14px 0 0;padding-left:1.2em;max-width:760px}.how li{margin-bottom:.3em}
+.flag{margin-top:12px;color:var(--mut);font-size:13px;max-width:900px}.flag b{color:var(--ink);font-weight:600}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0 6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--accent);color:var(--paper);border:1px solid var(--accent);padding:0 22px;min-height:44px;border-radius:2px;font-weight:600;font-size:16px}
+.btn:hover{background:#06142a}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.btn.small{min-height:36px;padding:0 14px;font-size:14px}
+.cap{min-height:3em;margin:6px 0 0;padding:.5rem .75rem;border-left:3px solid var(--accent);background:var(--paper);max-width:900px;font-size:15px}
+.cap:empty{display:none}
+#record .cap{margin:8px 0 0;min-height:0;max-width:none}
+select,input[type=text],textarea{font:inherit;font-size:13px;padding:4px 6px;border:1px solid #b9b3a2;background:var(--paper);color:var(--ink);border-radius:2px;width:100%}
+select{width:auto}
+.controls select,.controls label{width:auto}
+label.opt{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:14px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.legend{margin:16px 0 0;max-width:900px;font-size:14px}
+.legend dl{margin:6px 0 0;display:grid;grid-template-columns:7.5rem 1fr;gap:3px 12px}.legend dt{font-weight:600}.legend dd{margin:0;color:#2e2c28}
+
+/* sticky record */
+#record{position:sticky;top:0;z-index:4;background:var(--bg);border-bottom:1px solid var(--rule);padding:10px 0 12px;margin-top:24px}
+#record .rh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+#record h2{font-size:18px}
+#toast{margin:0;font-size:14px;color:var(--accent);font-weight:600;min-height:1.4em}
+.tcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:8px}
+.tcard{background:var(--paper);border:1px solid var(--rule);padding:8px 11px 9px;transition:background .8s}
+.tcard.flash{background:#f6e6d9}
+.tcard .tn{font-weight:600;font-size:14px;line-height:1.25}
+.tcard .tm{font-size:13px;color:var(--mut)}
+.bar{display:flex;height:9px;margin:6px 0 4px;background:#e7e1d2}
+.bar i{display:block;height:100%}
+.bar .m{background:#101a2e}.bar .p{background:#8c867b}.bar .x{background:#0b1f3a}
+@media(max-width:700px){#record{position:static}}
+.key{font-size:12.5px;color:var(--mut);margin-top:6px}
+.key i{display:inline-block;width:10px;height:10px;margin:0 4px 0 10px;vertical-align:middle}.key i:first-child{margin-left:0}
+
+section.blk{margin:30px 0}
+.lede{margin:0 0 12px;color:var(--mut);max-width:780px}
+.try{border:1px solid var(--rule);background:var(--paper);padding:12px 14px;margin:12px 0;max-width:900px}
+.try p{margin:0 0 8px;font-size:14px}.try .actions{margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.filebtn{cursor:pointer;display:inline-block}
+.wrapx{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{text-align:left;font-weight:600;color:var(--mut);font-size:13.5px;border-bottom:1px solid var(--ink);padding:6px 8px 6px 0;white-space:nowrap}
+td{padding:4px 8px 4px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.etable{min-width:1120px}.etable input,.etable select{width:100%}
+.etable tr.bad td:first-child{box-shadow:inset 3px 0 0 #8a2b1a;padding-left:6px}
+.etable tr.new td:first-child{box-shadow:inset 3px 0 0 var(--accent);padding-left:6px}
+.etable tr.flash td{background:#f6e6d9}
+.etable td{transition:background .8s}
+.etable input:disabled{background:#efeadd;color:#9a948a}
+.sc{min-width:170px}.sc b{font-size:14px}.sc .st-Missed,.sc .st-Overdue{color:var(--warn)}.sc .st-Pending{color:var(--mut);font-weight:400}.sc .st-Partly{font-style:italic}
+.sc .why{font-size:12px;color:var(--mut);line-height:1.35;margin-top:1px}
+.sc .mk{display:inline-block;font-size:11.5px;color:var(--accent);margin-left:4px}
+.note{color:var(--mut);font-size:13px;margin-top:8px}
+.strip{display:grid;grid-template-columns:minmax(180px,34%) 1fr 92px;gap:12px;align-items:center;border-bottom:1px solid var(--rule);padding:6px 0;font-size:13.5px}
+.strip svg{width:100%;height:34px;display:block}
+.st{font-weight:600}.st.Missed,.st.Overdue{color:var(--warn)}.st.Pending{color:var(--mut);font-weight:400}.st.Partly{font-style:italic}
+@media(max-width:700px){.strip{grid-template-columns:1fr}}
+.calc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:8px 0;max-width:900px}
+.calc label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--mut)}
+@media(max-width:700px){.calc{grid-template-columns:1fr 1fr}}
+#doc{background:var(--paper);border:1px solid var(--rule);padding:30px 36px;max-width:900px}
+@media(max-width:600px){#doc{padding:18px 14px}}
+#doc h3{font-family:var(--serif);font-size:25px;font-weight:600;margin:0 0 4px;line-height:1.2}
+#doc h4{font-family:var(--serif);font-size:17px;font-weight:600;margin:18px 0 4px}
+#doc p{margin:6px 0}#doc .meta{color:var(--mut);font-size:13px}#doc ul{margin:6px 0 6px 18px;padding:0}#doc table{margin:8px 0;font-size:13.5px}
+#doc td{padding:5px 8px 5px 0}
+.docbar{display:flex;gap:10px;margin:8px 0 12px;flex-wrap:wrap;align-items:center}
+footer.pg{margin-top:30px;border-top:1px solid var(--rule);padding-top:12px;color:var(--mut);font-size:12.5px;max-width:880px}
+@media print{.sitebar,.wrap>.top,#record,.docbar,footer.pg,.cap,section.blk:not(#memo-sec){display:none!important}body{background:#fff}#doc{border:0;padding:0;max-width:none}}
+</style>
+</head>
+<body>
+<div class="sitebar"><div class="sb">
+  <a class="sb-word" href="../index.html"><span data-brand="name">Second Analyst</span></a>
+  <nav aria-label="Main">
+    <a href="../capabilities.html">Capabilities</a>
+    <a href="../how-it-works.html">How it works</a>
+    <a href="../try-it-yourself.html" aria-current="page">Try it out</a>
+    <a href="../pricing.html">Pricing</a>
+    <a href="../our-approach.html">Our approach</a>
+    <a class="sb-btn" href="../contact.html">Book a diagnostic</a>
+  </nav>
+</div></div>
+<div class="wrap">
+<div class="top">
+  <p class="back"><a href="../try-it-yourself.html">Try it yourself</a> / Guidance Tracker</p>
+  <h1>Guidance Tracker</h1>
+  <p class="sub">Scores what a company said it would deliver against what it reported, and shows how reliable its record has been.</p>
+  <ol class="how">
+    <li>List the targets a company set, such as a growth range or a launch date.</li>
+    <li>Enter each result as it is reported. The score appears beside the target at once.</li>
+    <li>Read the record by topic in the bar below. It updates as you type, and the memo at the bottom follows.</li>
+  </ol>
+  <p class="flag"><b>Interactive prototype with manual data entry.</b> It checks no entry against a company document. The example is a hypothetical consumer-goods company with invented figures. Nothing you type leaves your browser. It is not investment advice.</p>
+  <div class="legend"><b>How a target is scored</b>
+    <dl>
+      <dt>Met</dt><dd>The result is inside the target range, or on the right side of a limit such as "at least 5".</dd>
+      <dt>Partly</dt><dd>A little outside, by no more than a quarter of the range or 3 percent of a single limit. For a date, up to 90 days late.</dd>
+      <dt>Missed</dt><dd>Further outside than that, or more than 90 days late.</dd>
+      <dt>Pending, overdue</dt><dd>With no result, a target is pending until the day after its due date, then overdue. Overdue is not counted as missed.</dd>
+    </dl>
+  </div>
+  <div class="controls">
+    <button class="btn" id="tour" type="button">Watch it work (30 seconds)</button>
+    <button class="btn ghost small" id="stop" type="button" disabled>Stop</button>
+    <label class="opt">Speed <select id="speed"><option value="1">Normal</option><option value="2">2x</option><option value="4">4x</option></select></label>
+    <button class="btn ghost small" id="reset" type="button">Back to the example</button>
+  </div>
+</div>
+
+<div id="record" aria-label="Record by topic">
+  <div class="rh"><h2>Record by topic</h2><p id="toast" role="status" aria-live="polite"></p></div>
+  <p class="cap" id="tour-cap" aria-live="polite"></p>
+  <div class="tcards" id="tcards"></div>
+  <div class="key">In each bar, dark means met, grey means partly, rust means missed and pale means no result yet. A percentage appears only when a topic has at least four results.</div>
+</div>
+
+<section class="blk" id="targets">
+  <h2>Targets and results</h2>
+  <p class="lede">Each row is one target. Type a result in the Result column, or change a target, and the score updates. You can overrule a score in the last columns, and the memo lists every override.</p>
+  <div class="try">
+    <p><b>Try a change</b> and watch the record by topic above.</p>
+    <div class="actions">
+      <button class="btn ghost small" id="x1" type="button">Turn the first missed target into a hit</button>
+      <button class="btn ghost small" id="x2" type="button">Add a new target that was missed</button>
+      <button class="btn ghost small" id="x3" type="button">Report a result on an open target</button>
+    </div>
+  </div>
+  <div class="wrapx"><table class="etable"><thead><tr><th>Said</th><th>Topic</th><th>Target</th><th>Kind</th><th>Low</th><th>High</th><th>Unit</th><th>Due</th><th>Result</th><th>Score</th><th>Your call</th><th>Source or note</th><th></th></tr></thead><tbody id="e-body"></tbody></table></div>
+  <div id="e-count" class="note"></div>
+  <div class="actions">
+    <button class="btn small" id="e-add" type="button">Add a target</button>
+    <button class="btn ghost small" id="e-clear" type="button">Clear all</button>
+    <button class="btn ghost small" id="e-dl" type="button">Download (.csv)</button>
+    <label class="btn ghost small filebtn">Import (.csv)<input type="file" id="e-file" accept=".csv,text/csv" hidden></label>
+    <label class="opt">Whose targets <input type="text" id="e-who" maxlength="80" style="width:300px"></label>
+  </div>
+  <div id="e-msg" class="note" role="status"></div>
+</section>
+
+<section class="blk" id="sec-strip">
+  <h2>Targets against results</h2>
+  <p class="lede">Each bar is the target range and the mark is the reported result: a filled circle for met, a diamond for partly, a cross for missed. No mark means no result yet.</p>
+  <div id="strips"></div>
+</section>
+
+<section class="blk" id="sec-imp">
+  <h2>What a full-year range implies</h2>
+  <p class="lede">Simple arithmetic on the numbers below, not a forecast. It treats every period as equal.</p>
+  <div class="calc">
+    <label>Measure<input type="text" id="i-label" maxlength="40"></label>
+    <label>Range low<input type="text" id="i-low" inputmode="decimal"></label>
+    <label>Range high<input type="text" id="i-high" inputmode="decimal"></label>
+    <label>Periods in the year<input type="text" id="i-per" inputmode="numeric"></label>
+    <label>Reported so far (comma separated)<input type="text" id="i-act"></label>
+  </div>
+  <p id="imp-out" style="max-width:780px;margin:8px 0"></p>
+</section>
+
+<section class="blk" id="memo-sec">
+  <h2>The memo</h2>
+  <p class="lede">Written from the record above. It updates whenever you change a target or a result.</p>
+  <div class="docbar">
+    <label class="tag">Score as of <input type="text" id="e-asof" maxlength="10" placeholder="YYYY-MM-DD" style="width:120px"></label>
+    <button class="btn small" id="dl" type="button">Download memo (.md)</button>
+    <button class="btn ghost small" id="pr" type="button">Print or save as PDF</button>
+  </div>
+  <div id="doc"></div>
+</section>
+<footer class="pg">Every score on this page comes from the rules shown, applied in your browser to the entries you see. The tool checks no entry against a source, so a record is only as good as what is entered into it. It is not investment advice, and it does not describe any real company.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var TOL_BAND=0.25, TOL_ONE=0.03, LATE_DAYS=90, MIN_RATE=4;
+var BLANK={label:'',low:'',high:'',per:'4',act:''};
+var EXAMPLE={
+  who:'A hypothetical consumer-goods company (invented figures)', asOf:'2026-10-31', custom:false,
+  implied:{label:'Operating margin, FY26',low:'16.5',high:'18',per:'4',act:'17.2, 16.6'},
+  rows:[
+   ['2025-02-06','Volume growth','FY25 underlying volume growth of 4 to 6 percent','band','4','6','%','2026-02-05','5.3','Example, invented','',''],
+   ['2025-05-08','Volume growth','Q2 volume growth of at least 5 percent','band','5','','%','2025-08-07','4.6','Example, invented','',''],
+   ['2025-08-07','Volume growth','Q3 volume growth of 4 to 5 percent','band','4','5','%','2025-11-06','4.1','Example, invented','',''],
+   ['2025-11-06','Volume growth','FY25 volume growth narrowed to 5 to 5.5 percent','band','5','5.5','%','2026-02-05','5.3','Example, invented','',''],
+   ['2026-02-05','Volume growth','FY26 underlying volume growth of 4 to 6 percent','band','4','6','%','2027-02-04','','Example, invented','',''],
+   ['2025-02-06','Operating margin','FY25 operating margin of 17 to 19 percent','band','17','19','%','2026-02-05','17.9','Example, invented','',''],
+   ['2025-08-07','Operating margin','Q3 operating margin of at least 18 percent','band','18','','%','2025-11-06','17.7','Example, invented','',''],
+   ['2026-02-05','Operating margin','FY26 operating margin of 16.5 to 18 percent','band','16.5','18','%','2027-02-04','','Example, invented','',''],
+   ['2026-05-07','Operating margin','Q2 operating margin of 17 to 18 percent','band','17','18','%','2026-08-06','16.6','Example, invented','',''],
+   ['2025-05-08','Cost programme','Savings of at least 120 million in FY25','band','120','','m','2026-02-05','131','Example, invented','',''],
+   ['2026-02-05','Cost programme','Savings of at least 150 million in FY26','band','150','','m','2027-02-04','','Example, invented','',''],
+   ['2025-05-08','Launches','Relaunch of the flagship range in India by 31 December 2025','milestone','','','','2025-12-31','2025-12-18','Example, invented','',''],
+   ['2025-08-07','Launches','Launch in Indonesia by 31 March 2026','milestone','','','','2026-03-31','2026-05-20','Example, invented','',''],
+   ['2025-11-06','Launches','Launch of the premium line by 30 June 2026','milestone','','','','2026-06-30','2026-10-14','Example, invented','',''],
+   ['2026-05-07','Launches','Launch of a ready-to-drink variant by 30 September 2026','milestone','','','','2026-09-30','','Example, invented','','']
+  ]
+};
+var W=JSON.parse(JSON.stringify(EXAMPLE)), A=null, prevTopics={}, tourTok=0, touring=false, speed=1;
+
+function $(id){return document.getElementById(id);}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function strip(s){return String(s==null?'':s).replace(/[<>&"`\u0000-\u001f]/g,' ').replace(/\s+/g,' ').trim();}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function num(v){ if(typeof v==='number') return v; v=String(v==null?'':v).replace(/,/g,'').trim(); return v===''?NaN:Number(v); }
+function r2(n){return Math.round(n*100)/100;}
+function fm(n){return String(r2(n));}
+function isoOK(s){ if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false; var d=new Date(s+'T00:00:00Z'); return !isNaN(d) && d.toISOString().slice(0,10)===s; }
+function dnum(s){ return Math.round(new Date(s+'T00:00:00Z').getTime()/86400000); }
+
+/* ---------- validation and scoring ---------- */
+function parseRow(r){
+  var errs=[], said=strip(r[0]), topic=strip(r[1]), text=strip(r[2]), type=strip(r[3]).toLowerCase(), unit=strip(r[6]), due=strip(r[7]), out=strip(r[8]), src=strip(r[9]), call=strip(r[10]), reason=strip(r[11]);
+  if(!isoOK(said)) errs.push('"said" must be a date, YYYY-MM-DD');
+  if(!topic) errs.push('topic is empty'); if(!text) errs.push('target is empty');
+  if(type!=='band'&&type!=='milestone') errs.push('kind must be a number range or a delivery date');
+  if(!isoOK(due)) errs.push('"due" must be a date, YYYY-MM-DD');
+  if(isoOK(said)&&isoOK(due)&&dnum(due)<dnum(said)) errs.push('due date is before the date it was said');
+  var low=null, high=null, outv=null;
+  if(type==='band'){
+    var lo=strip(r[4]), hi=strip(r[5]);
+    if(lo===''&&hi==='') errs.push('give a low, a high, or both');
+    if(lo!==''){ low=num(lo); if(!isFinite(low)) errs.push('low is not a number'); }
+    if(hi!==''){ high=num(hi); if(!isFinite(high)) errs.push('high is not a number'); }
+    if(low!==null&&high!==null&&isFinite(low)&&isFinite(high)&&low>high) errs.push('low is above high');
+    if(out!==''){ outv=num(out); if(!isFinite(outv)) errs.push('result must be a number'); }
+  } else if(type==='milestone'){
+    if(out!==''){ if(!isoOK(out)) errs.push('result must be the delivery date, YYYY-MM-DD'); else outv=out; }
+  }
+  if(call!==''&&['Met','Partly','Missed'].indexOf(call)<0) errs.push('your call must be met, partly or missed');
+  return {ok:!errs.length,errs:errs,v:{said:said,topic:topic,text:text,type:type,low:low,high:high,unit:unit,due:due,outcome:outv,source:src,call:call,reason:reason}};
+}
+function validate(list,asOf){
+  var errs=[], clean=[];
+  if(!isoOK(asOf)) errs.push('"Score as of" must be a date in the form YYYY-MM-DD.');
+  if(list.length<1) errs.push('Add at least one target.'); if(list.length>200) errs.push('At most 200 rows.');
+  list.forEach(function(r,i){ var p=parseRow(r); if(p.ok) clean.push(p.v); else p.errs.forEach(function(e){ errs.push('Row '+(i+1)+': '+e+'.'); }); });
+  return {errs:errs,clean:clean};
+}
+function ustr(c){ return c.unit?(c.unit==='%'?'%':' '+c.unit):''; }
+function rangeText(c){
+  var u=ustr(c);
+  if(c.low!==null&&c.high!==null) return c.low===c.high? fm(c.low)+u : fm(c.low)+' to '+fm(c.high)+u;
+  if(c.low!==null) return 'at least '+fm(c.low)+u; return 'at most '+fm(c.high)+u;
+}
+function score(c,asOf){
+  var u=ustr(c);
+  if(c.type==='band'){
+    if(c.outcome===null){ return dnum(c.due)>=dnum(asOf)? {s:'Pending',why:'No result yet, due '+c.due+'.'} : {s:'Overdue',why:'Due '+c.due+' and no result recorded.'}; }
+    var v=c.outcome, d=0, side='';
+    if(c.low!==null&&v<c.low){ d=c.low-v; side='below'; } else if(c.high!==null&&v>c.high){ d=v-c.high; side='above'; }
+    if(d===0) return {s:'Met',why:fm(v)+u+' is inside '+rangeText(c)+'.'};
+    var tol;
+    if(c.low!==null&&c.high!==null&&c.high>c.low) tol=TOL_BAND*(c.high-c.low); else tol=TOL_ONE*Math.abs(side==='below'?c.low:c.high);
+    d=r2(d); tol=r2(tol);
+    return {s:(d<=tol?'Partly':'Missed'),why:fm(v)+u+' is '+fm(d)+u+' '+side+' '+rangeText(c)+'. Partly allows '+fm(tol)+u+'.'};
+  }
+  if(c.outcome===null){ return dnum(c.due)>=dnum(asOf)? {s:'Pending',why:'Not delivered yet, due '+c.due+'.'} : {s:'Overdue',why:'Due '+c.due+' and no delivery recorded.'}; }
+  var late=dnum(c.outcome)-dnum(c.due);
+  if(late<=0) return {s:'Met',why:'Delivered '+c.outcome+', on or before '+c.due+'.'};
+  return {s:(late<=LATE_DAYS?'Partly':'Missed'),why:'Delivered '+late+' days after '+c.due+'. Partly if within '+LATE_DAYS+' days.'};
+}
+function ruleLines(){
+  return ['A numeric target is met if the result is inside the stated range, or on the right side of a one-sided limit.',
+   'Outside a two-sided range by no more than a quarter of its width counts as partly. Beyond that it is missed.',
+   'For a one-sided limit or a single figure, within '+Math.round(TOL_ONE*100)+' percent of the limit counts as partly.',
+   'A dated delivery is met if it is on or before the due date, partly if up to '+LATE_DAYS+' days late, missed after that.',
+   'With no result recorded, a target is pending through its due date and overdue from the day after. Overdue is not scored as missed, because the absence of a record is not evidence.',
+   'You can overrule any score. Every override is listed in the memo.'];
+}
+function analyse(clean,asOf){
+  var rows=clean.map(function(c){ var sc=score(c,asOf), fin=c.call||sc.s; return {c:c,rule:sc.s,why:sc.why,final:fin,over:(!!c.call&&c.call!==sc.s),reason:c.reason}; });
+  var topics=[], map={};
+  rows.forEach(function(r){ if(!map[r.c.topic]){ map[r.c.topic]={topic:r.c.topic,n:0,Met:0,Partly:0,Missed:0,Pending:0,Overdue:0}; topics.push(map[r.c.topic]); } var t=map[r.c.topic]; t.n++; t[r.final]++; });
+  function fin(t){ t.res=t.Met+t.Partly+t.Missed; t.open=t.Pending+t.Overdue; t.rate=t.res>=MIN_RATE?Math.round(t.Met/t.res*100):null; return t; }
+  topics.forEach(fin);
+  var all=fin({topic:'All topics',n:rows.length,Met:0,Partly:0,Missed:0,Pending:0,Overdue:0}); rows.forEach(function(r){ all[r.final]++; }); fin(all);
+  return {rows:rows,topics:topics,all:all};
+}
+function implied(i){
+  var low=num(i.low), high=num(i.high), P=num(i.per), parts=String(i.act||'').split(/[,;\s]+/).filter(function(x){return x!=='';}), acts=parts.map(Number);
+  if(!isFinite(low)||!isFinite(high)||low>high) return {err:'Enter a low and a high, with low not above high.'};
+  if(!isFinite(P)||P<1||P>12||Math.round(P)!==P) return {err:'Periods in the year must be a whole number from 1 to 12.'};
+  if(acts.some(function(x){return !isFinite(x);})) return {err:'Reported figures must be numbers separated by commas.'};
+  if(acts.length>P) return {err:'More reported figures than periods in the year.'};
+  var k=acts.length, sum=acts.reduce(function(a,b){return a+b;},0), rem=P-k;
+  if(rem===0){ var avg=sum/P; return {done:true,avg:r2(avg),inside:(avg>=low&&avg<=high)}; }
+  return {done:false,k:k,rem:rem,low:r2((low*P-sum)/rem),high:r2((high*P-sum)/rem),last:k?acts[k-1]:null};
+}
+function impliedText(i,res){
+  if(res.err) return res.err;
+  if(res.done) return 'All '+i.per+' periods are reported, and the average is '+fm(res.avg)+', which is '+(res.inside?'inside':'outside')+' the range of '+fm(num(i.low))+' to '+fm(num(i.high))+'.';
+  var t='For '+(i.label||'this measure')+' to finish inside '+fm(num(i.low))+' to '+fm(num(i.high))+', the remaining '+res.rem+' of '+i.per+' periods must average between '+fm(res.low)+' and '+fm(res.high)+'.';
+  if(res.last!==null){ t+=' The latest reported period was '+fm(res.last)+'.'; if(res.last<res.low) t+=' That is below the lowest average now required.'; else if(res.last>res.high) t+=' That is above the highest average now required.'; else t+=' That is inside the range now required.'; }
+  return t;
+}
+function readImplied(){ return {label:strip($('i-label').value),low:$('i-low').value,high:$('i-high').value,per:$('i-per').value,act:$('i-act').value}; }
+function writeImplied(i){ $('i-label').value=i.label; $('i-low').value=i.low; $('i-high').value=i.high; $('i-per').value=i.per; $('i-act').value=i.act; }
+
+/* ---------- table ---------- */
+var COLS=['said','topic','target','kind','low','high','unit','due','result','source','your_call','reason'];
+function termsText(c){ return c.type==='band'?rangeText(c):'Delivery date'; }
+function outText(c){ if(c.outcome===null) return ''; return c.type==='band'?fm(c.outcome)+ustr(c):c.outcome; }
+function rowHtml(r,i){
+  var isDate=(r[3]==='milestone'), dis=isDate?' disabled':'';
+  var h='<tr data-r="'+i+'">';
+  h+='<td><input type="text" data-c="0" value="'+esc(r[0])+'" placeholder="YYYY-MM-DD" maxlength="10" style="width:96px"></td>';
+  h+='<td><input type="text" data-c="1" value="'+esc(r[1])+'" maxlength="40" style="width:104px"></td>';
+  h+='<td><input type="text" data-c="2" value="'+esc(r[2])+'" maxlength="200" style="min-width:210px"></td>';
+  h+='<td><select data-c="3"><option value="band"'+(r[3]==='band'?' selected':'')+'>Number range</option><option value="milestone"'+(r[3]==='milestone'?' selected':'')+'>Delivery date</option></select></td>';
+  h+='<td><input type="text" data-c="4" value="'+esc(r[4])+'" style="width:58px"'+dis+'></td><td><input type="text" data-c="5" value="'+esc(r[5])+'" style="width:58px"'+dis+'></td><td><input type="text" data-c="6" value="'+esc(r[6])+'" style="width:46px" maxlength="8"'+dis+'></td>';
+  h+='<td><input type="text" data-c="7" value="'+esc(r[7])+'" placeholder="YYYY-MM-DD" maxlength="10" style="width:96px"></td>';
+  h+='<td><input type="text" data-c="8" value="'+esc(r[8])+'" placeholder="'+(isDate?'YYYY-MM-DD':'number')+'" style="width:92px" aria-label="Result"></td>';
+  h+='<td class="sc" data-sc="'+i+'"></td>';
+  h+='<td><select data-c="10"><option value="">Auto</option>'+['Met','Partly','Missed'].map(function(s){return '<option'+(r[10]===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select><input type="text" data-c="11" value="'+esc(r[11])+'" placeholder="Reason" maxlength="120" style="margin-top:3px;'+(r[10]?'':'display:none')+'"></td>';
+  h+='<td><input type="text" data-c="9" value="'+esc(r[9])+'" maxlength="200" style="min-width:110px"></td>';
+  return h+'<td><button class="btn ghost small" data-del="'+i+'" type="button" aria-label="Remove target">Remove</button></td></tr>';
+}
+function renderTable(){
+  $('e-body').innerHTML=W.rows.map(rowHtml).join('');
+  Array.prototype.forEach.call($('e-body').querySelectorAll('[data-del]'),function(b){ b.addEventListener('click',function(){ syncRows(); W.rows.splice(+b.getAttribute('data-del'),1); W.custom=true; renderTable(); update(); }); });
+  Array.prototype.forEach.call($('e-body').querySelectorAll('input,select'),function(el){ var f=function(){ if(el.getAttribute('data-c')==='3'){ renderTypeChange(el); } syncRows(); W.custom=true; var cs=el.getAttribute('data-c'); if(cs==='10'){ var tr=el.closest('tr'); tr.querySelector('[data-c="11"]').style.display=el.value?'':'none'; } update(); }; el.addEventListener('input',f); el.addEventListener('change',f); });
+}
+function renderTypeChange(sel){ var tr=sel.closest('tr'), d=(sel.value==='milestone'); [4,5,6].forEach(function(c){ var e=tr.querySelector('[data-c="'+c+'"]'); e.disabled=d; if(d) e.value=''; }); tr.querySelector('[data-c="8"]').placeholder=d?'YYYY-MM-DD':'number'; }
+function syncRows(){
+  var rows=[]; Array.prototype.forEach.call($('e-body').querySelectorAll('tr'),function(tr){ var r=[]; for(var j=0;j<12;j++){ var el=tr.querySelector('[data-c="'+j+'"]'); r.push(el?el.value:''); } rows.push(r); });
+  W.rows=rows; W.who=strip($('e-who').value)||W.who; W.asOf=strip($('e-asof').value)||W.asOf;
+}
+
+/* ---------- live update ---------- */
+function topicLine(t){ return t.Met+' of '+t.res+' met'; }
+function update(opts){
+  opts=opts||{};
+  var asOf=isoOK(strip($('e-asof').value))?strip($('e-asof').value):W.asOf, clean=[], badN=0, marks=[];
+  W.rows.forEach(function(r,i){ var p=parseRow(r); marks.push(p); if(p.ok) clean.push(p.v); else badN++; });
+  A=analyse(clean,asOf); A.asOf=asOf;
+  // per-row score cells
+  var idx=0;
+  Array.prototype.forEach.call($('e-body').querySelectorAll('tr'),function(tr,i){
+    var p=marks[i], cell=tr.querySelector('.sc');
+    if(!p){ return; }
+    if(!p.ok){ tr.className='bad'; cell.innerHTML='<span class="why">Not counted: '+esc(p.errs[0])+'.</span>'; return; }
+    var r=A.rows[idx++]; if(tr.className==='bad') tr.className='';
+    cell.innerHTML='<b class="st-'+r.final+'">'+r.final+'</b>'+(r.over?'<span class="mk">your call (rule: '+r.rule+')</span>':'')+'<div class="why">'+esc(r.why)+'</div>';
+  });
+  $('e-count').textContent=badN?(badN+' row'+(badN===1?' is':'s are')+' incomplete and not counted. The score column says why.'):(clean.length+' target'+(clean.length===1?'':'s')+', all counted.');
+  // record board with change detection
+  var changes=[], cards='';
+  A.topics.concat([A.all]).forEach(function(t,i){
+    var last=(i===A.topics.length), was=prevTopics[t.topic], moved=(was&&(was.Met!==t.Met||was.res!==t.res||was.n!==t.n));
+    if(moved) changes.push({t:t,was:was});
+    var seg=function(n){ return t.n?(n/t.n*100):0; };
+    cards+='<div class="tcard'+(moved?' flash':'')+'" data-topic="'+esc(t.topic)+'"><div class="tn">'+esc(t.topic)+'</div><div class="bar"><i class="m" style="width:'+seg(t.Met)+'%"></i><i class="p" style="width:'+seg(t.Partly)+'%"></i><i class="x" style="width:'+seg(t.Missed)+'%"></i></div>'+
+      '<div class="tm"><b>'+topicLine(t)+'</b> &middot; '+(t.rate!==null?t.rate+'% met':(t.res===0?'no results yet':'too few for a rate'))+'</div><div class="tm">'+t.n+' target'+(t.n===1?'':'s')+', '+t.open+' open</div></div>';
+    prevTopics[t.topic]={Met:t.Met,res:t.res,n:t.n};
+  });
+  $('tcards').innerHTML=cards;
+  if(changes.length){
+    $('toast').textContent=changes.map(function(c){ return c.t.topic+': '+topicLine(c.was)+' became '+topicLine(c.t)+'.'; }).join(' ');
+    setTimeout(function(){ Array.prototype.forEach.call(document.querySelectorAll('.tcard.flash'),function(e){ e.classList.remove('flash'); }); },1400);
+  }
+  renderStrips(A); var im=readImplied(), ir=implied(im); $('imp-out').textContent=impliedText(im,ir);
+  var doc=buildDoc(A,{i:im,res:ir}); window.__lastDoc=doc; renderDoc(doc);
+  persistNothing();
+  return {A:A,changes:changes,bad:badN};
+}
+function persistNothing(){}
+
+function svgStrip(r){
+  var c=r.c, W2=360, H=34, ml=8, mr=8, pts=[];
+  if(c.low!==null) pts.push(c.low); if(c.high!==null) pts.push(c.high); if(c.outcome!==null) pts.push(c.outcome);
+  var mn=Math.min.apply(null,pts), mx=Math.max.apply(null,pts), span=mx-mn, pad=span>0?span*0.3:(Math.abs(mx)*0.1||1); mn-=pad; mx+=pad;
+  function X(v){ return ml+(v-mn)/(mx-mn)*(W2-ml-mr); }
+  var x1=c.low!==null?X(c.low):ml, x2=c.high!==null?X(c.high):W2-mr;
+  var o='<svg viewBox="0 0 '+W2+' '+H+'" role="img" aria-label="Target range and result">';
+  o+='<line x1="'+ml+'" x2="'+(W2-mr)+'" y1="20" y2="20" stroke="#e1e6ee"/><rect x="'+x1+'" y="16" width="'+Math.max(2,x2-x1)+'" height="8" fill="#cfc8b6"/>';
+  if(c.low===null||c.high===null){ var ex=c.low===null?x1:x2; o+='<line x1="'+ex+'" x2="'+ex+'" y1="12" y2="28" stroke="#cfc8b6" stroke-dasharray="2 2"/>'; }
+  if(c.outcome!==null){ var x=X(c.outcome), y=20;
+    if(r.final==='Met') o+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="#101a2e"/>';
+    else if(r.final==='Partly') o+='<path d="M'+x+' '+(y-6)+' L'+(x+6)+' '+y+' L'+x+' '+(y+6)+' L'+(x-6)+' '+y+' Z" fill="#101a2e"/>';
+    else o+='<path d="M'+(x-5)+' '+(y-5)+' L'+(x+5)+' '+(y+5)+' M'+(x+5)+' '+(y-5)+' L'+(x-5)+' '+(y+5)+'" stroke="#0b1f3a" stroke-width="2"/>';
+    o+='<text x="'+x+'" y="9" font-size="10.5" text-anchor="middle" fill="#101a2e">'+fm(c.outcome)+'</text>'; }
+  return o+'</svg>';
+}
+function renderStrips(A){
+  var h='', n=0; A.rows.forEach(function(r){ if(r.c.type!=='band') return; n++; h+='<div class="strip"><div>'+esc(r.c.text)+'<div class="tag" style="color:#66625a;font-size:12.5px">'+r.c.said+' to '+r.c.due+'</div></div><div>'+svgStrip(r)+'</div><div class="st '+r.final+'">'+r.final+'</div></div>'; });
+  $('strips').innerHTML=h||'<p class="note">No numeric targets in this record.</p>';
+}
+
+/* ---------- memo ---------- */
+function buildDoc(A,imp){
+  var blocks=[], a=A.all, T=A.topics, ov=A.rows.filter(function(r){return r.over;});
+  blocks.push({t:'h3',x:'Targets and results: '+W.who});
+  blocks.push({t:'meta',x:'As of '+A.asOf+'. '+A.rows.length+' targets. '+(W.custom?'Entered by the user; entries have not been checked against any source.':'Invented example; no real company or figure is described.')+' Scored by the fixed rules below.'});
+  blocks.push({t:'h4',x:'Summary'});
+  blocks.push({t:'p',x:a.res+' of '+a.n+' targets have a result: '+a.Met+' met, '+a.Partly+' partly, '+a.Missed+' missed. '+a.Pending+' are pending and '+a.Overdue+' are past their due date with no result recorded.'+(ov.length?' You overruled '+ov.length+' score'+(ov.length>1?'s':'')+'.':'')});
+  blocks.push({t:'h4',x:'Record by topic'});
+  blocks.push({t:'table',head:['Topic','Targets','With result','Met','Partly','Missed','Open','Met rate'],rows:T.map(function(t){ return [t.topic,String(t.n),String(t.res),String(t.Met),String(t.Partly),String(t.Missed),String(t.open),t.rate!==null?(t.rate+'% ('+t.Met+' of '+t.res+')'):'n='+t.res+', too few']; })});
+  var thin=T.filter(function(t){return t.rate===null;});
+  blocks.push({t:'p',x:thin.length?'Rates are withheld where fewer than '+MIN_RATE+' targets have a result: '+thin.map(function(t){return t.topic;}).join(', ')+'.':'Every topic has at least '+MIN_RATE+' results, so rates are shown. They still move a lot with one more result.'});
+  var res=A.rows.filter(function(r){return r.final==='Met'||r.final==='Partly'||r.final==='Missed';});
+  blocks.push({t:'h4',x:'Targets with a result'});
+  blocks.push({t:'table',head:['Said','Topic','Target','Result','Score'],rows:res.map(function(r){ return [r.c.said,r.c.topic,r.c.text,outText(r.c),r.final+(r.over?' (overruled)':'')]; })});
+  var open=A.rows.filter(function(r){return r.final==='Pending'||r.final==='Overdue';});
+  blocks.push({t:'h4',x:'Still open'});
+  if(open.length) blocks.push({t:'ul',items:open.map(function(r){ return r.c.text+': '+r.final.toLowerCase()+', due '+r.c.due+'.'; })}); else blocks.push({t:'p',x:'Nothing is open.'});
+  if(ov.length){ blocks.push({t:'h4',x:'Overrides'}); blocks.push({t:'ul',items:ov.map(function(r){ return r.c.text+': the rules gave '+r.rule+', you set '+r.final+(r.reason?'. Reason: '+r.reason:'.'); })}); }
+  if(imp&&!imp.res.err){ blocks.push({t:'h4',x:'What the full-year range implies'}); blocks.push({t:'p',x:impliedText(imp.i,imp.res)+' This is arithmetic with equal weight for every period, not a forecast.'}); }
+  blocks.push({t:'h4',x:'Scoring rules'}); blocks.push({t:'ul',items:ruleLines()});
+  blocks.push({t:'h4',x:'Limits'});
+  blocks.push({t:'ul',items:['A record is only as good as its entries. This tool does not check any entry against a source.','Scores follow the rules above and nothing else. They do not judge whether a target was sensible or whether circumstances changed.','Small counts say little. Treat any rate with fewer than a dozen results as a description of the record, not a prediction.','This is a record-keeping aid. It is not investment advice, and it does not describe any real company.']});
+  return blocks;
+}
+function renderDoc(B){
+  var h=''; B.forEach(function(b){ if(b.t==='h3') h+='<h3>'+esc(b.x)+'</h3>'; else if(b.t==='h4') h+='<h4>'+esc(b.x)+'</h4>'; else if(b.t==='meta') h+='<p class="meta">'+esc(b.x)+'</p>'; else if(b.t==='p') h+='<p>'+esc(b.x)+'</p>';
+    else if(b.t==='ul') h+='<ul>'+b.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join('')+'</ul>';
+    else if(b.t==='table') h+='<div class="wrapx"><table><thead><tr>'+b.head.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>'+b.rows.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>'; });
+  $('doc').innerHTML=h;
+}
+function docToMd(B){
+  var m=''; B.forEach(function(b){ if(b.t==='h3') m+='# '+b.x+'\n\n'; else if(b.t==='h4') m+='## '+b.x+'\n\n'; else if(b.t==='meta') m+='_'+b.x+'_\n\n'; else if(b.t==='p') m+=b.x+'\n\n'; else if(b.t==='ul') m+=b.items.map(function(i){return '- '+i;}).join('\n')+'\n\n';
+    else if(b.t==='table') m+='| '+b.head.join(' | ')+' |\n|'+b.head.map(function(){return '---';}).join('|')+'|\n'+b.rows.map(function(r){return '| '+r.map(function(c){return String(c).replace(/\|/g,'/');}).join(' | ')+' |';}).join('\n')+'\n\n'; });
+  return m;
+}
+
+/* ---------- csv ---------- */
+function csvq(v){ v=String(v==null?'':v); return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function toCSV(rows){ return '﻿'+[COLS].concat(rows).map(function(r){return r.map(csvq).join(',');}).join('\r\n')+'\r\n'; }
+function parseCSV(t){
+  var rows=[], row=[], f='', q=false, i, c;
+  for(i=0;i<t.length;i++){ c=t.charAt(i);
+    if(q){ if(c==='"'){ if(t.charAt(i+1)==='"'){ f+='"'; i++; } else q=false; } else f+=c; }
+    else if(c==='"') q=true; else if(c===','){ row.push(f); f=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&t.charAt(i+1)==='\n') i++; row.push(f); f=''; rows.push(row); row=[]; } else f+=c; }
+  if(f!==''||row.length){ row.push(f); rows.push(row); }
+  return rows.filter(function(r){ return r.some(function(x){ return String(x).trim()!==''; }); });
+}
+function saveText(name,text,type){ try{ var url=URL.createObjectURL(new Blob([text],{type:type})); var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000); }catch(e){} }
+function msg(list,isErr){ var el=$('e-msg'); el.style.color=isErr?'#8a2b1a':''; el.innerHTML=list.map(esc).join('<br>'); }
+
+/* ---------- try a change ---------- */
+function setRow(i,col,val){ var tr=$('e-body').querySelectorAll('tr')[i]; var el=tr.querySelector('[data-c="'+col+'"]'); el.value=val; }
+function flashRow(i){ var tr=$('e-body').querySelectorAll('tr')[i]; if(!tr) return; tr.classList.add('flash'); tr.scrollIntoView({block:'center',behavior:'smooth'}); setTimeout(function(){ tr.classList.remove('flash'); },1500); }
+function mid(c){ return c.low!==null&&c.high!==null?(c.low+c.high)/2:(c.low!==null?c.low+Math.abs(c.low)*0.05:c.high-Math.abs(c.high)*0.05); }
+function findRow(pred){ var out=-1; W.rows.forEach(function(r,i){ if(out>=0) return; var p=parseRow(r); if(p.ok&&pred(p.v,i)) out=i; }); return out; }
+$('x1').addEventListener('click',function(){
+  syncRows(); var asOf=A.asOf, i=findRow(function(v){ var s=score(v,asOf).s; return v.type==='band'&&s==='Missed'; });
+  if(i<0){ $('toast').textContent='There is no missed numeric target to change.'; return; }
+  var v=parseRow(W.rows[i]).v; setRow(i,8,String(r2(mid(v)))); setRow(i,10,''); W.rows[i][10]=''; syncRows(); W.custom=true; flashRow(i); update();
+});
+$('x2').addEventListener('click',function(){
+  syncRows(); var asOf=A.asOf, topic=(W.rows[0]&&strip(W.rows[0][1]))||'Volume growth';
+  W.rows.push(['2026-01-01',topic,'New target of 5 to 6 percent','band','5','6','%','2026-06-30','3','Added with the Try button','','']); W.custom=true; renderTable(); update(); flashRow(W.rows.length-1);
+});
+$('x3').addEventListener('click',function(){
+  syncRows(); var asOf=A.asOf, i=findRow(function(v){ var s=score(v,asOf).s; return v.type==='band'&&(s==='Pending'||s==='Overdue'); });
+  if(i<0){ $('toast').textContent='There is no open numeric target to report on.'; return; }
+  var v=parseRow(W.rows[i]).v; setRow(i,8,String(r2(mid(v)))); syncRows(); W.custom=true; flashRow(i); update();
+});
+
+/* ---------- guided tour ---------- */
+function wait(ms){ var t=tourTok; return new Promise(function(res,rej){ setTimeout(function(){ t===tourTok?res():rej('stop'); }, ms/speed); }); }
+function cap(t){ $('tour-cap').textContent=t; }
+function lockUi(on){ Array.prototype.forEach.call(document.querySelectorAll('#targets input,#targets select,#targets button,#reset'),function(el){ el.disabled=on; }); $('tour').disabled=on; $('stop').disabled=!on; }
+async function tour(){
+  if(touring) return; touring=true; var my=++tourTok; speed=+$('speed').value||1; lockUi(true);
+  try{
+    W=clone(EXAMPLE); var order=[];
+    W.rows.forEach(function(r,i){ if(r[8]!==''){ order.push({i:i,res:r[8]}); r[8]=''; } });
+    order.sort(function(a,b){ return W.rows[a.i][7]<W.rows[b.i][7]?-1:1; });
+    prevTopics={}; $('e-who').value=W.who; $('e-asof').value=W.asOf; writeImplied(W.implied); renderTable(); $('toast').textContent=''; update();
+    cap('1. Fifteen targets are listed, and none has a result yet. Every topic shows no results.'); await wait(3400);
+    for(var k=0;k<order.length;k++){
+      var o=order[k], tr=$('e-body').querySelectorAll('tr')[o.i]; tr.scrollIntoView({block:'center',behavior:'smooth'});
+      var el=tr.querySelector('[data-c="8"]'); el.value=o.res; syncRows(); var res=update(); flashRow(o.i);
+      var r=res.A.rows.filter(function(x){return x.c.text===W.rows[o.i][2];})[0];
+      cap('2. A result is reported: '+r.c.text+'. Result '+o.res+'. Score: '+r.final+'. '+r.why);
+      await wait(2300);
+    }
+    cap('3. A target with no result yet stays open. It is not scored as missed.'); await wait(2800);
+    cap('4. The memo below is written from this record, with the rules and the limits shown.'); $('memo-sec').scrollIntoView({behavior:'smooth',block:'start'}); await wait(3200);
+    cap('Your turn: type a different result in any row, or press one of the Try buttons, and watch the record by topic.');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){ if(e!=='stop') throw e; cap('Stopped.'); }
+  finally{ if(my===tourTok){ touring=false; lockUi(false); } }
+}
+$('tour').addEventListener('click',tour);
+$('stop').addEventListener('click',function(){ tourTok++; touring=false; lockUi(false); });
+
+/* ---------- wiring ---------- */
+$('e-add').addEventListener('click',function(){ syncRows(); W.rows.push([W.asOf,'','','band','','','',W.asOf,'','','','']); W.custom=true; renderTable(); update(); });
+$('e-clear').addEventListener('click',function(){ W.rows=[]; W.custom=true; prevTopics={}; renderTable(); update(); msg(['All targets cleared. Add your own below.'],false); });
+$('e-dl').addEventListener('click',function(){ syncRows(); saveText('guidance-tracker-targets.csv',toCSV(W.rows),'text/csv'); });
+$('dl').addEventListener('click',function(){ if(window.__lastDoc) saveText('guidance-tracker-memo.md',docToMd(window.__lastDoc),'text/markdown'); });
+$('pr').addEventListener('click',function(){ window.print(); });
+$('e-file').addEventListener('change',function(ev){ var f=ev.target.files&&ev.target.files[0]; if(!f) return; var fr=new FileReader();
+  fr.onload=function(){ var rows=parseCSV(String(fr.result||'').replace(/^﻿/,'')); if(rows.length&&String(rows[0][0]).toLowerCase()==='said') rows.shift();
+    rows=rows.map(function(r){ var o=[]; for(var j=0;j<12;j++) o.push(r[j]==null?'':r[j]); return o; });
+    var v=validate(rows,strip($('e-asof').value)||W.asOf); if(v.errs.length){ msg(v.errs,true); return; }
+    if(!W.custom) writeImplied(BLANK); W.rows=rows; W.custom=true; prevTopics={}; renderTable(); update(); msg(['Imported '+rows.length+' targets.'],false); };
+  fr.readAsText(f); });
+$('e-who').addEventListener('input',function(){ syncRows(); W.custom=true; update(); });
+$('e-asof').addEventListener('input',function(){ if(isoOK(strip($('e-asof').value))){ syncRows(); update(); } });
+['i-label','i-low','i-high','i-per','i-act'].forEach(function(id){ $(id).addEventListener('input',function(){ if(!W.custom){ } update(); }); });
+$('reset').addEventListener('click',function(){ W=clone(EXAMPLE); prevTopics={}; $('tour-cap').textContent=''; $('toast').textContent=''; init(); });
+
+function init(){ $('e-who').value=W.who; $('e-asof').value=W.asOf; writeImplied(W.implied); renderTable(); update(); }
+init();
+window.__sd={score:score,parseRow:parseRow,validate:validate,analyse:analyse,implied:implied,impliedText:impliedText,toCSV:toCSV,parseCSV:parseCSV,md:function(){return window.__lastDoc?docToMd(window.__lastDoc):'';},EXAMPLE:EXAMPLE,W:function(){return W;},A:function(){return A;}};
+})();
+</script>
+<script src="../assets/brand.js"></script>
+</body>
+</html>
