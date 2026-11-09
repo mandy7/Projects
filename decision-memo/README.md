@@ -5,7 +5,7 @@ Seven pages and four example tools. There is no build step and no server. Every 
 ```
 index.html                  Home: headline, decision-model card, four capability categories, video, who does what, getting started
 capabilities.html           Capabilities: six areas of intelligence work, each with representative work and a sample output
-try-it-yourself.html        Try it out: a guided six-step workflow for four business questions (set up, collect, analyse, synthesise, decide and write, act)
+try-it-yourself.html        Try it out: a guided six-step workflow for three business questions (set up, collect, analyse, synthesise, decide and write, act)
 how-it-works.html           Five stages (selector on wide screens, accordion on phones), evidence legend, FAQs
 pricing.html                Pricing: diagnostic, pilot and three monthly programmes, INR and USD
 our-approach.html           Our approach: comparison, why not a general-purpose AI tool, experience (with photo), who it is for
@@ -21,10 +21,10 @@ assets/pricing.js           Currency switch and the programme selector on phones
 assets/site.js              The enquiry form (name, email, company, topics, question, programme)
 assets/capture.js           "Email me the memo" on the try it out page
 assets/trial.js             The guided workflow: four questions, six steps each, memo download
-assets/models.js            The calculation engines for price change and marketing budget (seeded Monte Carlo, 5,000 draws)
-assets/defaults.js          Example inputs for hotels, pharma and telecom
+assets/models.js            The calculation engines for responding to a rival's price move and for the marketing budget (seeded Monte Carlo, 5,000 draws)
+assets/defaults.js          Example inputs for hotels, pharma, telecom and B2B software: customer segments, budget channels with definitions, watch-next lists
 assets/competitor-data.js   Real public-record snapshot for competitor watch (SEC EDGAR, ClinicalTrials.gov), 6 Nov 2026
-assets/market-data.js       Real World Bank indicators for new market, 6 Nov 2026
+assets/offers-data.js       Real offers captured from rivals' public pricing pages (AT&T, T-Mobile, Verizon, Slack, Asana), 9 Nov 2026
 assets/sample-decision-memo.pdf   Two-page sample memo (hotel budget, illustrative)
 assets/img/mandhir-dua.jpg  Founder photograph
 assets/video/               workflow.mp4, workflow.webm and the poster image
@@ -49,20 +49,20 @@ Headings, buttons, navigation and labels use sentence case ("How it works", "Try
 
 ## Try it out
 
-`assets/trial.js` runs it. The visitor picks one of four business questions (competitor watch, price change, marketing budget, new market) and an industry (hotels, pharma or telecom), then moves through six steps with a Next button: set up, collect, analyse, synthesise, decide and write, act. Every setting can be changed, and the collect and analyse steps show their progress.
+`assets/trial.js` runs it. The visitor picks one of three business questions and an industry (hotels, pharma, telecom or B2B software), then moves through six steps with a Next button: set up, collect, analyse, synthesise, decide and write, act. Every setting can be changed, and the collect and analyse steps show their progress.
 
 | Question | What it uses |
 |---|---|
-| Competitor watch | Real public records for 12 named companies: SEC EDGAR filing lists and reported figures, and ClinicalTrials.gov registry entries. Filing text is not read (sec.gov document pages refuse automated requests), and the page says so. |
-| New market | Real World Bank indicators for the countries compared. |
-| Price change | Numbers the visitor sets (or the example defaults), run through a real scenario calculation. Illustrative inputs. |
-| Marketing budget | Same: visitor-set channel numbers, 5,000 seeded scenarios. Illustrative inputs. |
+| Watch my competitors | Real public records for 16 named companies: SEC EDGAR filing lists and reported figures, and ClinicalTrials.gov registry entries. Filing text is not read (sec.gov document pages refuse automated requests), and the page says so. |
+| Respond to a rival's price move | Telecom and B2B software: a real offer the visitor picks from pages captured on 9 Nov 2026. Hotels and pharma: a rival price the visitor enters. In every case the customer segments, costs and reaction are illustrative inputs the visitor can change. The model compares four responses (hold, match for everyone, offer at-risk customers a lower price, add value for at-risk customers) over 5,000 scenarios. |
+| Split my marketing budget | Visitor-set channel numbers, 5,000 seeded scenarios. The setup says what the budget is and defines each channel. |
 
-- The data is a **snapshot shipped with the site** (6 Nov 2026), not fetched live. To refresh it, re-run the pull scripts and replace `competitor-data.js` and `market-data.js`. The snapshot date is shown on the page.
-- Test a combination: `?q=price&industry=telecom` (q is watch, price, budget or market).
+- The real data is a **snapshot shipped with the site**, not fetched live. Filings are as at 6 Nov 2026 and captured offers are as at 9 Nov 2026; both dates are shown on the page. To refresh filings, re-run the pull scripts and replace `competitor-data.js`. To refresh offers, capture the pages again with a real browser and edit `offers-data.js`.
+- Offers are captured as a visitor in the United States would see them. Offers shown only in store, by address or to existing customers are not captured, and the page says so. Hotel chain sites block automated visits, so hotels use a price the visitor enters.
+- Test a combination: `?q=respond&industry=telecom` (q is watch, respond or budget; industry is hotels, pharma, telecom or saas).
 - `window.__trial` exposes the state and memo for tests.
-- Step 5 shows the draft memo. Step 6 (act) waits for the visitor's approval and offers one way to get the memo: "Email me the memo", which sends the email address to the Google Form. There is no download option, so every memo request captures an email.
-- No accuracy or return claims are made. Illustrative and real data are labelled as such.
+- Step 5 shows the draft memo. For the respond question it also shows what not to do, what to watch next and a confidence level. Step 6 (act) waits for the visitor's approval and offers one way to get the memo: "Email me the memo", which sends the email address to the Google Form. There is no download option, so every memo request captures an email.
+- No accuracy or return claims are made. Real and illustrative data are labelled as such.
 
 ## The home video and the sample memo
 
@@ -71,7 +71,7 @@ Headings, buttons, navigation and labels use sentence case ("How it works", "Try
 
 ## Tests
 
-`node site-tests/site.test.js` runs the browser tests (Playwright). They cover navigation and the mobile menu at 1440, 1280, 1024, 440, 390 and 360px, every page's interactions, all 12 question and industry combinations of try it out through six steps, the pricing switches, the enquiry form (validation, success, failure and not-connected states, against a stand-in endpoint), video playback, sentence case, links and overflow.
+`node site-tests/site.test.js` runs the browser tests (Playwright). They cover navigation and the mobile menu at 1440, 1280, 1024, 440, 390 and 360px, every page's interactions, all 12 question and industry combinations of try it out through six steps, the respond flow's offer, exposure and memo behaviour, the pricing switches, the enquiry form (validation, success, failure and not-connected states, against a stand-in endpoint), video playback, sentence case, links and overflow.
 
 ## Not tested
 

@@ -86,6 +86,56 @@ window.MODELS = (function () {
     return { N: N, mean: mn, p10: p10, p90: p90, probBest: pb, bestIdx: bi, hinge: hinge, breakEven: breakEven, runMean: runMean, cp: cp, draws: draws, prof: prof };
   }
 
+  /* ---------- engine: respond to a rival's price move ---------- */
+  var RESP_LABEL = ['Hold the price', 'Match for everyone', 'Offer at-risk customers a lower price', 'Add value for at-risk customers'];
+  var OVL = { L: 0.25, M: 0.5, H: 0.85 }, SNS = { L: 0.5, M: 1, H: 1.6 };
+  function respondPress(cfg) {
+    var gn = Math.max(0, (cfg.P - cfg.R) / cfg.P * 100), gb = Math.max(0, (cfg.P - cfg.R0) / cfg.P * 100);
+    return { now: gn, before: gb, press: Math.max(0, gn - gb) };
+  }
+  /* x: one draw of the uncertain numbers. Returns the change in profit over the next 12 months against a world where the rival had not moved. */
+  function respondEval(cfg, x) {
+    var pr = respondPress(cfg).press, m = cfg.P - x.c, V = cfg.V, i, lossHold = 0, flagged = 0, lossT = 0, lossV = 0;
+    for (i = 0; i < cfg.segs.length; i++) {
+      var s = cfg.segs[i], vs = V * s.share, ar = Math.min(0.6, x.leak * pr * SNS[s.sens] * OVL[s.ov] / 100), fl = Math.min(1, ar * x.om);
+      lossHold += vs * ar; flagged += vs * fl; lossT += vs * ar * (1 - x.rho); lossV += vs * ar * (1 - x.rhov);
+    }
+    var disc = Math.max(0, cfg.P - cfg.R);
+    return [-lossHold * m, -V * disc, -flagged * disc - lossT * m, -flagged * x.pk * cfg.P - lossV * m];
+  }
+  var RESP_PARAMS = [['leak', 'how strongly customers react to a price gap'], ['rho', 'how many at-risk customers a lower-price offer keeps'], ['rhov', 'how many at-risk customers extra value keeps'], ['om', 'how many extra customers would take the offer'], ['pk', 'what the extra value costs'], ['c', 'your unit cost']];
+  function respondEngine(cfg) {
+    var N = 5000, rng = mulberry32(11), R = cfg.rng, i, k, prof = [0, 1, 2, 3].map(function () { return new Float32Array(N); });
+    for (i = 0; i < N; i++) {
+      var x = {}; RESP_PARAMS.forEach(function (p) { x[p[0]] = tri(rng(), R[p[0]][0], R[p[0]][1], R[p[0]][2]); });
+      var o = respondEval(cfg, x); for (k = 0; k < 4; k++) prof[k][i] = o[k];
+    }
+    var mode = {}; RESP_PARAMS.forEach(function (p) { mode[p[0]] = R[p[0]][1]; });
+    var base = respondEval(cfg, mode), rows = [], d;
+    for (k = 0; k < 4; k++) {
+      d = new Float32Array(N); var up = 0; for (i = 0; i < N; i++) { d[i] = prof[k][i] - prof[0][i]; if (d[i] > 0) up++; }
+      rows.push({ k: k, abs: { mean: mean(prof[k]), p10: quant(prof[k], .1), p90: quant(prof[k], .9) }, mean: mean(d), p10: quant(d, .1), p90: quant(d, .9), beat: up / N });
+    }
+    var press = respondPress(cfg), m = cfg.P - mode.c, expo = cfg.segs.map(function (s) {
+      var vs = cfg.V * s.share, ar = Math.min(0.6, mode.leak * press.press * SNS[s.sens] * OVL[s.ov] / 100); return { share: s.share, atRisk: ar, vol: vs * ar, atRiskProfit: vs * ar * m };
+    });
+    var mx = Math.max.apply(null, expo.map(function (e) { return e.atRiskProfit; })) || 1;
+    expo.forEach(function (e) { var r = e.atRiskProfit / mx; e.level = r >= 0.6 ? 'high' : r >= 0.25 ? 'medium' : 'low'; });
+    function bestOf(o) { var b = 0; for (var q = 1; q < 4; q++) if (o[q] > o[b]) b = q; return b; }
+    var b0 = bestOf(base), hinge = RESP_PARAMS.map(function (p) {
+      var flips = []; [0, 2].forEach(function (end) { var v2 = {}; for (var kk in mode) v2[kk] = mode[kk]; v2[p[0]] = R[p[0]][end]; var bb = bestOf(respondEval(cfg, v2)); if (bb !== b0) flips.push({ end: end === 0 ? 'low' : 'high', to: bb }); });
+      return { k: p[0], label: p[1], flips: flips };
+    }).sort(function (a, b) { return b.flips.length - a.flips.length; });
+    var be = null, bm = null;
+    for (var lk = 0.01; lk <= 6; lk += 0.01) {
+      var v3 = {}; for (var k3 in mode) v3[k3] = mode[k3]; v3.leak = lk; var oo = respondEval(cfg, v3);
+      if (be === null && Math.max(oo[2], oo[3]) > oo[0]) be = lk;
+      if (bm === null && oo[1] > oo[0]) bm = lk;
+      if (be !== null && bm !== null) break;
+    }
+    return { N: N, prof: prof, rows: rows, press: press, base: base, expo: expo, hinge: hinge, breakEven: be, matchBreakEven: bm, hold: rows[0].abs };
+  }
 
-  return { mulberry32: mulberry32, tri: tri, quant: quant, mean: mean, SPLITS: SPLITS, budgetEngine: budgetEngine, PRICE_OPTS: PRICE_OPTS, PRICE_LABEL: PRICE_LABEL, priceProfit: priceProfit, priceEngine: priceEngine };
+
+  return { mulberry32: mulberry32, tri: tri, quant: quant, mean: mean, SPLITS: SPLITS, budgetEngine: budgetEngine, PRICE_OPTS: PRICE_OPTS, PRICE_LABEL: PRICE_LABEL, priceProfit: priceProfit, priceEngine: priceEngine, RESP_LABEL: RESP_LABEL, OVL: OVL, SNS: SNS, respondPress: respondPress, respondEngine: respondEngine };
 })();

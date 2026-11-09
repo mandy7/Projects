@@ -71,12 +71,12 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     ok((await p.$$eval('.acc2 details[open]', a => a.filter(x => x.offsetParent).length)) >= 1, 'accordion visible'); await p.context().close(); }
 
   // 5. try it out: four questions, six steps each
-  const QS = [['watch', 'Watch my competitors'], ['price', 'Test a price change'], ['budget', 'Allocate my marketing budget'], ['market', 'Size up a new market']];
+  const QS = [['watch', 'Watch my competitors'], ['respond', 'Respond to a rival’s price move'], ['budget', 'Split my marketing budget']];
   async function walk(p, q, collect, run) {
     await p.click('.tw-q4 [data-v="' + q + '"]'); const titles = [];
     for (let s = 1; s <= 6; s++) {
       if (s === 2) { await p.click('[data-act=collect]'); await p.waitForFunction(() => !window.__trial.S.running && window.__trial.S.done.collect, { timeout: 25000 }); }
-      if (s === 3 && (q === 'price' || q === 'budget')) { await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 }); }
+      if (s === 3 && q !== 'watch') { await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 }); }
       titles.push((await p.textContent('.tw-who h2')).trim());
       const dis = await p.evaluate(() => { const n = document.querySelector('[data-act=next]'); return n ? n.disabled : false; }); if (dis) return { titles, blocked: s };
       if (s < 6) await p.click('[data-act=next]');
@@ -84,11 +84,11 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     return { titles, blocked: 0 };
   }
   { const p = await open('try-it-yourself.html'); const T = await txt(p);
-    ok((await p.$$eval('.tw-q4 button', a => a.map(x => x.textContent))).join('|') === QS.map(x => x[1]).join('|') && (await p.$$eval('.tw-q4 button:disabled', a => a.length)) === 0, 'four questions, all usable');
-    ok(/Competitor watch and new market use real public data/.test(T), 'page says which questions use real data');
+    ok((await p.$$eval('.tw-q4 button', a => a.map(x => x.textContent))).join('|') === QS.map(x => x[1]).join('|') && (await p.$$eval('.tw-q4 button:disabled', a => a.length)) === 0, 'three questions, all usable');
+    ok(/Rivals’ filings and price pages are real public data/.test(T), 'page says which parts use real data');
     ok((await p.$$eval('.tw-stp li', a => a.map(x => x.textContent.replace(/^[\d✓]/, '').trim()))).join('|') === 'Set up|Collect|Analyse|Synthesise|Decide and write|Act', 'six steps named');
     ok(await p.$eval('[data-act=next]', e => e.disabled === false) && !(await p.isVisible('#mailbox')), 'step 1: next is available, no email box yet'); await p.context().close(); }
-  for (const [q] of QS) for (const ind of ['hotels', 'pharma', 'telecom']) {
+  for (const [q] of QS) for (const ind of ['hotels', 'pharma', 'telecom', 'saas']) {
     const p = await open('try-it-yourself.html?q=' + q + '&industry=' + ind); const r = await walk(p, q);
     ok(r.blocked === 0 && r.titles.join('|') === 'Step 1: Set up|Step 2: Collect|Step 3: Analyse|Step 4: Synthesise|Step 5: Decide and write|Step 6: Act', q + ' / ' + ind + ': all six steps reachable by clicking');
     const m = await p.evaluate(() => { const M = window.__trial.memo(); return { rec: M.rec, ks: M.ks.length, md: window.__trial.md() }; });
@@ -110,24 +110,30 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.ok'); const body = decodeURIComponent((posted || '').replace(/\+/g, ' ')); ok(/entry\.829357577=a@b\.co/.test(body) && /Watch my competitors \(Hotels example\)/.test(body), 'memo email posts to the form with the question run');
     await p.unroute('https://docs.google.com/**'); await p.route('https://docs.google.com/**', r => r.abort()); await p.fill('#mb-email', 'a@b.co'); await p.click('#mb-send'); await p.waitForSelector('#mb-msg.err'); ok(/did not go through/.test(await p.textContent('#mb-msg')), 'memo email failure is reported');
     await p.click('[data-act=restart]'); ok(/Set up/.test(await p.textContent('.tw-who h2')), 'start again returns to step 1'); await p.context().close(); }
-  { const p = await open('try-it-yourself.html?q=price&industry=hotels'); await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); await p.click('[data-act=next]');
-    ok(!(await p.$eval('[data-act=next]', e => e.disabled)) === false, 'price: next is locked until the scenarios have run'); await p.click('[data-act=run]'); await p.waitForTimeout(700); ok(/of 5,000/.test(await p.textContent('#tw-runt')), 'price: scenarios run with visible progress'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 });
-    const best0 = await p.evaluate(() => window.__trial.memo().rec); await p.click('[data-act=obj][data-v=p10]'); ok(true, 'price: objective can be switched');
-    await p.click('[data-act=back]'); await p.click('[data-act=back]'); await p.fill('#n-resp', '0.6'); await p.fill('#n-cost', '2500'); await p.press('#n-cost', 'Tab'); await p.waitForTimeout(200);
-    ok(await p.$eval('#n-resp', e => e.value) === '0.6' && /Cost per room night/.test(await p.textContent('.tw-l')), 'price: your own numbers are kept');
-    await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 }); const best1 = await p.evaluate(() => window.__trial.memo().rec);
-    ok(best0 !== best1, 'price: changing the inputs changes the recommendation (' + best0 + ' becomes ' + best1 + ')');
-    await p.click('[data-act=back]'); await p.click('[data-act=back]'); await p.fill('#n-cost', '9999'); await p.press('#n-cost', 'Tab'); await p.waitForTimeout(200); ok(await p.$eval('[data-act=next]', e => e.disabled) && /below the price/.test(await p.textContent('.tw-why')), 'price: an impossible cost is refused with a reason'); await p.context().close(); }
+  { const p = await open('try-it-yourself.html?q=respond&industry=telecom');
+    ok((await p.$$('input[data-act=offer]')).length === 6 && /captured from the rivals’ public pricing pages/.test(await p.textContent('.tw-l')), 'respond: real captured offers from three rivals to choose from');
+    await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 });
+    ok((await p.$$eval('.tw-t a[href^="https://www.att.com/"]', a => a.length)) === 1 && /Was \$50\.00 per month\. Now \$35\.00/.test(await p.textContent('.tw-r')), 'respond: collect shows the real page address, capture date and the quote');
+    await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForTimeout(700); ok(/of 5,000/.test(await p.textContent('#tw-runt')), 'respond: scenarios run with visible progress'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 });
+    const T2 = await p.textContent('.tw-r'); ok(/What the move costs if you hold the price/.test(T2) && /Who is exposed/.test(T2) && (await p.$$eval('.tw-br', a => a.length)) === 4 && (await p.$$eval('.tw-t .lvl', a => a.length)) === 5, 'respond: cost of holding, five segments and four responses shown');
+    const stt = await p.evaluate(() => ({ match: window.__trial.S.R.E.rows[1].mean })); ok(stt.match < 0, 'respond: matching the price for everyone is worse than holding on the example numbers');
+    await p.click('[data-act=next]'); const sg = await p.textContent('.tw-r'); ok(/Matching the price for everyone costs/.test(sg) && /If you hold, the rival’s move costs/.test(sg), 'respond: findings cover cost of holding and matching');
+    await p.click('[data-act=next]'); const mm = await p.textContent('.tw-memo'); ok(/What not to do/.test(mm) && /Watch next/.test(mm) && /Confidence:/.test(mm) && /Evidence behind it/.test(mm), 'respond: memo has what not to do, watch next and confidence');
+    const mdx = await p.evaluate(() => window.__trial.md()); ok(/## What not to do/.test(mdx) && /## Watch next/.test(mdx), 'respond: markdown memo carries the same sections');
+    for (let k = 0; k < 4; k++) await p.click('[data-act=back]'); await p.fill('#n-leak', '3'); await p.press('#n-leak', 'Tab'); await p.waitForTimeout(150);
+    await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 });
+    ok((await p.evaluate(() => window.__trial.S.R.E.rows[1].mean)) > stt.match, 'respond: a stronger customer reaction makes matching less costly');
+    await p.click('[data-act=back]'); await p.click('[data-act=back]'); await p.click('input[data-act=offer][data-v="tmo-more"]'); await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 });
+    ok(/does not undercut you/.test(await p.textContent('.tw-r')) && /No response is needed/.test(await p.evaluate(() => window.__trial.memo().rec)), 'respond: a rival that is dearer than you needs no response');
+    await p.click('[data-act=back]'); await p.click('[data-act=back]'); await p.click('input[data-act=offer][data-v="vz-simplicity"]'); await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); ok(/No\. A one-line price/.test(await p.textContent('.tw-r')), 'respond: an offer that is not like-for-like is flagged on the collect step');
+    await p.click('[data-act=back]'); await p.fill('#n-cost', '99'); await p.press('#n-cost', 'Tab'); await p.waitForTimeout(150); ok(await p.$eval('[data-act=next]', e => e.disabled) && /below your price/.test(await p.textContent('.tw-why')), 'respond: an impossible cost is refused with a reason'); await p.context().close(); }
+  { const p = await open('try-it-yourself.html?q=respond&industry=saas'); ok((await p.$$('input[data-act=offer]')).length === 4 && /Slack/.test(await p.textContent('.tw-l')) && /Asana/.test(await p.textContent('.tw-l')), 'respond: B2B software offers come from Slack and Asana'); await p.context().close(); }
+  { const p = await open('try-it-yourself.html?q=respond&industry=hotels'); ok((await p.$$('input[data-act=offer]')).length === 0 && /does not read hotel price pages/.test(await p.textContent('.tw-l')) && await p.isVisible('#n-before') && await p.isVisible('#n-after'), 'respond: hotels use a price the visitor enters'); await p.context().close(); }
+  { const p = await open('try-it-yourself.html?q=budget&industry=telecom'); const T3 = await p.textContent('.tw-l'); ok(/the money spent to win new subscribers/.test(T3) && /\$100 million/.test(T3) && !/₹/.test(T3) && /Dealer commissions and in-store promotions/.test(T3), 'budget: says what the budget is, defines each channel and uses dollars for a US operator'); await p.context().close(); }
   { const p = await open('try-it-yourself.html?q=budget&industry=hotels'); await p.selectOption('#n-split', '50 / 30 / 20'); await p.fill('#n-R0', '500'); await p.press('#n-R0', 'Tab'); await p.waitForTimeout(150);
     await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 }); await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForFunction(() => window.__trial.S.done.run, { timeout: 25000 });
     ok(/50 \/ 30 \/ 20/.test(await p.textContent('.tw-r')), 'budget: the split you chose is the one compared'); ok(await p.$eval('#tw-cv', c => c.width > 0 && c.height > 0), 'budget: scenario scatter is drawn');
     const px = await p.evaluate(() => { const c = document.getElementById('tw-cv'), x = c.getContext('2d'); const d = x.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] < 120 && d[i + 1] < 140) n++; return n; }); ok(px > 500, 'budget: scatter has plotted points'); await p.context().close(); }
-  { const p = await open('try-it-yourself.html?q=market&industry=pharma'); ok((await p.$$eval('input[data-act=kco]', a => a.length)) === 6, 'market: six countries to choose from');
-    await p.click('input[data-act=kco][data-v=IND]'); await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => window.__trial.S.done.collect, { timeout: 25000 });
-    ok(/Source: World Bank|World Bank/.test(await p.textContent('.tw-r')) && (await p.$$eval('.tw-t.log tbody tr', a => a.length)) === 5 && (await p.$$eval('a[href^="https://data.worldbank.org/indicator/"]', a => a.length)) >= 4, 'market: real figures for the five countries chosen, with World Bank links and years');
-    await p.click('[data-act=next]'); const top0 = await p.$eval('.tw-br.best .n', e => e.textContent); for (const i of await p.$$eval('[data-act=kw][data-v="0"]', a => a.map(x => x.getAttribute('data-k')))) {} const ks = await p.$$eval('[data-act=kw]', a => [...new Set(a.map(x => x.getAttribute('data-k')))]);
-    for (const k of ks) await p.click('[data-act=kw][data-k="' + k + '"][data-v="0"]'); ok(/Every indicator is set to ignore/.test(await p.textContent('.tw-r')) && await p.$eval('[data-act=next]', e => e.disabled), 'market: ignoring every indicator blocks the next step with a reason');
-    await p.click('[data-act=kw][data-k="' + ks[0] + '"][data-v="3"]'); const top1 = await p.$eval('.tw-br.best .n', e => e.textContent); ok(/Top/.test(top1), 'market: setting weights re-scores the markets (' + top0.replace('Top', '') + ' then ' + top1.replace('Top', '') + ')'); await p.context().close(); }
   for (const w of [440, 390, 360]) { for (const [q] of QS) { const p = await open('try-it-yourself.html?q=' + q + '&industry=hotels', w, 800); const r = await walk(p, q); await p.waitForTimeout(150);
       const m = await p.evaluate(() => { const bar = document.querySelector('.tw-nav').getBoundingClientRect(); return { ov: document.documentElement.scrollWidth - document.documentElement.clientWidth, barBottom: Math.round(bar.bottom), vh: innerHeight }; });
       ok(r.blocked === 0 && m.ov === 0, 'mobile ' + w + ' ' + q + ': all six steps, no sideways overflow'); await p.context().close(); }
@@ -136,6 +142,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   // 6. how it works
   { const p = await open('how-it-works.html'); const T = await txt(p);
     ok(!/Traceable findings\. Visible assumptions/.test(T), 'the "Traceable findings" line is removed');
+    ok(/Is this software I log into\? No\./.test(T) && (await p.$$('#who-sends-what .split2 .rw')).length === 5 && /Where your data lives/.test(T) && /What we can and cannot see/.test(T) && (await p.$$('.steps5 > div')).length === 5, 'how it works: what you provide, what we provide, not software, what we can and cannot see, where data lives');
     const vis = async () => p.$$eval('#stagebox .stbox', a => a.filter(x => !x.hidden).map(x => x.getAttribute('data-name')));
     ok((await vis()).join() === 'Define the job', 'one stage panel at first'); ok((await p.$$eval('#tabs5 [role=tab]', a => a.map(x => x.textContent.replace(/^\d/, '')))).join('|') === 'Define the job|Set the evidence and rules|Configure and test|Run|Review the result', 'five stage tabs');
     await p.click('#tab2'); ok((await vis()).join() === 'Set the evidence and rules' && /traceable source or be clearly identified as customer-provided information or an assumption/.test(await p.textContent('#panel2')) && (await p.$$eval('#panel2 .leg4 span', a => a.length)) === 4, 'stage 2: evidence copy and four-way legend');
