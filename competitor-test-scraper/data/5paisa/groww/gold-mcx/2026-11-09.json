@@ -1,0 +1,80 @@
+{
+  "date": "2026-11-09",
+  "url": "https://groww.in/commodities/mcx_gold",
+  "n_visits": 3,
+  "primary": {
+    "title": "Gold Price - Live MCX Gold Spot Price | Groww",
+    "meta_description": "Gold - Latest updates on live Gold spot price on MCX, performance, futures and underlyings on Groww.in",
+    "h1": [
+      "Gold"
+    ],
+    "h2": [
+      "Open Interest (OI)",
+      "Performance",
+      "More Gold Underlyings"
+    ],
+    "ctas": [
+      "Login/Sign up",
+      "Option Chain",
+      "Show More"
+    ],
+    "banners": [
+      "Stocks F&O Mutual Funds More Search Groww.... Ctrl+K Login/Sign up"
+    ],
+    "prices": [
+      "₹1,43,754.00",
+      "₹1,15,698.00",
+      "₹1,43,795.00",
+      "₹14,468.00",
+      "₹1,44,189.00",
+      "₹1,46,771.00",
+      "₹1,49,800.00"
+    ],
+    "promos": [],
+    "forms": [],
+    "nav": [],
+    "hero": "Stocks F&O Mutual Funds More Search Groww.... Ctrl+K Login/Sign up Gold Option Chain ₹1,43,754.00 1,202.00 (+0.84%) 1D MCX 1D 1W 1M 3M Terminal Overview News Open Interest (OI) Total Put OI Put:Call ratio Total Call OI 4,150 0.79 5,232 Performance Today’s Low 1,43,250.00 Today’s High 1,44,400.00 52W",
+    "experiments": {},
+    "tools": [],
+    "final_url": "https://groww.in/commodities/mcx_gold",
+    "tool_cookies": []
+  },
+  "tools": [],
+  "experiments": {},
+  "variants": {
+    "prices": [
+      [
+        "₹1,43,754.00",
+        "₹1,15,698.00",
+        "₹1,43,795.00",
+        "₹14,468.00",
+        "₹1,44,189.00",
+        "₹1,46,771.00",
+        "₹1,49,800.00"
+      ],
+      [
+        "₹1,43,754.00",
+        "₹1,15,698.00",
+        "₹1,43,795.00",
+        "₹14,472.00",
+        "₹1,44,189.00",
+        "₹1,46,771.00",
+        "₹1,49,800.00"
+      ],
+      [
+        "₹1,43,790.00",
+        "₹1,15,698.00",
+        "₹1,43,800.00",
+        "₹14,472.00",
+        "₹1,44,189.00",
+        "₹1,46,771.00",
+        "₹1,49,800.00"
+      ]
+    ],
+    "hero": [
+      "Stocks F&O Mutual Funds More Search Groww.... Ctrl+K Login/Sign up Gold Option Chain ₹1,43,754.00 1,202.00 (+0.84%) 1D MCX 1D 1W 1M 3M Terminal Overview News Open Interest (OI) Total Put OI Put:Call ratio Total Call OI 4,150 0.79 5,232 Performance Today’s Low 1,43,250.00 Today’s High 1,44,400.00 52W",
+      "Stocks F&O Mutual Funds More Search Groww.... Ctrl+K Login/Sign up Gold Option Chain ₹1,43,790.00 1,238.00 (+0.87%) 1D MCX 1D 1W 1M 3M Terminal Overview News Open Interest (OI) Total Put OI Put:Call ratio Total Call OI 4,150 0.79 5,232 Performance Today’s Low 1,43,250.00 Today’s High 1,44,400.00 52W"
+    ]
+  },
+  "screenshot": "data/5paisa/groww/gold-mcx/2026-11-09.png"
+}
