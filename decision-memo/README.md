@@ -6,8 +6,9 @@ Seven pages and four example tools. There is no build step and no server. Every 
 index.html                  Home: headline, why in-house is hard, video, decisions we can help with, start small, founder line
 capabilities.html           Decisions we can help you make: Competitors, Customers, Distribution and supply, and how each project runs
 try-it-yourself.html        Try it out: four decisions, each followed through six steps (set up, collect, analyse, synthesise, decide and write, act)
-how-it-works.html           Operating model (who does what), five stages, ownership FAQs and the privacy notice (#privacy)
-pricing.html                Pricing in US dollars: diagnostic, pilot, three monthly programmes, and the email-gated sample pack
+how-it-works.html           Operating model (who does what), five stages and ownership FAQs
+privacy.html                Privacy notice, linked from every footer and from the forms
+pricing.html                Pricing in US dollars: diagnostic, pilot, three monthly programmes (Essential, Standard, Embedded), and the email-gated sample pack
 our-approach.html           Three ways to get this done, why in-house is hard, experience, who it is for
 contact.html                Book a diagnostic (the file name is kept so old links keep working)
 assets/brand.js             The product name, descriptor and owner, in one place
@@ -26,7 +27,7 @@ assets/defaults.js          Example inputs for telecom, B2B software, travel and
 assets/offers-data.js       Real offers captured from rivals' public pages: AT&T and T-Mobile, Slack and Asana (9 Nov 2026), Hilton and Marriott, Netflix and Disney+ (10 Nov 2026)
 assets/sample-pack.pdf      Three-page sample pack: reviewed brief, decision memo, workflow summary (opens after the email gate)
 assets/img/mandhir-dua.jpg  Founder photograph
-assets/video/               workflow.mp4, workflow.webm and the poster image (a recording of the telecom example)
+assets/video/               workflow (wide, for laptops) and workflow-m (portrait, loaded on phones), each as mp4 and webm, plus posters
 assets/fonts/               Inter, self-hosted, so no request goes to a font service
 tools/                      Four earlier example pages (not linked from the site, older styling)
 ```
@@ -37,7 +38,7 @@ tools/                      Four earlier example pages (not linked from the site
 2. **Sending the memo is manual.** The Try it out box promises that the memo will be emailed. Someone has to send it. Change the wording if you do not want to make that promise.
 3. **Confirm the commercial promises.** Pricing shows prices, monthly brief allowances (5, 12 and 20), scope limits and the promise that every delivered brief is reviewed by a designated analyst. "Help acting on the findings" is marked as scoped with the client. Confirm all of it against real delivery capacity.
 4. **Prices live in `pricing.html`**, in US dollars only.
-5. **Have the privacy notice checked.** It is in How it works (`#privacy`) and names Mandhir Dua, Gurugram, India, mandhir@secondanalyst.in and 12-month retention. It is plain-language, not legal advice. Ask a lawyer to review it before launch, especially for UK and EU visitors.
+5. **Have the privacy notice checked.** It is its own page, `privacy.html`, and names Mandhir Dua, Gurugram, India, mandhir@secondanalyst.in and 12-month retention. It is plain-language, not legal advice. Ask a lawyer to review it before launch, especially for UK and EU visitors.
 6. **Verify the founder wording** on Home and Our approach. The employer is not named.
 7. **Check the FAQ answers** on How it works against what you do.
 8. **The name.** "Second Analyst" is a working name. Change `name` in `assets/brand.js`, and search for `Second Analyst` for a permanent rename. The video shows the name in its top-left corner. Check trademarks and domains first (see `NAMING.md`, which is not part of the site). Do not upload `NAMING.md`, `form-setup.html` or the `mocks-*` and `screens-*` folders.
@@ -68,7 +69,7 @@ Headings, buttons, navigation and labels use sentence case ("How it works", "Try
 
 ## The home video and the sample pack
 
-- The video is about 2 minutes and silent. It is a screen recording of the real Try it out page (telecom, AT&T's offer, rival price move) with on-screen captions, made with Playwright's video recorder and encoded with ffmpeg to `workflow.mp4` and `workflow.webm`. The chapter buttons on Home use the times in `index.html`. If you change Try it out, record it again.
+- Two silent screen recordings of the real Try it out page (telecom, AT&T's offer, rival price move) with on-screen captions: a wide one of about 2 minutes, and a portrait one of about 1.5 minutes that loads on phones so the text is readable. They were recorded with Playwright's video recorder and encoded with ffmpeg. The chapter buttons on Home use `data-t` (wide) and `data-tm` (portrait) times in `index.html`. If you change Try it out, record them again.
 - `assets/sample-pack.pdf` was made from an HTML file with Playwright (`page.pdf`). Its rival offers are real and dated; everything about the example operator is made up, and the pack says so.
 
 ## Tests

@@ -5,7 +5,7 @@
   var form = document.getElementById('ask');
   if (!form) return;
   var msg = document.getElementById('form-msg'), btn = document.getElementById('send');
-  var NAMES = { monitor: 'Monitor', insight: 'Insight', embedded: 'Embedded' };
+  var NAMES = { monitor: 'Essential', insight: 'Standard', embedded: 'Embedded' };
 
   var src = '', prog = '';
   try {

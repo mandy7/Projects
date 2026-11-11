@@ -1,7 +1,7 @@
 /* Browser tests for the Second Analyst site. Run with: node site-tests/site.test.js (needs Playwright). */
 const { chromium } = require('playwright'); const fs = require('fs'); const path = require('path');
 const ROOT = path.resolve(__dirname, '../decision-memo') + '/', B = 'file://' + ROOT;
-const PAGES = [['index', ''], ['capabilities', 'Capabilities'], ['try-it-yourself', 'Try it out'], ['how-it-works', 'How it works'], ['pricing', 'Pricing'], ['our-approach', 'Our approach'], ['contact', 'Book a diagnostic']];
+const PAGES = [['index', ''], ['capabilities', 'Capabilities'], ['try-it-yourself', 'Try it out'], ['how-it-works', 'How it works'], ['pricing', 'Pricing'], ['our-approach', 'Our approach'], ['contact', 'Book a diagnostic'], ['privacy', '']];
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 (async () => {
   const b = await chromium.launch(); const errs = [];
@@ -56,17 +56,20 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     ok(l.join(',') === 'try-it-yourself.html?q=respond,try-it-yourself.html?q=journey,try-it-yourself.html?q=customers,try-it-yourself.html?q=budget', 'capabilities Try links: ' + l.join(','));
     await p.context().close(); }
 
-  // 6. how it works and privacy
-  { const p = await open('how-it-works.html'); const T = await txt(p);
-    ok(/Privacy notice/.test(T) && /Mandhir Dua/.test(T) && /Gurugram, India/.test(T) && /mandhir@secondanalyst\.in/.test(T) && /12 months/.test(T), 'privacy notice details');
+  // 6. privacy is its own page, linked from every footer; How it works has no long notice
+  { const p = await open('privacy.html'); const T = await txt(p);
+    ok(/Privacy notice/.test(T) && /Mandhir Dua/.test(T) && /Gurugram, India/.test(T) && /mandhir@secondanalyst\.in/.test(T) && /12 months/.test(T), 'privacy page details');
     ok(!/data location|where your data is stored/i.test(T), 'no data-location line');
-    ok(await p.$('#privacy') !== null, 'privacy anchor');
     await p.context().close(); }
+  { const p = await open('how-it-works.html'); ok(await p.$('#privacy') === null, 'How it works has no privacy section'); ok(/privacy\.html/.test(fs.readFileSync(ROOT + 'how-it-works.html', 'utf8')), 'How it works links to the privacy page'); await p.context().close(); }
+  for (const [f] of PAGES) { const s = fs.readFileSync(ROOT + f + '.html', 'utf8'); ok(/<a href="privacy\.html">Privacy<\/a><\/nav>/.test(s), 'footer links to privacy: ' + f); }
 
   // 7. pricing: USD only, sample pack behind an email
   { const p = await open('pricing.html'); const T = await txt(p);
     ok(!/INR|₹|rupee/i.test(T), 'pricing in USD only');
     ok(/\$500/.test(T) && /\$600/.test(T) && /\$1,100/.test(T) && /\$1,650/.test(T), 'prices shown');
+    ok(/Essential/.test(T) && /Standard/.test(T) && /Embedded/.test(T) && !/Monitor|Insight/.test(T), 'tier names: Essential, Standard, Embedded');
+    ok(!/Pay in advance|Pilot is credited|Stop any month<\/b>/.test(await p.content()), 'no pricing terms under What you can rely on');
     ok(/workflows/i.test(T) && /decisions/i.test(T) && /support/i.test(T), 'package cards');
     let sent = 0; await p.route('https://docs.google.com/**', r => { sent++; r.fulfill({ status: 200, body: '' }); });
     await p.fill('#gate-email', 'bad'); await p.click('#gate button'); ok(/Please give an email address/.test(await p.innerText('#gate-msg')) && sent === 0, 'gate rejects a bad email');
@@ -75,9 +78,22 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     ok(fs.existsSync(ROOT + 'assets/sample-pack.pdf'), 'sample pack file exists');
     await p.context().close(); }
 
+  // 7b. phone: carousels line up with the page gutter, steps stack, capabilities swipes
+  { const p = await open('index.html', 390, 800);
+    const L = await p.$$eval('.whyg.car .wc:first-child, .cg3 .cc:first-child', a => a.map(e => Math.round(e.getBoundingClientRect().left)));
+    await p.evaluate(() => { document.querySelectorAll('.car-s').forEach(c => c.scrollLeft = 0); });
+    ok(L.every(x => x >= 18 && x <= 22), 'home phone: stat and decision cards start at the 20px gutter ' + L.join(','));
+    const w = await p.$$eval('.path > div', a => a.map(e => Math.round(e.getBoundingClientRect().width)));
+    ok(w.every(x => x > 300), 'home phone: the three start-small steps are full width ' + w.join(','));
+    const v = await p.$eval('#wf', e => Math.round(e.getBoundingClientRect().height)); ok(v >= 500, 'home phone: the video is tall (' + v + 'px)');
+    ok((await p.evaluate(() => document.querySelector('#wf source').getAttribute('src'))) === 'assets/video/workflow-m.mp4', 'home phone: portrait video loads');
+    await p.context().close(); }
+  { const p = await open('capabilities.html', 390, 800); const f = await p.$eval('#acar', e => getComputedStyle(e).display + ' ' + getComputedStyle(e).overflowX); ok(f === 'flex auto' || f === 'flex scroll', 'capabilities phone: swipeable carousel (' + f + ')'); await p.context().close(); }
+
   // 8. our approach and contact
   { const p = await open('our-approach.html'); const T = await txt(p);
     const hs = await p.$$eval('main h2', a => a.map(x => x.textContent.trim()));
+    ok(!/There are three ways to get it done/.test(T), 'our approach intro does not repeat the next heading');
     ok(hs.join('|') === 'Three ways to get this done|Why in-house is hard|Experience behind the work|Who is this designed for?', 'our approach order: ' + hs.join('|'));
     await p.context().close(); }
   { const p = await open('contact.html'); const T = await txt(p);
@@ -111,6 +127,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     // the spend numbers match the calculation the mocks showed
     await p.click('[data-act=q][data-v=budget]'); await p.click('[data-act=ind][data-v=telecom]'); await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => /Collected/.test(document.querySelector('[data-act=collect]').textContent)); await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForFunction(() => /Scenarios run/.test(document.querySelector('[data-act=run]').textContent), null, { timeout: 15000 });
     T = await txt(p); ok(/50 \/ 40 \/ 10/.test(T) && /\$85 million/.test(T) && /\$80 million/.test(T) && /72%/.test(T), 'telecom spend result: 50/40/10, $85m against $80m, 72%');
+    await p.click('[data-act=q][data-v=respond]'); await p.click('[data-act=ind][data-v=telecom]'); await p.click('[data-act=next]'); await p.click('[data-act=collect]'); await p.waitForFunction(() => /Collected/.test(document.querySelector('[data-act=collect]').textContent)); await p.click('[data-act=next]'); await p.click('[data-act=run]'); await p.waitForFunction(() => /Scenarios run/.test(document.querySelector('[data-act=run]').textContent), null, { timeout: 15000 });
+    T = await txt(p); ok(/\+\$624,\d{3}|\+\$625,\d{3}/.test(T) && !/thousand/.test(T), 'dollar amounts under a million are written in full, no "thousand"');
+    await p.click('[data-act=next]'); ok(await p.isVisible('.tw-key summary') && (await p.innerText('.tw-key')).length > 0, 'colour legend present');
     // customer file upload
     await p.click('[data-act=q][data-v=customers]'); await p.click('[data-act=csrc][data-v=upload]'); ok(await p.$eval('[data-act=next]', e => e.disabled), 'upload: next is disabled until a file is chosen');
     const csv = 'id,spend,seats,tickets,age\n' + Array.from({ length: 240 }, (_, i) => [i, [30, 90, 250][i % 3] + (i % 7), [2, 12, 40][i % 3] + (i % 4), [1, 3, 7][i % 3] + (i % 3), 20 + i % 40].join(',')).join('\n');
