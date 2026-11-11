@@ -26,7 +26,7 @@ assets/defaults.js          Example inputs for telecom, B2B software, travel and
 assets/offers-data.js       Real offers captured from rivals' public pages: AT&T and T-Mobile, Slack and Asana (9 Nov 2026), Hilton and Marriott, Netflix and Disney+ (10 Nov 2026)
 assets/sample-pack.pdf      Three-page sample pack: reviewed brief, decision memo, workflow summary (opens after the email gate)
 assets/img/mandhir-dua.jpg  Founder photograph
-assets/video/               workflow.mp4, workflow.webm and the poster image (an earlier example: see below)
+assets/video/               workflow.mp4, workflow.webm and the poster image (a recording of the telecom example)
 assets/fonts/               Inter, self-hosted, so no request goes to a font service
 tools/                      Four earlier example pages (not linked from the site, older styling)
 ```
@@ -68,7 +68,7 @@ Headings, buttons, navigation and labels use sentence case ("How it works", "Try
 
 ## The home video and the sample pack
 
-- The video is 95 seconds and silent. It was rendered from an earlier demo engine (a hotel budget in rupees), so it does not match the new Try it out page. A caption under it says so. Re-cut it from the new page when you can. To re-render it: `video-src/scene2.html` drove the old engine, so the scene needs rewriting first.
+- The video is about 2 minutes and silent. It is a screen recording of the real Try it out page (telecom, AT&T's offer, rival price move) with on-screen captions, made with Playwright's video recorder and encoded with ffmpeg to `workflow.mp4` and `workflow.webm`. The chapter buttons on Home use the times in `index.html`. If you change Try it out, record it again.
 - `assets/sample-pack.pdf` was made from an HTML file with Playwright (`page.pdf`). Its rival offers are real and dated; everything about the example operator is made up, and the pack says so.
 
 ## Tests
